@@ -54,7 +54,7 @@ class Client {
   }
 
   add_user_access_token(token: string) {
-    // this needs to change
+    // TODO: this needs to change?
     this.info.user_access_token = token;
   }
 }

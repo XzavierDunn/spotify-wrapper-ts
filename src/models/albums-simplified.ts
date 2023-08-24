@@ -34,7 +34,7 @@ const SimplifiedAlbum = z.object({
 const SeveralSimplifiedAlbums = z.object({
   href: z.string().optional(),
   limit: z.number().optional(),
-  next: z.string().optional(),
+  next: z.string().optional().nullable(),
   offset: z.number().optional(),
   previous: z.string().optional().nullable(),
   total: z.number().optional(),
