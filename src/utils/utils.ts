@@ -43,7 +43,7 @@ async function request_user_authorization(
 ) {
   // RUN CONSOLE LOG TO GET CODE, THEN UPDATE CODE IN CONFIG.json
   // console.log(
-  //   `https://accounts.spotify.com/authorize?client_id=${credentials.client_id}&response_type=code&redirect_uri=${credentials.redirect_uri}&scope=user-library-read user-library-modify`
+  //   `https://accounts.spotify.com/authorize?client_id=${credentials.client_id}&response_type=code&redirect_uri=${credentials.redirect_uri}&scope=user-library-read user-library-modify user-read-playback-position user-read-playback-state user-modify-playback-state`
   // );
   // throw new Error("bruh");
 
@@ -125,6 +125,10 @@ async function error_handler<T extends z.ZodType<any, any, any>>(
         `${result.status_code} -> ${result.response.error.message}`
       );
     }
+  } else if (result.status_code === 204) {
+    if (result.response === "No Content") {
+      return { error: result };
+    }
   } else {
     throw new Error(
       `${result.status_code} -> ${result.response.error.message}`
@@ -139,7 +143,7 @@ async function get<T extends z.ZodType<any, any, any>>(
   object: z.infer<T>,
   info: InfoType,
   user_token_required = false
-): Promise<{ result: z.TypeOf<T> }> {
+): Promise<{ result?: z.TypeOf<T>; error?: any }> {
   let result = await fetch_wrapper(
     url,
     !user_token_required
