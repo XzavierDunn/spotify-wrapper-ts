@@ -18,7 +18,17 @@ const SeveralArtists = z.object({
   artists: z.array(Artist),
 });
 
+const FullArtists = z.object({
+  href: z.string().optional(),
+  limit: z.number().optional(),
+  next: z.string().optional().nullable(),
+  offset: z.number().optional(),
+  previous: z.string().optional().nullable(),
+  total: z.number().optional(),
+  items: z.array(Artist).optional(),
+});
+
 type ArtistType = z.infer<typeof Artist>;
 type SeveralArtistsType = z.infer<typeof SeveralArtists>;
 
-export { Artist, SeveralArtists, ArtistType, SeveralArtistsType };
+export { Artist, SeveralArtists, FullArtists, ArtistType, SeveralArtistsType };

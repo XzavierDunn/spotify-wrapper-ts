@@ -19,7 +19,7 @@ const Track = z.object({
   restrictions: Restrictions.optional(),
   name: z.string().optional(),
   popularity: z.number().optional(),
-  preview_url: z.string().optional(),
+  preview_url: z.string().optional().nullable(),
   track_number: z.number().optional(),
   type: z.string().optional(),
   uri: z.string().optional(),
@@ -30,7 +30,17 @@ const Tracks = z.object({
   tracks: z.array(Track),
 });
 
+const FullTracks = z.object({
+  href: z.string().optional(),
+  limit: z.number().optional(),
+  next: z.string().optional().nullable(),
+  offset: z.number().optional(),
+  previous: z.string().optional().nullable(),
+  total: z.number().optional(),
+  items: z.array(Track).optional(),
+});
+
 type TrackType = z.infer<typeof Track>;
 type TracksType = z.infer<typeof Tracks>;
 
-export { Track, Tracks, TrackType, TracksType };
+export { Track, Tracks, FullTracks, TrackType, TracksType };
