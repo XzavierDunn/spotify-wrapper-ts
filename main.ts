@@ -11,18 +11,11 @@ let testing = async () => {
 
   client.add_user_access_token(config["user-stuff"].access_token);
 
-  let result = await client.albums.save_albums_for_current_user({
-    ids: [
-      "2VrpzWjnsiELWKXOJAFhme",
-      "7rKmLxCFlmtIxGpX4HYgs4",
-      "5HV1423uFq5uNui7tZBBas",
-    ],
-  });
-  if (result.result) {
-    console.log(result.result);
+  let playback_state = await client.player.get_playback_state();
+  if (playback_state.result) {
+    console.log(playback_state.result);
   } else {
-    console.log(result.error);
+    console.log(playback_state.error);
   }
 };
-
 testing();
