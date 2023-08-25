@@ -16,9 +16,9 @@ const Followers = z.object({
 });
 
 const Images = z.object({
-  height: z.number(),
-  width: z.number(),
-  url: z.string(),
+  height: z.number().nullable(),
+  width: z.number().nullable(),
+  url: z.string().nullable(),
 });
 
 const Restrictions = z.object({
@@ -34,6 +34,19 @@ const LinkedFrom = z.object({
   external_urls: ExternalUrls,
 });
 
+const authors = z.array(
+  z.object({
+    name: z.string(),
+  })
+);
+
+const narrators = z.array(z.object({ name: z.string() }));
+
+const Resume_Point = z.object({
+  fully_played: z.boolean(),
+  resume_position_ms: z.number(),
+});
+
 export {
   ExternalUrls,
   ExternalIds,
@@ -42,4 +55,7 @@ export {
   Restrictions,
   Copyrights,
   LinkedFrom,
+  authors,
+  narrators,
+  Resume_Point,
 };
