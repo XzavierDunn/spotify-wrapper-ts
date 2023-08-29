@@ -46,6 +46,10 @@ const Device = z.object({
   volume_percent: z.number(),
 });
 
+const SeveralDevices = z.object({
+  devices: z.array(Device),
+});
+
 const PlaybackState = z.object({
   device: Device,
   repeat_state: z.string(),
@@ -60,5 +64,6 @@ const PlaybackState = z.object({
 });
 
 type PlaybackStateType = z.infer<typeof PlaybackState>;
+type SeveralDevicesType = z.infer<typeof SeveralDevices>;
 
-export { PlaybackState, PlaybackStateType };
+export { PlaybackState, PlaybackStateType, SeveralDevices, SeveralDevicesType };

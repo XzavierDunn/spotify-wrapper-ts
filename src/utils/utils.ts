@@ -138,6 +138,7 @@ async function fetch_wrapper(
   return { status_code: data.status, response };
 }
 
+// TODO: Completely redo this mess.
 async function error_handler<T extends z.ZodType<any, any, any>>(
   url: string,
   object: z.infer<T>,
@@ -160,10 +161,6 @@ async function error_handler<T extends z.ZodType<any, any, any>>(
   } else if (result.status_code === 404) {
     if (result.response.error.message === "Invalid username") {
       await info.refresh_user_token_function();
-    }
-  } else if (result.status_code === 204) {
-    if (result.response === "No Content") {
-      return { error: result };
     }
   } else {
     throw new Error(
@@ -192,6 +189,7 @@ async function get<T extends z.ZodType<any, any, any>>(
   return { result: object.parse(result.response) };
 }
 
+// TODO: Use error_handler
 async function put(url: string, body: any, info: InfoType) {
   let result = await fetch_wrapper(
     url,
@@ -199,10 +197,14 @@ async function put(url: string, body: any, info: InfoType) {
     "PUT",
     body
   );
-  if (result.status_code != 200) throw new Error(result.response);
+
+  if (result.status_code != 200 && result.status_code != 204)
+    throw new Error(result.response);
   return { result: result.response };
 }
 
+// TODO: Use error_handler
+// TODO: Fix function name or redo naming so they are consistent
 async function delete_method(url: string, body: any, info: InfoType) {
   let result = await fetch_wrapper(
     url,

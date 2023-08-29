@@ -1,6 +1,11 @@
 import { InfoType } from "../client/client";
-import { PlaybackState, PlaybackStateType } from "../models/player";
-import { get } from "../utils/utils";
+import {
+  PlaybackState,
+  PlaybackStateType,
+  SeveralDevices,
+  SeveralDevicesType,
+} from "../models/player";
+import { get, put } from "../utils/utils";
 
 class Player {
   private info: InfoType;
@@ -62,14 +67,56 @@ class Player {
    * @param play
    * true: ensure playback happens on the new device.
    * false or not provided: keep the current playback state.
-   * @returns Promise<void>
+   * @Scopes Authorization scopes
+   * - user-modify-playback-state
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: Error;
+   * }>
    */
-  async transferPlayback(device_ids: string[], play?: boolean): Promise<void> {
+  async transfer_playback(
+    device_ids: string[],
+    play?: boolean
+  ): Promise<{ result?: string; error?: Error }> {
     if (
       !this.info.userInfo.access_token ||
       !this.info.userInfo.access_token.length
     )
       throw new Error("User access token is required");
+
+    let data = await put(
+      this.api_url,
+      JSON.stringify({ device_ids, play }),
+      this.info
+    );
+
+    if (data.result === "No Content") return { result: "Success" };
+    return data;
+  }
+
+  /**
+   * Get Available Devices - https://developer.spotify.com/documentation/web-api/reference/get-a-users-available-devices
+   * Get information about a user’s available devices.
+   * @Scopes Authorization scopes
+   * - user-read-playback-state
+   * @returns
+   * Promise<{
+   * result?: SeveralDevicesType;
+   * error?: Error;
+   * }>
+   */
+  async get_available_devices(): Promise<{
+    result?: SeveralDevicesType;
+    error?: Error;
+  }> {
+    if (
+      !this.info.userInfo.access_token ||
+      !this.info.userInfo.access_token.length
+    )
+      throw new Error("User access token is required");
+
+    return await get(this.api_url + "devices", SeveralDevices, this.info, true);
   }
 }
 
