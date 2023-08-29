@@ -43,7 +43,10 @@ class Episodes {
     id: string,
     market?: string
   ): Promise<{ result?: EpisodeType; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
+    if (
+      !this.info.userInfo.access_token ||
+      this.info.userInfo.access_token === ""
+    )
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.api_url}${id}`;
@@ -76,7 +79,10 @@ class Episodes {
     ids: string[],
     market?: string
   ): Promise<{ result?: SeveralEpisodesType; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
+    if (
+      !this.info.userInfo.access_token ||
+      this.info.userInfo.access_token === ""
+    )
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.api_url}?ids=${ids.join(",")}`;
@@ -118,7 +124,10 @@ class Episodes {
     limit: number = 20,
     offset: number = 0
   ): Promise<{ result?: EpisodesType; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
+    if (
+      !this.info.userInfo.access_token ||
+      this.info.userInfo.access_token === ""
+    )
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/episodes?limit=${limit}&offset=${offset}`;
@@ -145,7 +154,10 @@ class Episodes {
   async save_episodes_for_current_user(
     ids: string[]
   ): Promise<{ result?: string; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
+    if (
+      !this.info.userInfo.access_token ||
+      this.info.userInfo.access_token === ""
+    )
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/episodes?ids=${ids.join(",")}`;
@@ -171,7 +183,10 @@ class Episodes {
   async remove_users_saved_episodes(
     ids: string[]
   ): Promise<{ result?: string; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
+    if (
+      !this.info.userInfo.access_token ||
+      this.info.userInfo.access_token === ""
+    )
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/episodes?ids=${ids.join(",")}`;
@@ -197,7 +212,10 @@ This API endpoint is in beta and could change without warning. Please share any 
   async check_users_saved_episodes(
     ids: string[]
   ): Promise<{ result?: boolean[]; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
+    if (
+      !this.info.userInfo.access_token ||
+      this.info.userInfo.access_token === ""
+    )
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/episodes/contains?ids=${ids.join(",")}`;

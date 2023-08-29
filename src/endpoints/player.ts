@@ -36,14 +36,20 @@ class Player {
     market?: string,
     additional_types?: string
   ): Promise<{ result?: PlaybackStateType; error?: Error }> {
-    if (!this.info.user_access_token || !this.info.user_access_token.length)
+    if (
+      !this.info.userInfo.access_token ||
+      !this.info.userInfo.access_token.length
+    )
       throw new Error("User access token is required");
 
     let url = this.api_url + "?";
     if (market) url += `&market=${market}`;
     if (additional_types) url += `&additional_types=${additional_types}`;
 
-    return await get(url, PlaybackState, this.info, true);
+    let result = await get(url, PlaybackState, this.info, true);
+    if (result.error && result.error.response === "No Content")
+      return { error: new Error("Playback not available or active") };
+    return result;
   }
 
   /**
@@ -59,7 +65,10 @@ class Player {
    * @returns Promise<void>
    */
   async transferPlayback(device_ids: string[], play?: boolean): Promise<void> {
-    if (!this.info.user_access_token || !this.info.user_access_token.length)
+    if (
+      !this.info.userInfo.access_token ||
+      !this.info.userInfo.access_token.length
+    )
       throw new Error("User access token is required");
   }
 }

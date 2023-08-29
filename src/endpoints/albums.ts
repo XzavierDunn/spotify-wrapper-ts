@@ -172,7 +172,10 @@ class Albums {
     result?: UsersAlbumsType;
     error?: Error;
   }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
+    if (
+      !this.info.userInfo.access_token ||
+      this.info.userInfo.access_token === ""
+    )
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/albums?limit=${limit}&offset=${offset}`;
@@ -203,7 +206,10 @@ class Albums {
     result?: string;
     error?: Error;
   }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
+    if (
+      !this.info.userInfo.access_token ||
+      this.info.userInfo.access_token === ""
+    )
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/albums?ids=${ids.toString()}`;
@@ -228,7 +234,10 @@ class Albums {
     result?: string;
     error?: Error;
   }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
+    if (
+      !this.info.userInfo.access_token ||
+      this.info.userInfo.access_token === ""
+    )
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/albums?ids=${ids.toString()}`;
@@ -253,7 +262,10 @@ class Albums {
     result?: boolean[];
     error?: Error;
   }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
+    if (
+      !this.info.userInfo.access_token ||
+      this.info.userInfo.access_token === ""
+    )
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/albums/contains?ids=${ids.toString()}`;

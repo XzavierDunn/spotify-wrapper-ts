@@ -83,6 +83,38 @@ async function request_user_authorization(
   console.log(clientInfo);
 }
 
+async function refresh_user_access_token(
+  refresh_token: string,
+  client_id: string,
+  client_secret: string
+) {
+  let formBody: string[] = [];
+  formBody.push(
+    encodeURIComponent("refresh_token") +
+      "=" +
+      encodeURIComponent(refresh_token)
+  );
+  formBody.push(
+    encodeURIComponent("grant_type") + "=" + encodeURIComponent("refresh_token")
+  );
+  let finalBody: string = formBody.join("&");
+
+  let auth = Buffer.from(client_id + ":" + client_secret).toString("base64");
+  return await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: "Basic " + auth,
+    },
+    body: finalBody,
+  })
+    .then((res) => res.json())
+    .then((data) => ClientInfo.parse(data))
+    .catch((e) => {
+      throw e as Error;
+    });
+}
+
 async function fetch_wrapper(
   input: RequestInfo | URL,
   access_token: string,
@@ -117,13 +149,17 @@ async function error_handler<T extends z.ZodType<any, any, any>>(
 ) {
   if (result.status_code === 401) {
     if (result.response.error.message === "The access token expired") {
-      await info.refresh_token();
+      await info.refresh_token_function();
     } else if (result.response.error.message === "Missing token") {
       throw new Error(result.response.error.message);
     } else {
       throw new Error(
         `${result.status_code} -> ${result.response.error.message}`
       );
+    }
+  } else if (result.status_code === 404) {
+    if (result.response.error.message === "Invalid username") {
+      await info.refresh_user_token_function();
     }
   } else if (result.status_code === 204) {
     if (result.response === "No Content") {
@@ -147,8 +183,8 @@ async function get<T extends z.ZodType<any, any, any>>(
   let result = await fetch_wrapper(
     url,
     !user_token_required
-      ? info.clientInfo.access_token
-      : info.user_access_token!
+      ? info.clientInfo.access_token!
+      : info.userInfo.access_token!
   );
 
   if (result.status_code != 200)
@@ -157,7 +193,12 @@ async function get<T extends z.ZodType<any, any, any>>(
 }
 
 async function put(url: string, body: any, info: InfoType) {
-  let result = await fetch_wrapper(url, info.user_access_token!, "PUT", body);
+  let result = await fetch_wrapper(
+    url,
+    info.userInfo.access_token!,
+    "PUT",
+    body
+  );
   if (result.status_code != 200) throw new Error(result.response);
   return { result: result.response };
 }
@@ -165,7 +206,7 @@ async function put(url: string, body: any, info: InfoType) {
 async function delete_method(url: string, body: any, info: InfoType) {
   let result = await fetch_wrapper(
     url,
-    info.user_access_token!,
+    info.userInfo.access_token!,
     "DELETE",
     body
   );
@@ -176,6 +217,7 @@ async function delete_method(url: string, body: any, info: InfoType) {
 export {
   get_access_token,
   request_user_authorization,
+  refresh_user_access_token,
   get,
   put,
   delete_method,
