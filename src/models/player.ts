@@ -51,9 +51,9 @@ const SeveralDevices = z.object({
 });
 
 const PlaybackState = z.object({
-  device: Device,
-  repeat_state: z.string(),
-  shuffle_state: z.boolean(),
+  device: Device.optional(),
+  repeat_state: z.string().optional(),
+  shuffle_state: z.boolean().optional(),
   context: Context.nullable(),
   timestamp: z.number(),
   progress_ms: z.number(),

@@ -118,6 +118,44 @@ class Player {
 
     return await get(this.api_url + "devices", SeveralDevices, this.info, true);
   }
+
+  /**
+   * Get Currently Playing Track - https://developer.spotify.com/documentation/web-api/reference/get-the-users-currently-playing-track
+   * Get the object currently being played on the user's Spotify account.
+   * @param market
+   * An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.
+   * If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.
+   * Note: If neither market or user country are provided, the content is considered unavailable for the client.
+   * Users can view the country that is associated with their account in the account settings.
+   * Example value: "ES"
+   * @param additional_types
+   * A comma-separated list of item types that your client supports besides the default track type. Valid types are: track and episode.
+   * Note: This parameter was introduced to allow existing clients to maintain their current behaviour and might be deprecated in the future.
+   * In addition to providing this parameter, make sure that your client properly handles cases of new types in the future by checking against the type field of each object.
+   * @Scopes Authorization scopes
+   * - user-read-currently-playing
+   * @returns
+   * Promise<{
+   * result?: PlaybackStateType;
+   * error?: Error;
+   * }>
+   */
+  async get_currently_playing_track(
+    market?: string,
+    additional_types?: string
+  ): Promise<{ result?: PlaybackStateType; error?: Error }> {
+    if (
+      !this.info.userInfo.access_token ||
+      !this.info.userInfo.access_token.length
+    )
+      throw new Error("User access token is required");
+
+    let url = this.api_url + "currently-playing?";
+    if (market) url += `&market=${market}`;
+    if (additional_types) url += `&additional_types=${additional_types}`;
+
+    return await get(url, PlaybackState, this.info, true);
+  }
 }
 
 export { Player };
