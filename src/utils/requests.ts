@@ -20,9 +20,17 @@ async function error_handler<T extends z.ZodType<any, any, any>>(
   try {
     let recovered = false;
     let status_code = requestData.status_code;
-    let error_message = requestData.response.error.message;
 
-    if (status_code === 401) {
+    let error_message;
+    if (requestData.response.error) {
+      error_message = requestData.response.error.message;
+    } else {
+      error_message = requestData.response;
+    }
+
+    if (status_code === 204) {
+      return { result: error_message };
+    } else if (status_code === 401) {
       if (error_message === "The access token expired") {
         await info.refresh_token_function();
         fetchData.token = info.client_access_token;
@@ -33,6 +41,8 @@ async function error_handler<T extends z.ZodType<any, any, any>>(
         await info.refresh_user_token_function();
         fetchData.token = info.user_access_token;
         recovered = true;
+      } else {
+        return { error: error_message };
       }
     }
 
@@ -85,8 +95,10 @@ async function get_req<T extends z.ZodType<any, any, any>>(
   let fetchData: FetchData = { url, method: "GET", body: null, token };
   let result = await fetch_wrapper(fetchData);
 
-  if (result.status_code != 200)
+  if (result.status_code != 200) {
     return await error_handler(fetchData, result, info, object);
+  }
+
   return { result: object.parse(result.response) };
 }
 
@@ -96,7 +108,7 @@ async function put_req(
   body: BodyInit | null | undefined,
   info: InfoType
 ): Promise<{ result?: string; error?: any }> {
-  let fetchData: FetchData = { url, method: "GET", body, token };
+  let fetchData: FetchData = { url, method: "PUT", body, token };
   let result = await fetch_wrapper(fetchData);
 
   if (result.status_code != 200)
@@ -109,7 +121,7 @@ async function delete_req(
   token: string,
   info: InfoType
 ): Promise<{ result?: string; error?: any }> {
-  let fetchData: FetchData = { url, method: "GET", body: null, token };
+  let fetchData: FetchData = { url, method: "DELETE", body: null, token };
   let result = await fetch_wrapper(fetchData);
 
   if (result.status_code != 200)

@@ -41,7 +41,7 @@ class Player {
   async get_playback_state(
     market?: string,
     additional_types?: string
-  ): Promise<{ result?: PlaybackStateType; error?: Error }> {
+  ): Promise<{ result?: PlaybackStateType | string; error?: Error }> {
     if (!this.info.user_access_token || !this.info.user_access_token.length)
       throw new Error("User access token is required");
 
@@ -62,7 +62,7 @@ class Player {
   }
 
   /**
-   * Transfer Playback - https://developer.spotify.com/documentation/web-api/reference/player/transfer-a-users-playback/
+   * Transfer Playback - https://developer.spotify.com/documentation/web-api/reference/transfer-a-users-playback
    * Transfer playback to a new device and determine if it should start playing.
    * @param device_ids
    * A JSON array containing the ID of the device on which playback should be started/transferred.
@@ -93,7 +93,6 @@ class Player {
       this.info
     );
 
-    if (data.result === "No Content") return { result: "Success" };
     return data;
   }
 
