@@ -1,11 +1,5 @@
-import { z } from "zod";
-import {
-  ClientInfo,
-  ClientInfoType,
-  CredentialsType,
-  InfoType,
-} from "../client/client";
 import { existsSync, readFileSync, writeFileSync } from "fs";
+import { ClientInfo, ClientInfoType, CredentialsType } from "../client/client";
 
 async function get_access_token(
   credentials: CredentialsType,
@@ -20,6 +14,7 @@ async function get_access_token(
     }
   }
 
+  console.log("Requesting new client credentials");
   let clientInfo = await fetch("https://accounts.spotify.com/api/token", {
     method: "POST",
     headers: {
@@ -115,112 +110,8 @@ async function refresh_user_access_token(
     });
 }
 
-async function fetch_wrapper(
-  input: RequestInfo | URL,
-  access_token: string,
-  method: string | undefined = "get",
-  body: BodyInit | null | undefined = null
-) {
-  let data = await fetch(input, {
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-    },
-    method,
-    body,
-  });
-
-  let response;
-  try {
-    response = await data.json();
-  } catch {
-    response = data.statusText;
-  }
-  return { status_code: data.status, response };
-}
-
-// TODO: Completely redo this mess.
-async function error_handler<T extends z.ZodType<any, any, any>>(
-  url: string,
-  object: z.infer<T>,
-  result: {
-    status_code: number;
-    response: any;
-  },
-  info: InfoType
-) {
-  if (result.status_code === 401) {
-    if (result.response.error.message === "The access token expired") {
-      await info.refresh_token_function();
-    } else if (result.response.error.message === "Missing token") {
-      throw new Error(result.response.error.message);
-    } else {
-      throw new Error(
-        `${result.status_code} -> ${result.response.error.message}`
-      );
-    }
-  } else if (result.status_code === 404) {
-    if (result.response.error.message === "Invalid username") {
-      await info.refresh_user_token_function();
-    }
-  } else {
-    throw new Error(
-      `${result.status_code} -> ${result.response.error.message}`
-    );
-  }
-
-  return get(url, object, info);
-}
-
-async function get<T extends z.ZodType<any, any, any>>(
-  url: string,
-  object: z.infer<T>,
-  info: InfoType,
-  user_token_required = false
-): Promise<{ result?: z.TypeOf<T>; error?: any }> {
-  let result = await fetch_wrapper(
-    url,
-    !user_token_required
-      ? info.clientInfo.access_token!
-      : info.userInfo.access_token!
-  );
-
-  if (result.status_code != 200)
-    return await error_handler(url, object, result, info);
-  return { result: object.parse(result.response) };
-}
-
-// TODO: Use error_handler
-async function put(url: string, body: any, info: InfoType) {
-  let result = await fetch_wrapper(
-    url,
-    info.userInfo.access_token!,
-    "PUT",
-    body
-  );
-
-  if (result.status_code != 200 && result.status_code != 204)
-    throw new Error(result.response);
-  return { result: result.response };
-}
-
-// TODO: Use error_handler
-// TODO: Fix function name or redo naming so they are consistent
-async function delete_method(url: string, body: any, info: InfoType) {
-  let result = await fetch_wrapper(
-    url,
-    info.userInfo.access_token!,
-    "DELETE",
-    body
-  );
-  if (result.status_code != 200) throw new Error(result.response);
-  return { result: result.response };
-}
-
 export {
   get_access_token,
   request_user_authorization,
   refresh_user_access_token,
-  get,
-  put,
-  delete_method,
 };
