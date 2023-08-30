@@ -2,7 +2,6 @@ import { z } from "zod";
 import config from "../../config.json";
 import { Artists } from "../endpoints/artists";
 import { Albums } from "../endpoints/albums";
-import { get_access_token, refresh_user_access_token } from "../utils/utils";
 import { Audiobooks } from "../endpoints/audiobooks";
 import { Categories } from "../endpoints/categories";
 import { Chapters } from "../endpoints/chapter";
@@ -11,6 +10,11 @@ import { Genres } from "../endpoints/genres";
 import { Markets } from "../endpoints/markets";
 import { Search } from "../endpoints/search";
 import { Player } from "../endpoints/player";
+import {
+  get_access_token,
+  refresh_user_access_token,
+} from "../utils/authentication";
+import { writeFileSync } from "fs";
 
 const Credentials = z.object({
   client_id: z.string(),
@@ -28,8 +32,8 @@ let ClientInfo = z.object({
 
 let Info = z.object({
   api_url: z.string(),
-  clientInfo: ClientInfo,
-  userInfo: ClientInfo,
+  client_access_token: z.string(),
+  user_access_token: z.string(),
   refresh_token_function: z.function(),
   refresh_user_token_function: z.function(),
 });
@@ -40,10 +44,13 @@ type InfoType = z.infer<typeof Info>;
 
 class Client {
   private credentials: CredentialsType;
+  private ClientInfo: ClientInfoType;
+  private UserInfo: ClientInfoType = {};
+
   private info: InfoType = {
     api_url: "https://api.spotify.com/v1",
-    clientInfo: {},
-    userInfo: {},
+    client_access_token: "",
+    user_access_token: "",
     refresh_token_function: this.refresh_token.bind(this),
     refresh_user_token_function: this.refresh_user_token.bind(this),
   };
@@ -61,7 +68,8 @@ class Client {
 
   constructor(clientInfo: ClientInfoType, credentials: CredentialsType) {
     this.credentials = credentials;
-    this.info.clientInfo = clientInfo;
+    this.ClientInfo = clientInfo;
+    this.info.client_access_token = clientInfo.access_token!;
 
     this.albums = new Albums(this.info);
     this.genres = new Genres(this.info);
@@ -81,32 +89,32 @@ class Client {
   }
 
   async refresh_token() {
+    console.log("Attempting to refresh token");
     let data = await get_access_token(this.credentials, true);
-    this.info.clientInfo = data;
+    this.ClientInfo = data;
+    this.info.client_access_token = data.access_token!;
   }
 
   async refresh_user_token() {
     console.log("Attempting to refresh the user token");
-    if (!this.info.userInfo.refresh_token)
+    if (!this.UserInfo.refresh_token)
       throw new Error("Missing user refresh token");
 
     let data = await refresh_user_access_token(
-      this.info.userInfo.refresh_token,
+      this.UserInfo.refresh_token,
       this.credentials.client_id,
       this.credentials.client_secret
     );
 
-    this.info.userInfo = data;
+    this.UserInfo = data;
+    this.info.user_access_token = data.access_token!;
 
-    let { access_token, refresh_token } = data;
-    if (access_token && refresh_token) {
-      config["user-stuff"].access_token = access_token;
-      config["user-stuff"].refresh_token = refresh_token;
-    }
+    writeFileSync("./user-credentials.json", JSON.stringify(data));
   }
 
   add_user_info(userInfo: ClientInfoType) {
-    this.info.userInfo = userInfo;
+    this.UserInfo = userInfo;
+    this.info.user_access_token = userInfo.access_token!;
   }
 }
 
