@@ -5,7 +5,7 @@ import {
   SeveralChapters,
   SeveralChaptersType,
 } from "../models/chapters";
-import { get } from "../utils/utils";
+import { get_req } from "../utils/requests";
 
 class Chapters {
   private info: InfoType;
@@ -40,7 +40,12 @@ class Chapters {
     market: string
   ): Promise<{ result?: ChapterType; error?: Error }> {
     let url = `${this.api_url}${id}?market=${market}`;
-    return await get(url, Chapter, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      Chapter,
+      this.info
+    );
   }
 
   /**
@@ -68,7 +73,12 @@ class Chapters {
   ): Promise<{ result?: SeveralChaptersType; error?: Error }> {
     let url = `${this.api_url}?ids=${ids.join(",")}&market=${market}`;
 
-    return await get(url, SeveralChapters, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      SeveralChapters,
+      this.info
+    );
   }
 }
 

@@ -1,6 +1,6 @@
 import { InfoType } from "../client/client";
 import { MarketsObject, MarketsType } from "../models/markets";
-import { get } from "../utils/utils";
+import { get_req } from "../utils/requests";
 
 class Markets {
   private info: InfoType;
@@ -24,7 +24,12 @@ class Markets {
     result?: MarketsType;
     error?: Error;
   }> {
-    return await get(this.api_url, MarketsObject, this.info);
+    return await get_req(
+      this.api_url,
+      this.info.client_access_token,
+      MarketsObject,
+      this.info
+    );
   }
 }
 

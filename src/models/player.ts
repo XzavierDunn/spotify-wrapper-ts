@@ -3,6 +3,11 @@ import { ExternalUrls } from "./shared";
 import { Track } from "./tracks";
 import { Episode } from "./episodes";
 
+const offset = z.object({
+  position: z.number().optional(),
+  uri: z.string().optional(),
+});
+
 const Context = z.object({
   type: z.string(),
   href: z.string(),
@@ -65,5 +70,13 @@ const PlaybackState = z.object({
 
 type PlaybackStateType = z.infer<typeof PlaybackState>;
 type SeveralDevicesType = z.infer<typeof SeveralDevices>;
+type offsetType = z.infer<typeof offset>;
 
-export { PlaybackState, PlaybackStateType, SeveralDevices, SeveralDevicesType };
+export {
+  PlaybackState,
+  PlaybackStateType,
+  SeveralDevices,
+  SeveralDevicesType,
+  offset,
+  offsetType,
+};

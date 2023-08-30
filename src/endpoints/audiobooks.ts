@@ -12,7 +12,7 @@ import {
   SeveralSimplifiedAudiobooks,
   SeveralSimplifiedAudiobooksType,
 } from "../models/audiobooks-simplified";
-import { delete_method, get, put } from "../utils/utils";
+import { get_req, put_req, delete_req } from "../utils/requests";
 
 class Audiobooks {
   private info: InfoType;
@@ -52,7 +52,12 @@ class Audiobooks {
     let url = `${this.api_url}${id}`;
     if (market) url += `?market=${market}`;
 
-    return await get(url, Audiobook, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      Audiobook,
+      this.info
+    );
   }
 
   /**
@@ -84,7 +89,12 @@ class Audiobooks {
     let url = `${this.api_url}?ids=${ids.join(",")}`;
     if (market) url += `&market=${market}`;
 
-    return await get(url, SeveralAudiobooks, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      SeveralAudiobooks,
+      this.info
+    );
   }
 
   /**
@@ -129,7 +139,12 @@ class Audiobooks {
     let url = `${this.api_url}${id}/chapters?limit=${limit}&offset=${offset}`;
     if (market) url += `&market=${market}`;
 
-    return await get(url, chapters, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      chapters,
+      this.info
+    );
   }
 
   /**
@@ -159,14 +174,16 @@ class Audiobooks {
     limit?: number;
     offset?: number;
   }): Promise<{ result?: SeveralSimplifiedAudiobooksType; error?: Error }> {
-    if (
-      !this.info.userInfo.access_token ||
-      this.info.userInfo.access_token === ""
-    )
+    if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/audiobooks?limit=${limit}&offset=${offset}`;
-    return await get(url, SeveralSimplifiedAudiobooks, this.info, true);
+    return await get_req(
+      url,
+      this.info.user_access_token,
+      SeveralSimplifiedAudiobooks,
+      this.info
+    );
   }
 
   /**
@@ -186,14 +203,11 @@ class Audiobooks {
   async save_audiobooks_for_current_user(
     ids: string[]
   ): Promise<{ result?: string; error?: Error }> {
-    if (
-      !this.info.userInfo.access_token ||
-      this.info.userInfo.access_token === ""
-    )
+    if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/audiobooks?ids=${ids.join(",")}`;
-    return await put(url, {}, this.info);
+    return await put_req(url, this.info.user_access_token, null, this.info);
   }
 
   /**
@@ -213,14 +227,11 @@ class Audiobooks {
   async remove_users_saved_audiobooks(
     ids: string[]
   ): Promise<{ result?: string; error?: Error }> {
-    if (
-      !this.info.userInfo.access_token ||
-      this.info.userInfo.access_token === ""
-    )
+    if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/audiobooks?ids=${ids.join(",")}`;
-    return await delete_method(url, {}, this.info);
+    return await delete_req(url, this.info.user_access_token, this.info);
   }
 
   /**
@@ -240,16 +251,18 @@ class Audiobooks {
   async check_users_saved_audiobooks(
     ids: string[]
   ): Promise<{ result?: boolean[]; error?: Error }> {
-    if (
-      !this.info.userInfo.access_token ||
-      this.info.userInfo.access_token === ""
-    )
+    if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/audiobooks/contains?ids=${ids.join(
       ","
     )}`;
-    return await get(url, z.array(z.boolean()), this.info, true);
+    return await get_req(
+      url,
+      this.info.user_access_token,
+      z.array(z.boolean()),
+      this.info
+    );
   }
 }
 

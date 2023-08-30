@@ -1,6 +1,6 @@
 import { InfoType } from "../client/client";
 import { SearchObject, SearchObjectType } from "../models/search";
-import { get } from "../utils/utils";
+import { get_req } from "../utils/requests";
 
 class Search {
   private info: InfoType;
@@ -65,7 +65,12 @@ class Search {
     if (market) url += `&market=${market}`;
     if (include_external) url += `&include_external=${include_external}`;
 
-    return await get(url, SearchObject, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      SearchObject,
+      this.info
+    );
   }
 }
 

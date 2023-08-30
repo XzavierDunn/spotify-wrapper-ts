@@ -4,8 +4,9 @@ import {
   PlaybackStateType,
   SeveralDevices,
   SeveralDevicesType,
+  offsetType,
 } from "../models/player";
-import { get, put } from "../utils/utils";
+import { get_req, put_req } from "../utils/requests";
 
 class Player {
   private info: InfoType;
@@ -41,17 +42,20 @@ class Player {
     market?: string,
     additional_types?: string
   ): Promise<{ result?: PlaybackStateType; error?: Error }> {
-    if (
-      !this.info.userInfo.access_token ||
-      !this.info.userInfo.access_token.length
-    )
+    if (!this.info.user_access_token || !this.info.user_access_token.length)
       throw new Error("User access token is required");
 
     let url = this.api_url + "?";
     if (market) url += `&market=${market}`;
     if (additional_types) url += `&additional_types=${additional_types}`;
 
-    let result = await get(url, PlaybackState, this.info, true);
+    let result = await get_req(
+      url,
+      this.info.user_access_token,
+      PlaybackState,
+      this.info
+    );
+
     if (result.error && result.error.response === "No Content")
       return { error: new Error("Playback not available or active") };
     return result;
@@ -79,14 +83,12 @@ class Player {
     device_ids: string[],
     play?: boolean
   ): Promise<{ result?: string; error?: Error }> {
-    if (
-      !this.info.userInfo.access_token ||
-      !this.info.userInfo.access_token.length
-    )
+    if (!this.info.user_access_token || !this.info.user_access_token.length)
       throw new Error("User access token is required");
 
-    let data = await put(
+    let data = await put_req(
       this.api_url,
+      this.info.user_access_token,
       JSON.stringify({ device_ids, play }),
       this.info
     );
@@ -110,13 +112,15 @@ class Player {
     result?: SeveralDevicesType;
     error?: Error;
   }> {
-    if (
-      !this.info.userInfo.access_token ||
-      !this.info.userInfo.access_token.length
-    )
+    if (!this.info.user_access_token || !this.info.user_access_token.length)
       throw new Error("User access token is required");
 
-    return await get(this.api_url + "devices", SeveralDevices, this.info, true);
+    return await get_req(
+      this.api_url + "devices",
+      this.info.user_access_token,
+      SeveralDevices,
+      this.info
+    );
   }
 
   /**
@@ -144,17 +148,71 @@ class Player {
     market?: string,
     additional_types?: string
   ): Promise<{ result?: PlaybackStateType; error?: Error }> {
-    if (
-      !this.info.userInfo.access_token ||
-      !this.info.userInfo.access_token.length
-    )
+    if (!this.info.user_access_token || !this.info.user_access_token.length)
       throw new Error("User access token is required");
 
     let url = this.api_url + "currently-playing?";
     if (market) url += `&market=${market}`;
     if (additional_types) url += `&additional_types=${additional_types}`;
 
-    return await get(url, PlaybackState, this.info, true);
+    return await get_req(
+      url,
+      this.info.user_access_token,
+      PlaybackState,
+      this.info
+    );
+  }
+
+  /**
+   * Start/Resume Playback - https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback
+   * Start a new context or resume current playback on the user's active device.
+   * @param device_id
+   * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
+   * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
+   * @param context_uri
+   * Optional. Spotify URI of the context to play. Valid contexts are albums, artists & playlists.
+   * {context_uri:"spotify:album:1Je1IMUlBXcx1Fz0WE7oPT"}
+   * @param uris
+   * Optional. A JSON array of the Spotify track URIs to play.
+   * For example:{uris:["spotify:track:4iV5W9uYEdYUVa79Axb7Rh","spotify:track:1301WleyT98MSxVHPZCA6M"]}
+   * @param offset
+   * Optional. Indicates from where in the context playback should start. Only available when context_uri corresponds to an album or playlist object "position" is zero based and can’t be negative.
+   * Example: "offset": {"position": 5} "uri" is a string representing the uri of the item to start at. Example: "offset": {"uri": "spotify:track:1301WleyT98MSxVHPZCA6M"} supports free form additional properties
+   * @param position_ms
+   * Optional. Indicates from what position to start playback. Must be a positive number. Passing in a position that is greater than the length of the track will cause the player to start playing the next song.
+   * @Scopes Authorization scopes
+   * - user-modify-playback-state
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: Error;
+   * }>
+   */
+  async start_or_resume_playback({
+    device_id,
+    context_uri,
+    uris,
+    offset,
+    position_ms,
+  }: {
+    device_id?: string;
+    context_uri?: string;
+    uris?: string[];
+    offset?: offsetType;
+    position_ms?: number;
+  }): Promise<{ result?: string; error?: Error }> {
+    if (!this.info.user_access_token || !this.info.user_access_token.length)
+      throw new Error("User access token is required");
+
+    let url = `${this.api_url}play?device_id=${device_id}`;
+
+    let body = JSON.stringify({
+      context_uri,
+      uris,
+      offset,
+      position_ms,
+    });
+    return await put_req(url, this.info.user_access_token, body, this.info);
   }
 }
 

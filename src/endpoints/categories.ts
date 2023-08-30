@@ -5,7 +5,7 @@ import {
   SeveralCategories,
   SeveralCategoriesType,
 } from "../models/categories";
-import { get } from "../utils/utils";
+import { get_req } from "../utils/requests";
 
 class Categories {
   private info: InfoType;
@@ -56,7 +56,12 @@ class Categories {
     if (country) url += `&country=${country}`;
     if (locale) url += `&locale=${locale}`;
 
-    return await get(url, SeveralCategories, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      SeveralCategories,
+      this.info
+    );
   }
 
   /**
@@ -91,7 +96,12 @@ class Categories {
     if (country) url += `&country=${country}`;
     if (locale) url += `&locale=${locale}`;
 
-    return await get(url, CategoryItem, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      CategoryItem,
+      this.info
+    );
   }
 }
 

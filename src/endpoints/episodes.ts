@@ -8,7 +8,7 @@ import {
   SeveralEpisodes,
   SeveralEpisodesType,
 } from "../models/episodes";
-import { delete_method, get, put } from "../utils/utils";
+import { get_req, put_req, delete_req } from "../utils/requests";
 
 class Episodes {
   private info: InfoType;
@@ -43,16 +43,13 @@ class Episodes {
     id: string,
     market?: string
   ): Promise<{ result?: EpisodeType; error?: Error }> {
-    if (
-      !this.info.userInfo.access_token ||
-      this.info.userInfo.access_token === ""
-    )
+    if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.api_url}${id}`;
     if (market) url += "?market=" + market;
 
-    return await get(url, Episode, this.info, true);
+    return await get_req(url, this.info.user_access_token, Episode, this.info);
   }
 
   /**
@@ -79,16 +76,18 @@ class Episodes {
     ids: string[],
     market?: string
   ): Promise<{ result?: SeveralEpisodesType; error?: Error }> {
-    if (
-      !this.info.userInfo.access_token ||
-      this.info.userInfo.access_token === ""
-    )
+    if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.api_url}?ids=${ids.join(",")}`;
     if (market) url += "&market=" + market;
 
-    return await get(url, SeveralEpisodes, this.info, true);
+    return await get_req(
+      url,
+      this.info.user_access_token,
+      SeveralEpisodes,
+      this.info
+    );
   }
 
   /**
@@ -124,16 +123,18 @@ class Episodes {
     limit: number = 20,
     offset: number = 0
   ): Promise<{ result?: EpisodesType; error?: Error }> {
-    if (
-      !this.info.userInfo.access_token ||
-      this.info.userInfo.access_token === ""
-    )
+    if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/episodes?limit=${limit}&offset=${offset}`;
     if (markets) url += "&market=" + markets;
 
-    return await get(url, EpisodePages, this.info, true);
+    return await get_req(
+      url,
+      this.info.user_access_token,
+      EpisodePages,
+      this.info
+    );
   }
 
   /**
@@ -154,15 +155,17 @@ class Episodes {
   async save_episodes_for_current_user(
     ids: string[]
   ): Promise<{ result?: string; error?: Error }> {
-    if (
-      !this.info.userInfo.access_token ||
-      this.info.userInfo.access_token === ""
-    )
+    if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/episodes?ids=${ids.join(",")}`;
 
-    return await put(url, { ids }, this.info);
+    return await put_req(
+      url,
+      this.info.user_access_token,
+      JSON.stringify({ ids }),
+      this.info
+    );
   }
 
   /**
@@ -183,15 +186,12 @@ class Episodes {
   async remove_users_saved_episodes(
     ids: string[]
   ): Promise<{ result?: string; error?: Error }> {
-    if (
-      !this.info.userInfo.access_token ||
-      this.info.userInfo.access_token === ""
-    )
+    if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/episodes?ids=${ids.join(",")}`;
 
-    return await delete_method(url, { ids }, this.info);
+    return await delete_req(url, this.info.user_access_token, this.info);
   }
 
   /**
@@ -212,15 +212,17 @@ This API endpoint is in beta and could change without warning. Please share any 
   async check_users_saved_episodes(
     ids: string[]
   ): Promise<{ result?: boolean[]; error?: Error }> {
-    if (
-      !this.info.userInfo.access_token ||
-      this.info.userInfo.access_token === ""
-    )
+    if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/episodes/contains?ids=${ids.join(",")}`;
 
-    return await get(url, z.array(z.boolean()), this.info, true);
+    return await get_req(
+      url,
+      this.info.user_access_token,
+      z.array(z.boolean()),
+      this.info
+    );
   }
 }
 

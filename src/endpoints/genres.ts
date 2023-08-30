@@ -1,6 +1,6 @@
 import { InfoType } from "../client/client";
+import { get_req } from "../utils/requests";
 import { GenresObject, GenresType } from "../models/genres";
-import { get } from "../utils/utils";
 
 class Genres {
   private info: InfoType;
@@ -24,7 +24,12 @@ class Genres {
     result?: GenresType;
     error?: Error;
   }> {
-    return await get(this.api_url, GenresObject, this.info);
+    return await get_req(
+      this.api_url,
+      this.info.client_access_token,
+      GenresObject,
+      this.info
+    );
   }
 }
 

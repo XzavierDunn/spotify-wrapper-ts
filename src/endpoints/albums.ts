@@ -1,5 +1,4 @@
-import { delete_method, get, put } from "../utils/utils";
-import { InfoType } from "../client/client";
+import { z } from "zod";
 import {
   Album,
   AlbumType,
@@ -10,8 +9,9 @@ import {
   SimplifiedTracks,
   SimplifiedTracksType,
 } from "../models/tracks-simplified";
+import { InfoType } from "../client/client";
+import { get_req, put_req, delete_req } from "../utils/requests";
 import { UsersAlbums, UsersAlbumsType } from "../models/users-albums";
-import { z } from "zod";
 import { NewReleases, NewReleasesType } from "../models/albums-simplified";
 
 class Albums {
@@ -53,7 +53,7 @@ class Albums {
     let url = `${this.api_url}${id}`;
     if (market) url += `?market=${market}`;
 
-    return await get(url, Album, this.info);
+    return await get_req(url, this.info.client_access_token, Album, this.info);
   }
 
   /**
@@ -86,7 +86,12 @@ class Albums {
     let url = `${this.api_url}?ids=${ids.toString()}`;
     if (market) url += `&market=${market}`;
 
-    return await get(url, SeveralAlbums, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      SeveralAlbums,
+      this.info
+    );
   }
 
   /**
@@ -132,7 +137,12 @@ class Albums {
     let url = `${this.api_url}${id}/tracks?limit=${limit}&offset=${offset}`;
     if (market) url += `&market=${market}`;
 
-    return await get(url, SimplifiedTracks, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      SimplifiedTracks,
+      this.info
+    );
   }
 
   /**
@@ -172,16 +182,18 @@ class Albums {
     result?: UsersAlbumsType;
     error?: Error;
   }> {
-    if (
-      !this.info.userInfo.access_token ||
-      this.info.userInfo.access_token === ""
-    )
+    if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/albums?limit=${limit}&offset=${offset}`;
     if (market) url += `&market=${market}`;
 
-    return await get(url, UsersAlbums, this.info, true);
+    return await get_req(
+      url,
+      this.info.user_access_token,
+      UsersAlbums,
+      this.info
+    );
   }
 
   /**
@@ -206,14 +218,16 @@ class Albums {
     result?: string;
     error?: Error;
   }> {
-    if (
-      !this.info.userInfo.access_token ||
-      this.info.userInfo.access_token === ""
-    )
+    if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/albums?ids=${ids.toString()}`;
-    return await put(url, { ids }, this.info);
+    return await put_req(
+      url,
+      this.info.user_access_token,
+      JSON.stringify({ ids }),
+      this.info
+    );
   }
 
   /**
@@ -234,14 +248,11 @@ class Albums {
     result?: string;
     error?: Error;
   }> {
-    if (
-      !this.info.userInfo.access_token ||
-      this.info.userInfo.access_token === ""
-    )
+    if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/albums?ids=${ids.toString()}`;
-    return await delete_method(url, { ids }, this.info);
+    return await delete_req(url, this.info.user_access_token, this.info);
   }
 
   /**
@@ -262,14 +273,16 @@ class Albums {
     result?: boolean[];
     error?: Error;
   }> {
-    if (
-      !this.info.userInfo.access_token ||
-      this.info.userInfo.access_token === ""
-    )
+    if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/albums/contains?ids=${ids.toString()}`;
-    return await get(url, z.array(z.boolean()), this.info, true);
+    return await get_req(
+      url,
+      this.info.user_access_token,
+      z.array(z.boolean()),
+      this.info
+    );
   }
 
   /**
@@ -308,7 +321,12 @@ class Albums {
     let url = `${this.info.api_url}/browse/new-releases?limit=${limit}&offset=${offset}`;
     if (country) url += `&country=${country}`;
 
-    return await get(url, NewReleases, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      NewReleases,
+      this.info
+    );
   }
 }
 

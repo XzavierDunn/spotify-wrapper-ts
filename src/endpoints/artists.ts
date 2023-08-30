@@ -10,7 +10,7 @@ import {
   SeveralArtistsType,
 } from "../models/artists";
 import { Tracks, TracksType } from "../models/tracks";
-import { get } from "../utils/utils";
+import { get_req } from "../utils/requests";
 
 class Artists {
   private info: InfoType;
@@ -37,7 +37,12 @@ class Artists {
     result?: ArtistType;
     error?: Error;
   }> {
-    return await get(`${this.api_url}${id}`, Artist, this.info);
+    return await get_req(
+      `${this.api_url}${id}`,
+      this.info.client_access_token,
+      Artist,
+      this.info
+    );
   }
 
   /**
@@ -56,8 +61,9 @@ class Artists {
     result?: SeveralArtistsType;
     error?: Error;
   }> {
-    return await get(
+    return await get_req(
       `${this.api_url}?ids=${ids.toString()}`,
+      this.info.client_access_token,
       SeveralArtists,
       this.info
     );
@@ -118,7 +124,12 @@ class Artists {
     if (include_groups) url += `&include_groups=${include_groups}`;
     if (market) url += `&market=${market}`;
 
-    return await get(url, SeveralSimplifiedAlbums, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      SeveralSimplifiedAlbums,
+      this.info
+    );
   }
 
   /**
@@ -152,7 +163,7 @@ class Artists {
     let url: string = `${this.api_url}${id}/top-tracks`;
     if (market) url += `?market=${market}`;
 
-    return await get(url, Tracks, this.info);
+    return await get_req(url, this.info.client_access_token, Tracks, this.info);
   }
 
   /**
@@ -173,7 +184,12 @@ class Artists {
   }> {
     let url: string = `${this.api_url}${id}/related-artists`;
 
-    return await get(url, SeveralArtists, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      SeveralArtists,
+      this.info
+    );
   }
 }
 
