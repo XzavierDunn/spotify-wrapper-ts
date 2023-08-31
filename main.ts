@@ -17,29 +17,13 @@ let testing = async () => {
     client.add_user_info(user_credentials);
   }
 
-  // let devices = await client.player.get_available_devices();
-  // if (devices.result) {
-  //   console.log(devices.result.devices[0].name);
-  //   console.log(devices.result.devices[0].volume_percent);
-  // } else {
-  //   console.log(devices.error);
-  // }
-
-  // console.log(await client.player.pause_playback());
-  // console.log(await client.player.start_or_resume_playback({}));
-  // console.log(await client.player.skip_to_next());
-
-  const track = await client.episodes.get_episode("7zdc5hr5Noit79lKVrecyz");
-  if (track.result) {
-    console.log(track.result.name);
-    console.log(track.result.uri);
-    console.log(track.result.description);
-    console.log(track.result.show.name);
-    console.log(track.result.show.publisher);
-
-    console.log(
-      await client.player.add_item_to_playback_queue(track.result.uri)
-    );
+  const playlist = await client.playlists.get_playlist({
+    playlist_id: "37i9dQZF1DX8NMUtC3b3gL",
+  });
+  if (playlist.result) {
+    console.log(playlist.result);
+  } else {
+    console.log(playlist.error);
   }
 };
 

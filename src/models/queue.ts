@@ -52,4 +52,4 @@ const Queue = z.object({
 
 type QueueType = z.infer<typeof Queue>;
 
-export { Queue, QueueType };
+export { Queue, QueueType, QueueItem };
