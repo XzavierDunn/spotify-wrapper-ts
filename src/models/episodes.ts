@@ -75,6 +75,7 @@ type EpisodesType = z.infer<typeof EpisodePages>;
 type SeveralEpisodesType = z.infer<typeof SeveralEpisodes>;
 
 export {
+  Show,
   Episode,
   EpisodeType,
   SeveralEpisodes,
