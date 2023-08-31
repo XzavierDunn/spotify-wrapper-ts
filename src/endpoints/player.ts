@@ -41,7 +41,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async get_playback_state(
+  public async get_playback_state(
     market?: string,
     additional_types?: string
   ): Promise<{ result?: PlaybackStateType | string; error?: Error }> {
@@ -82,7 +82,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async transfer_playback(
+  public async transfer_playback(
     device_ids: string[],
     play?: boolean
   ): Promise<{ result?: string; error?: Error }> {
@@ -110,7 +110,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async get_available_devices(): Promise<{
+  public async get_available_devices(): Promise<{
     result?: SeveralDevicesType;
     error?: Error;
   }> {
@@ -146,7 +146,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async get_currently_playing_track(
+  public async get_currently_playing_track(
     market?: string,
     additional_types?: string
   ): Promise<{ result?: PlaybackStateType; error?: Error }> {
@@ -190,7 +190,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async start_or_resume_playback({
+  public async start_or_resume_playback({
     device_id,
     context_uri,
     uris,
@@ -232,7 +232,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async pause_playback(
+  public async pause_playback(
     device_id?: string
   ): Promise<{ result?: string; error?: Error }> {
     if (!this.info.user_access_token || !this.info.user_access_token.length)
@@ -258,7 +258,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async skip_to_next(
+  public async skip_to_next(
     device_id?: string
   ): Promise<{ result?: string; error?: Error }> {
     if (!this.info.user_access_token || !this.info.user_access_token.length)
@@ -284,7 +284,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async skip_to_previous(
+  public async skip_to_previous(
     device_id?: string
   ): Promise<{ result?: string; error?: Error }> {
     if (!this.info.user_access_token || !this.info.user_access_token.length)
@@ -313,7 +313,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async seek_to_position(
+  public async seek_to_position(
     position_ms: number,
     device_id?: string
   ): Promise<{ result?: string; error?: Error }> {
@@ -346,7 +346,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async set_repeat_mode(
+  public async set_repeat_mode(
     state: string,
     device_id?: string
   ): Promise<{ result?: string; error?: Error }> {
@@ -376,7 +376,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async set_playback_volume(
+  public async set_playback_volume(
     volume_percent: number,
     device_id?: string
   ): Promise<{ result?: string; error?: Error }> {
@@ -407,7 +407,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async toggle_playback_shuffle(
+  public async toggle_playback_shuffle(
     state: boolean,
     device_id?: string
   ): Promise<{ result?: string; error?: Error }> {
@@ -441,7 +441,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async get_recently_played_tracks({
+  public async get_recently_played_tracks({
     after,
     before,
     limit = 20,
@@ -478,7 +478,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async get_users_queue(): Promise<{
+  public async get_users_queue(): Promise<{
     result?: QueueType;
     error?: Error;
   }> {
@@ -507,7 +507,7 @@ class Player {
    * error?: Error;
    * }>
    */
-  async add_item_to_playback_queue(
+  public async add_item_to_playback_queue(
     uri: string,
     device_id?: string
   ): Promise<{

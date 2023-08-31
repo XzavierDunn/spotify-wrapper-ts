@@ -20,7 +20,7 @@ class Genres {
    * error?: Error;
    * }>
    */
-  async get_available_genre_seeds(): Promise<{
+  public async get_available_genre_seeds(): Promise<{
     result?: GenresType;
     error?: Error;
   }> {

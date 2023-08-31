@@ -42,7 +42,7 @@ class Audiobooks {
    * error?: Error;
    * }>
    */
-  async get_an_audiobook({
+  public async get_an_audiobook({
     id,
     market,
   }: {
@@ -79,7 +79,7 @@ class Audiobooks {
    * error?: Error;
    * }>
    */
-  async get_several_audiobooks({
+  public async get_several_audiobooks({
     ids,
     market,
   }: {
@@ -125,7 +125,7 @@ class Audiobooks {
    * error?: Error;
    * }>
    */
-  async get_audiobook_chapters({
+  public async get_audiobook_chapters({
     id,
     market,
     limit = 20,
@@ -167,7 +167,7 @@ class Audiobooks {
    * error?: Error;
    * }>
    */
-  async get_users_saved_audiobooks({
+  public async get_users_saved_audiobooks({
     limit = 20,
     offset = 0,
   }: {
@@ -200,7 +200,7 @@ class Audiobooks {
    * error?: Error;
    * }>
    */
-  async save_audiobooks_for_current_user(
+  public async save_audiobooks_for_current_user(
     ids: string[]
   ): Promise<{ result?: string; error?: Error }> {
     if (!this.info.user_access_token || this.info.user_access_token === "")
@@ -224,7 +224,7 @@ class Audiobooks {
    * error?: Error;
    * }>
    */
-  async remove_users_saved_audiobooks(
+  public async remove_users_saved_audiobooks(
     ids: string[]
   ): Promise<{ result?: string; error?: Error }> {
     if (!this.info.user_access_token || this.info.user_access_token === "")
@@ -248,7 +248,7 @@ class Audiobooks {
    * error?: Error;
    * }>
    */
-  async check_users_saved_audiobooks(
+  public async check_users_saved_audiobooks(
     ids: string[]
   ): Promise<{ result?: boolean[]; error?: Error }> {
     if (!this.info.user_access_token || this.info.user_access_token === "")

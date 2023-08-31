@@ -51,7 +51,7 @@ class Search {
    * error?: Error;
    * }>
    */
-  async search_for_item(
+  public async search_for_item(
     q: string,
     type: string[],
     market?: string,

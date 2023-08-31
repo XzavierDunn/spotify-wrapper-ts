@@ -35,7 +35,7 @@ class Chapters {
    * error?: Error;
    * }>
    */
-  async get_a_chapter(
+  public async get_a_chapter(
     id: string,
     market: string
   ): Promise<{ result?: ChapterType; error?: Error }> {
@@ -67,7 +67,7 @@ class Chapters {
    * error?: Error;
    * }>
    */
-  async get_several_chapters(
+  public async get_several_chapters(
     ids: string[],
     market: string
   ): Promise<{ result?: SeveralChaptersType; error?: Error }> {

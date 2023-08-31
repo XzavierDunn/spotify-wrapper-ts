@@ -41,7 +41,7 @@ class Categories {
    * error?: Error;
    * }>
    */
-  async get_several_browse_categories({
+  public async get_several_browse_categories({
     country,
     locale,
     limit = 20,
@@ -83,7 +83,7 @@ class Categories {
    * error?: Error;
    * }>
    */
-  async get_single_browse_category({
+  public async get_single_browse_category({
     category_id,
     country,
     locale,

@@ -39,7 +39,7 @@ class Episodes {
    * error?: Error;
    * }>
    */
-  async get_episode(
+  public async get_episode(
     id: string,
     market?: string
   ): Promise<{ result?: EpisodeType; error?: Error }> {
@@ -72,7 +72,7 @@ class Episodes {
    * error?: Error;
    * }>
    */
-  async get_several_episodes(
+  public async get_several_episodes(
     ids: string[],
     market?: string
   ): Promise<{ result?: SeveralEpisodesType; error?: Error }> {
@@ -118,7 +118,7 @@ class Episodes {
    * error?: Error;
    * }>
    */
-  async get_users_saved_episodes(
+  public async get_users_saved_episodes(
     markets?: string,
     limit: number = 20,
     offset: number = 0
@@ -152,7 +152,7 @@ class Episodes {
    * error?: Error;
    * }>
    */
-  async save_episodes_for_current_user(
+  public async save_episodes_for_current_user(
     ids: string[]
   ): Promise<{ result?: string; error?: Error }> {
     if (!this.info.user_access_token || this.info.user_access_token === "")
@@ -183,7 +183,7 @@ class Episodes {
    * error?: Error;
    * }>
    */
-  async remove_users_saved_episodes(
+  public async remove_users_saved_episodes(
     ids: string[]
   ): Promise<{ result?: string; error?: Error }> {
     if (!this.info.user_access_token || this.info.user_access_token === "")
@@ -209,7 +209,7 @@ This API endpoint is in beta and could change without warning. Please share any 
    * error?: Error;
    * }>
    */
-  async check_users_saved_episodes(
+  public async check_users_saved_episodes(
     ids: string[]
   ): Promise<{ result?: boolean[]; error?: Error }> {
     if (!this.info.user_access_token || this.info.user_access_token === "")

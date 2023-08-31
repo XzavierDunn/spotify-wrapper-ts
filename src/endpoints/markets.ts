@@ -20,7 +20,7 @@ class Markets {
    * error?: Error;
    * }>
    */
-  async get_available_markets(): Promise<{
+  public async get_available_markets(): Promise<{
     result?: MarketsType;
     error?: Error;
   }> {
