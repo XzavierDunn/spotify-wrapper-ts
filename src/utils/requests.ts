@@ -4,7 +4,7 @@ import { InfoType } from "../client/client";
 type FetchData = {
   url: string;
   token: string;
-  method: "GET" | "PUT" | "DELETE";
+  method: "GET" | "PUT" | "POST" | "DELETE";
   body: BodyInit | null | undefined;
 };
 
@@ -52,6 +52,13 @@ async function error_handler<T extends z.ZodType<any, any, any>>(
           return await get_req(fetchData.url, fetchData.token, object, info);
         case "PUT":
           return await put_req(
+            fetchData.url,
+            fetchData.token,
+            fetchData.body,
+            info
+          );
+        case "POST":
+          return await post_req(
             fetchData.url,
             fetchData.token,
             fetchData.body,
@@ -116,6 +123,20 @@ async function put_req(
   return { result: result.response };
 }
 
+async function post_req(
+  url: string,
+  token: string,
+  body: BodyInit | null | undefined,
+  info: InfoType
+): Promise<{ result?: string; error?: any }> {
+  let fetchData: FetchData = { url, method: "POST", body, token };
+  let result = await fetch_wrapper(fetchData);
+
+  if (result.status_code != 200)
+    return await error_handler(fetchData, result, info);
+  return { result: result.response };
+}
+
 async function delete_req(
   url: string,
   token: string,
@@ -129,4 +150,4 @@ async function delete_req(
   return { result: result.response };
 }
 
-export { get_req, put_req, delete_req };
+export { get_req, put_req, post_req, delete_req };

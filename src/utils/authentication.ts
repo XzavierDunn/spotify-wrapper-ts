@@ -38,7 +38,7 @@ async function request_user_authorization(
 ) {
   // RUN CONSOLE LOG TO GET CODE, THEN UPDATE CODE IN CONFIG.json
   // console.log(
-  //   `https://accounts.spotify.com/authorize?client_id=${credentials.client_id}&response_type=code&redirect_uri=${credentials.redirect_uri}&scope=user-library-read user-library-modify user-read-playback-position user-read-playback-state user-modify-playback-state user-read-currently-playing`
+  //   `https://accounts.spotify.com/authorize?client_id=${credentials.client_id}&response_type=code&redirect_uri=${credentials.redirect_uri}&scope=user-library-read user-library-modify user-read-playback-position user-read-playback-state user-modify-playback-state user-read-currently-playing user-read-recently-played`
   // );
   // throw new Error("bruh");
 
