@@ -7,7 +7,11 @@ import {
   SnapshotType,
 } from "../models/playlist";
 import { PlaylistTracks, PlaylistTracksType } from "../models/playlist-track";
-import { get_req, put_req } from "../utils/requests";
+import { delete_req, get_req, post_req, put_req } from "../utils/requests";
+import {
+  SeveralSimplifiedPlaylists,
+  SeveralSimplifiedPlaylistsType,
+} from "../models/playlists-simplified";
 
 class Playlists {
   private info: InfoType;
@@ -223,7 +227,7 @@ class Playlists {
    * - playlist-modify-private
    * @returns
    * Promise<{
-   * result?:;
+   * result?: SnapshotType;
    * error?: Error;
    * }>
    */
@@ -265,6 +269,295 @@ class Playlists {
       this.info,
       Snapshot
     );
+  }
+
+  /**
+   * Add Items to Playlist - https://developer.spotify.com/documentation/web-api/reference/add-tracks-to-playlist
+   * Add one or more items to a user's playlist.
+   * @param playlist_id
+   * The Spotify ID of the playlist.
+   * Example value: "3cEYpjA9oz9GiPac4AsH4n"
+   * @param uris
+   * A comma-separated list of Spotify URIs to set, can be track or episode URIs. For example: uris=spotify:track:4iV5W9uYEdYUVa79Axb7Rh,spotify:track:1301WleyT98MSxVHPZCA6M,spotify:episode:512ojhOuo1ktJprKbVcKyQ
+   * A maximum of 100 items can be set in one request.
+   * @param position
+   * The position to insert the items, a zero-based index. For example, to insert the items in the first position: position=0; to insert the items in the third position: position=2. If omitted, the items will be appended to the playlist. Items are added in the order they are listed in the query string or request body.
+   * Example value: 0
+   * @Scopes Authorization scopes
+   * - playlist-modify-public
+   * - playlist-modify-private
+   * @returns
+   * Promise<{
+   * result?: SnapshotType;
+   * error?: Error;
+   * }>
+   */
+  public async add_items_to_playlist({
+    playlist_id,
+    uris,
+    position,
+  }: {
+    playlist_id: string;
+    uris: string[];
+    position?: number;
+  }): Promise<{
+    result?: SnapshotType;
+    error?: Error;
+  }> {
+    if (!this.info.user_access_token || !this.info.user_access_token.length)
+      throw new Error("User access token is required");
+
+    let url = `${this.api_url}${playlist_id}/tracks`;
+
+    let body = JSON.stringify({
+      uris,
+      position,
+    });
+
+    return await post_req(
+      url,
+      this.info.user_access_token,
+      body,
+      this.info,
+      Snapshot
+    );
+  }
+
+  /**
+   * Remove Playlist Items - https://developer.spotify.com/documentation/web-api/reference/remove-tracks-playlist
+   * Remove one or more items from a user's playlist.
+   * @param playlist_id
+   * The Spotify ID of the playlist.
+   * Example value: "3cEYpjA9oz9GiPac4AsH4n"
+   * @param tracks
+   * An array of objects containing Spotify URIs of the tracks or episodes to remove. For example: { "tracks": [{ "uri": "spotify:track:4iV5W9uYEdYUVa79Axb7Rh" },{ "uri": "spotify:track:1301WleyT98MSxVHPZCA6M" }] }. A maximum of 100 objects can be sent at once.
+   * @param snapshot
+   * The playlist's snapshot ID against which you want to make the changes. The API will validate that the specified items exist and in the specified positions and make the changes, even if more recent changes have been made to the playlist.
+   * @Scopes Authorization scopes
+   * - playlist-modify-public
+   * - playlist-modify-private
+   * @returns
+   * Promise<{
+   * result?: SnapshotType;
+   * error?: Error;
+   * }>
+   */
+  public async remove_playlist_items({
+    playlist_id,
+    tracks,
+    snapshot,
+  }: {
+    playlist_id: string;
+    tracks: { uri: string }[];
+    snapshot?: string;
+  }): Promise<{
+    result?: SnapshotType;
+    error?: Error;
+  }> {
+    if (!this.info.user_access_token || !this.info.user_access_token.length)
+      throw new Error("User access token is required");
+
+    let url = `${this.api_url}${playlist_id}/tracks`;
+
+    let body = JSON.stringify({
+      tracks,
+      snapshot,
+    });
+
+    return await delete_req(
+      url,
+      this.info.user_access_token,
+      this.info,
+      body,
+      Snapshot
+    );
+  }
+
+  /**
+   * Get Current User's Playlists - https://developer.spotify.com/documentation/web-api/reference/get-a-list-of-current-users-playlists
+   * Get a list of the playlists owned or followed by the current Spotify user.
+   * @param limit
+   * The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.
+   * Example value: 10
+   * Default value: 20
+   * Range: 0 - 50
+   * @param offset
+   * 'The index of the first playlist to return. Default: 0 (the first object). Maximum offset: 100.000. Use with limit to get the next set of playlists.'
+   * Example value: 5
+   * Default value: 0
+   * @Scopes Authorization scopes
+   * - playlist-read-private
+   * @returns
+   * Promise<{
+   * result?: SeveralSimplifiedPlaylistsType;
+   * error?: Error;
+   * }>
+   */
+  public async get_current_users_playlists({
+    limit,
+    offset,
+  }: {
+    limit?: number;
+    offset?: number;
+  }): Promise<{
+    result?: SeveralSimplifiedPlaylistsType;
+    error?: Error;
+  }> {
+    if (!this.info.user_access_token || !this.info.user_access_token.length)
+      throw new Error("User access token is required");
+
+    let url = `${this.info.api_url}/me/playlists?`;
+    if (limit) url += `&limit=${limit}`;
+    if (offset) url += `&offset=${offset}`;
+
+    return await get_req(
+      url,
+      this.info.user_access_token,
+      SeveralSimplifiedPlaylists,
+      this.info
+    );
+  }
+
+  /**
+   * Get User's Playlists - https://developer.spotify.com/documentation/web-api/reference/get-list-users-playlists
+   * Get a list of the playlists owned or followed by a Spotify user.
+   * @param user_id
+   * The user's Spotify user ID.
+   * Example value: "smedjan"
+   * @param limit
+   * The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.
+   * Example value: 10
+   * Default value: 20
+   * Range: 0 - 50
+   * @param offset
+   * 'The index of the first playlist to return. Default: 0 (the first object). Maximum offset: 100.000. Use with limit to get the next set of playlists.'
+   * Example value: 5
+   * Default value: 0
+   * @Scopes Authorization scopes
+   * - playlist-read-private
+   * - playlist-read-collaborative
+   * @returns
+   * Promise<{
+   * result?: SeveralSimplifiedPlaylistsType;
+   * error?: Error;
+   * }>
+   */
+  public async get_users_playlists({
+    user_id,
+    limit,
+    offset,
+  }: {
+    user_id: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<{
+    result?: SeveralSimplifiedPlaylistsType;
+    error?: Error;
+  }> {
+    if (!this.info.user_access_token || !this.info.user_access_token.length)
+      throw new Error("User access token is required");
+
+    let url = `${this.info.api_url}/users/${user_id}/playlists?`;
+    if (limit) url += `&limit=${limit}`;
+    if (offset) url += `&offset=${offset}`;
+
+    return await get_req(
+      url,
+      this.info.user_access_token,
+      SeveralSimplifiedPlaylists,
+      this.info
+    );
+  }
+
+  /**
+   * Create Playlist - https://developer.spotify.com/documentation/web-api/reference/create-playlist
+   * Create a playlist for a Spotify user. (The playlist will be empty until you add tracks.)
+   * @param user_id
+   * The user's Spotify user ID.
+   * Example value: "smedjan"
+   * @param name
+   * The name for the new playlist, for example "Your Coolest Playlist". This name does not need to be unique; a user may have several playlists with the same name.
+   * @param public
+   * Defaults to true. If true the playlist will be public, if false it will be private. To be able to create private playlists, the user must have granted the playlist-modify-private scope
+   * @param collaborative
+   * Defaults to false. If true the playlist will be collaborative. Note: to create a collaborative playlist you must also set public to false. To create collaborative playlists you must have granted playlist-modify-private and playlist-modify-public scopes.
+   * @param description
+   * value for playlist description as displayed in Spotify Clients and in the Web API.
+   * @Scopes Authorization scopes
+   * - playlist-modify-public
+   * - playlist-modify-private
+   * @returns
+   * Promise<{
+   * result?: PlaylistType;
+   * error?: Error;
+   * }>
+   */
+  public async create_playlist({
+    user_id,
+    name,
+    public_playlist,
+    collaborative,
+    description,
+  }: {
+    user_id: string;
+    name: string;
+    public_playlist?: boolean;
+    collaborative?: boolean;
+    description?: string;
+  }): Promise<{
+    result?: PlaylistType;
+    error?: Error;
+  }> {
+    if (!this.info.user_access_token || !this.info.user_access_token.length)
+      throw new Error("User access token is required");
+
+    let url = `${this.info.api_url}/users/${user_id}/playlists?`;
+
+    let body = JSON.stringify({
+      name,
+      public: public_playlist,
+      collaborative,
+      description,
+    });
+
+    return await post_req(
+      url,
+      this.info.user_access_token,
+      body,
+      this.info,
+      Playlist
+    );
+  }
+
+  /**
+   * Get Featured Playlists - https://developer.spotify.com/documentation/web-api/reference/get-featured-playlists
+   * Get a list of Spotify featured playlists (shown, for example, on a Spotify player's 'Browse' tab).
+   * @param
+   * @returns
+   * Promise<{
+   * result?:;
+   * error?: Error;
+   * }>
+   */
+  public async get_featured_playlists({
+    user_id,
+    name,
+    public_playlist,
+    collaborative,
+    description,
+  }: {
+    user_id: string;
+    name: string;
+    public_playlist?: boolean;
+    collaborative?: boolean;
+    description?: string;
+  }): Promise<{
+    result?: PlaylistType;
+    error?: Error;
+  }> {
+    let url = `${this.info.api_url}/browse/featured-playlists?`;
+
+    return await get_req(url, this.info.client_access_token, {}, this.info);
   }
 }
 

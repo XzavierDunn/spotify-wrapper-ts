@@ -37,4 +37,8 @@ const SeveralSimplifiedPlaylists = z.object({
   items: z.array(SimplifiedPlaylist).optional(),
 });
 
-export { SeveralSimplifiedPlaylists };
+type SeveralSimplifiedPlaylistsType = z.infer<
+  typeof SeveralSimplifiedPlaylists
+>;
+
+export { SeveralSimplifiedPlaylists, SeveralSimplifiedPlaylistsType };
