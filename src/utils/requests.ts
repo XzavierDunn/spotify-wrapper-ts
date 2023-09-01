@@ -109,17 +109,20 @@ async function get_req<T extends z.ZodType<any, any, any>>(
   return { result: object.parse(result.response) };
 }
 
-async function put_req(
+async function put_req<T extends z.ZodType<any, any, any>>(
   url: string,
   token: string,
   body: BodyInit | null | undefined,
-  info: InfoType
-): Promise<{ result?: string; error?: any }> {
+  info: InfoType,
+  object?: z.infer<T>
+): Promise<{ result?: z.TypeOf<T> | string; error?: any }> {
   let fetchData: FetchData = { url, method: "PUT", body, token };
   let result = await fetch_wrapper(fetchData);
 
-  if (result.status_code != 200)
+  if (result.status_code != 200 && result.status_code != 201)
     return await error_handler(fetchData, result, info);
+
+  if (object) return { result: object.parse(result.response) };
   return { result: result.response };
 }
 
