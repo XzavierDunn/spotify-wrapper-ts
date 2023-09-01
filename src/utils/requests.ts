@@ -36,6 +36,12 @@ async function error_handler<T extends z.ZodType<any, any, any>>(
         fetchData.token = info.client_access_token;
         recovered = true;
       }
+    } else if (status_code === 403) {
+      if (error_message === "This request requires user authentication.") {
+        await info.refresh_user_token_function();
+        fetchData.token = info.user_access_token;
+        recovered = true;
+      }
     } else if (status_code === 404) {
       if (error_message === "Invalid username") {
         await info.refresh_user_token_function();
@@ -78,6 +84,7 @@ async function error_handler<T extends z.ZodType<any, any, any>>(
 async function fetch_wrapper(input: FetchData) {
   let data = await fetch(input.url, {
     headers: {
+      "Content-Type": "application/json",
       Authorization: `Bearer ${input.token}`,
     },
     body: input.body,
@@ -126,30 +133,37 @@ async function put_req<T extends z.ZodType<any, any, any>>(
   return { result: result.response };
 }
 
-async function post_req(
+async function post_req<T extends z.ZodType<any, any, any>>(
   url: string,
   token: string,
   body: BodyInit | null | undefined,
-  info: InfoType
-): Promise<{ result?: string; error?: any }> {
+  info: InfoType,
+  object?: z.infer<T>
+): Promise<{ result?: z.TypeOf<T> | string; error?: any }> {
   let fetchData: FetchData = { url, method: "POST", body, token };
   let result = await fetch_wrapper(fetchData);
 
-  if (result.status_code != 200)
+  if (result.status_code != 200 && result.status_code != 201)
     return await error_handler(fetchData, result, info);
+
+  if (object) return { result: object.parse(result.response) };
   return { result: result.response };
 }
 
-async function delete_req(
+async function delete_req<T extends z.ZodType<any, any, any>>(
   url: string,
   token: string,
-  info: InfoType
-): Promise<{ result?: string; error?: any }> {
-  let fetchData: FetchData = { url, method: "DELETE", body: null, token };
+  info: InfoType,
+  body?: BodyInit | null | undefined,
+  object?: z.infer<T>
+): Promise<{ result?: z.TypeOf<T> | string; error?: any }> {
+  let fetchData: FetchData = { url, method: "DELETE", body: body, token };
   let result = await fetch_wrapper(fetchData);
 
-  if (result.status_code != 200)
+  if (result.status_code != 200 && result.status_code != 201)
     return await error_handler(fetchData, result, info);
+
+  if (object) return { result: object.parse(result.response) };
   return { result: result.response };
 }
 
