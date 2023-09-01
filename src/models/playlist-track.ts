@@ -12,9 +12,9 @@ const added_by = z.object({
 });
 
 const PlaylistTrackObject = z.object({
-  added_at: z.string(),
-  added_by: added_by,
-  is_local: z.boolean(),
+  added_at: z.string().optional(),
+  added_by: added_by.optional(),
+  is_local: z.boolean().optional(),
   track: QueueItem,
 });
 

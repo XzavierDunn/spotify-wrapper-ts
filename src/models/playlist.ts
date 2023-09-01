@@ -2,6 +2,8 @@ import { z } from "zod";
 import { ExternalUrls, Followers, Images } from "./shared";
 import { PlaylistTracks } from "./playlist-track";
 
+const Snapshot = z.object({ snapshot_id: z.string() });
+
 const Owner = z.object({
   external_urls: ExternalUrls,
   followers: Followers.optional(),
@@ -29,6 +31,7 @@ const Playlist = z.object({
   uri: z.string(),
 });
 
+type SnapshotType = z.infer<typeof Snapshot>;
 type PlaylistType = z.infer<typeof Playlist>;
 
-export { Playlist, PlaylistType };
+export { Playlist, PlaylistType, Snapshot, SnapshotType };

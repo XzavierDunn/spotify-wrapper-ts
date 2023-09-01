@@ -2,16 +2,16 @@ import { z } from "zod";
 import { ExternalUrls, Followers, Images } from "./shared";
 
 const Artist = z.object({
-  external_urls: ExternalUrls,
+  external_urls: ExternalUrls.optional(),
   followers: Followers.optional(),
   genres: z.array(z.string()).optional(),
-  href: z.string(),
-  id: z.string(),
+  href: z.string().optional(),
+  id: z.string().optional(),
   images: z.array(Images).optional(),
-  name: z.string(),
+  name: z.string().optional(),
   popularity: z.number().optional(),
-  type: z.string(),
-  uri: z.string(),
+  type: z.string().optional(),
+  uri: z.string().optional(),
 });
 
 const SeveralArtists = z.object({
