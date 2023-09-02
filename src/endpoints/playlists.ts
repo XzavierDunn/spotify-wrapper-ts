@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { InfoType } from "../client/client";
 import {
+  PagedPlaylists,
+  PagedPlaylistsType,
   Playlist,
   PlaylistType,
   Snapshot,
@@ -12,6 +14,7 @@ import {
   SeveralSimplifiedPlaylists,
   SeveralSimplifiedPlaylistsType,
 } from "../models/playlists-simplified";
+import { Images, SetOfImages, SetOfImagesType } from "../models/shared";
 
 class Playlists {
   private info: InfoType;
@@ -532,32 +535,171 @@ class Playlists {
   /**
    * Get Featured Playlists - https://developer.spotify.com/documentation/web-api/reference/get-featured-playlists
    * Get a list of Spotify featured playlists (shown, for example, on a Spotify player's 'Browse' tab).
-   * @param
+   * @param country
+   * A country: an ISO 3166-1 alpha-2 country code. Provide this parameter if you want the list of returned items to be relevant to a particular country. If omitted, the returned items will be relevant to all countries.
+   * Example value: "SE"
+   * @param locale
+   * The desired language, consisting of a lowercase ISO 639-1 language code and an uppercase ISO 3166-1 alpha-2 country code, joined by an underscore. For example: es_MX, meaning "Spanish (Mexico)". Provide this parameter if you want the results returned in a particular language (where available).
+   * Note: if locale is not supplied, or if the specified language is not available, all strings will be returned in the Spotify default language (American English). The locale parameter, combined with the country parameter, may give odd results if not carefully matched. For example country=SE&locale=de_DE will return a list of categories relevant to Sweden but as German language strings.
+   * Example value: "sv_SE"
+   * @param timestamp
+   * A timestamp in ISO 8601 format: yyyy-MM-ddTHH:mm:ss. Use this parameter to specify the user's local time to get results tailored for that specific date and time in the day. If not provided, the response defaults to the current UTC time. Example: "2014-10-23T09:00:00" for a user whose local time is 9AM. If there were no featured playlists (or there is no data) at the specified time, the response will revert to the current UTC time.
+   * Example value: "2014-10-23T09:00:00"
+   * @param limit
+   * The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.
+   * Example value: 10
+   * Default value: 20
+   * Range: 0 - 50
+   * @param offset
+   * The index of the first item to return. Default: 0 (the first item). Use with limit to get the next set of items.
+   * Example value: 5
+   * Default value: 0
    * @returns
    * Promise<{
-   * result?:;
+   * result?: PagedPlaylistsType;
    * error?: Error;
    * }>
    */
   public async get_featured_playlists({
-    user_id,
-    name,
-    public_playlist,
-    collaborative,
-    description,
+    country,
+    locale,
+    timestamp,
+    limit = 20,
+    offset = 0,
   }: {
-    user_id: string;
-    name: string;
-    public_playlist?: boolean;
-    collaborative?: boolean;
-    description?: string;
+    country?: string;
+    locale?: string;
+    timestamp?: string;
+    limit?: number;
+    offset?: number;
   }): Promise<{
-    result?: PlaylistType;
+    result?: PagedPlaylistsType;
     error?: Error;
   }> {
-    let url = `${this.info.api_url}/browse/featured-playlists?`;
+    let url = `${this.info.api_url}/browse/featured-playlists?limit=${limit}&offset=${offset}`;
+    if (country) url += `&country=${country}`;
+    if (locale) url += `&locale=${locale}`;
+    if (timestamp) url += `&timestamp=${timestamp}`;
 
-    return await get_req(url, this.info.client_access_token, {}, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      PagedPlaylists,
+      this.info
+    );
+  }
+
+  /**
+   * Get Category's Playlists - https://developer.spotify.com/documentation/web-api/reference/get-a-categories-playlists
+   * Get a list of Spotify playlists tagged with a particular category.
+   * @param category_id
+   * The Spotify category ID for the category.
+   * Example value: "dinner"
+   * @param country
+   * A country: an ISO 3166-1 alpha-2 country code. Provide this parameter if you want the list of returned items to be relevant to a particular country. If omitted, the returned items will be relevant to all countries.
+   * Example value: "SE"
+   * @param limit
+   * The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.
+   * Example value: 10
+   * Default value: 20
+   * Range: 0 - 50
+   * @param offset
+   * The index of the first item to return. Default: 0 (the first item). Use with limit to get the next set of items.
+   * Example value: 5
+   * Default value: 0
+   * @returns
+   * Promise<{
+   * result?: PagedPlaylistsType;
+   * error?: Error;
+   * }>
+   */
+  public async get_categorys_playlists({
+    category_id,
+    country,
+    limit = 20,
+    offset = 0,
+  }: {
+    category_id: string;
+    country?: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<{
+    result?: PagedPlaylistsType;
+    error?: Error;
+  }> {
+    let url = `${this.info.api_url}/browse/categories/${category_id}/playlists?limit=${limit}&offset=${offset}`;
+    if (country) url += `&country=${country}`;
+
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      PagedPlaylists,
+      this.info
+    );
+  }
+
+  /**
+   * Get Playlist Cover Image - https://developer.spotify.com/documentation/web-api/reference/get-playlist-cover
+   * Get the current image associated with a specific playlist.
+   * @param playlist_id
+   * The Spotify ID of the playlist.
+   * Example value: "3cEYpjA9oz9GiPac4AsH4n"
+   * @returns
+   * Promise<{
+   * result?: SetOfImagesType;
+   * error?: Error;
+   * }>
+   */
+  public async get_playlist_cover_image({
+    playlist_id,
+  }: {
+    playlist_id: string;
+  }): Promise<{
+    result?: SetOfImagesType;
+    error?: Error;
+  }> {
+    let url = `${this.api_url}${playlist_id}/images`;
+
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      SetOfImages,
+      this.info
+    );
+  }
+
+  /**
+   * Add Custom Playlist Cover Image - https://developer.spotify.com/documentation/web-api/reference/upload-custom-playlist-cover
+   * Replace the image used to represent a specific playlist.
+   * @param playlist_id
+   * The Spotify ID of the playlist.
+   * Example value: "3cEYpjA9oz9GiPac4AsH4n"
+   * @param image
+   * Base64 encoded JPEG image data, maximum payload size is 256 KB.
+   * Example value: "/9j/2wCEABoZGSccJz4lJT5CLy8vQkc9Ozs9R0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0cBHCcnMyYzPSYmPUc9Mj1HR0dEREdHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR0dHR//dAAQAAf/uAA5BZG9iZQBkwAAAAAH/wAARCAABAAEDACIAAREBAhEB/8QASwABAQAAAAAAAAAAAAAAAAAAAAYBAQAAAAAAAAAAAAAAAAAAAAAQAQAAAAAAAAAAAAAAAAAAAAARAQAAAAAAAAAAAAAAAAAAAAD/2gAMAwAAARECEQA/AJgAH//Z"
+   * @Scopes Authorization scopes
+   * - ugc-image-upload
+   * - playlist-modify-public
+   * - playlist-modify-private
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: Error;
+   * }>
+   */
+  public async add_custom_playlist_cover_image({
+    playlist_id,
+    image,
+  }: {
+    playlist_id: string;
+    image: string;
+  }): Promise<{
+    result?: string;
+    error?: Error;
+  }> {
+    let url = `${this.api_url}${playlist_id}/images`;
+
+    return await put_req(url, this.info.user_access_token, image, this.info);
   }
 }
 

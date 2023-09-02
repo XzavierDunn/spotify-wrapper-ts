@@ -21,6 +21,9 @@ const Images = z.object({
   url: z.string().nullable(),
 });
 
+const SetOfImages = z.array(Images);
+type SetOfImagesType = z.infer<typeof SetOfImages>;
+
 const Restrictions = z.object({
   reason: z.string(),
 });
@@ -58,4 +61,6 @@ export {
   authors,
   narrators,
   Resume_Point,
+  SetOfImages,
+  SetOfImagesType,
 };

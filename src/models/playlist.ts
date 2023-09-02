@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { ExternalUrls, Followers, Images } from "./shared";
 import { PlaylistTracks } from "./playlist-track";
+import { SeveralSimplifiedPlaylists } from "./playlists-simplified";
 
 const Snapshot = z.object({ snapshot_id: z.string() });
 
@@ -31,7 +32,20 @@ const Playlist = z.object({
   uri: z.string(),
 });
 
+const PagedPlaylists = z.object({
+  message: z.string().optional().nullable(),
+  playlists: SeveralSimplifiedPlaylists,
+});
+
 type SnapshotType = z.infer<typeof Snapshot>;
 type PlaylistType = z.infer<typeof Playlist>;
+type PagedPlaylistsType = z.infer<typeof PagedPlaylists>;
 
-export { Playlist, PlaylistType, Snapshot, SnapshotType };
+export {
+  Playlist,
+  PlaylistType,
+  Snapshot,
+  SnapshotType,
+  PagedPlaylists,
+  PagedPlaylistsType,
+};
