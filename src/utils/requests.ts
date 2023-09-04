@@ -43,7 +43,10 @@ async function error_handler<T extends z.ZodType<any, any, any>>(
         recovered = true;
       }
     } else if (status_code === 404) {
-      if (error_message === "Invalid username") {
+      if (
+        error_message === "Invalid username" ||
+        error_message === "non existing id"
+      ) {
         await info.refresh_user_token_function();
         fetchData.token = info.user_access_token;
         recovered = true;
