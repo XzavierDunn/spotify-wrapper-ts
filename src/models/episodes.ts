@@ -1,31 +1,7 @@
 import { z } from "zod";
-import {
-  Copyrights,
-  ExternalUrls,
-  Images,
-  Restrictions,
-  Resume_Point,
-} from "./shared";
-
-const Show = z.object({
-  available_markets: z.array(z.string()),
-  copyrights: z.array(Copyrights),
-  description: z.string(),
-  html_description: z.string(),
-  explicit: z.boolean(),
-  external_urls: ExternalUrls,
-  href: z.string(),
-  id: z.string(),
-  images: z.array(Images),
-  is_externally_hosted: z.boolean(),
-  languages: z.array(z.string()),
-  media_type: z.string(),
-  name: z.string(),
-  publisher: z.string(),
-  type: z.string(),
-  uri: z.string(),
-  total_episodes: z.number(),
-});
+import { ExternalUrls, Images, Restrictions, Resume_Point } from "./shared";
+import { SimplifiedShow } from "./shows-simplified";
+import { SimplifiedEpisode } from "./episodes-simplified";
 
 const Episode = z.object({
   audio_preview_url: z.string(),
@@ -48,7 +24,7 @@ const Episode = z.object({
   type: z.string(),
   uri: z.string(),
   restrictions: Restrictions.optional(),
-  show: Show,
+  show: SimplifiedShow,
 });
 
 const SavedEpisode = z.object({
@@ -66,6 +42,16 @@ const EpisodePages = z.object({
   items: z.array(SavedEpisode),
 });
 
+const PagesofEpisodes = z.object({
+  href: z.string(),
+  limit: z.number(),
+  next: z.string().optional().nullable(),
+  offset: z.number(),
+  previous: z.string().optional().nullable(),
+  total: z.number(),
+  items: z.array(SimplifiedEpisode),
+});
+
 const SeveralEpisodes = z.object({
   episodes: z.array(Episode),
 });
@@ -73,13 +59,15 @@ const SeveralEpisodes = z.object({
 type EpisodeType = z.infer<typeof Episode>;
 type EpisodesType = z.infer<typeof EpisodePages>;
 type SeveralEpisodesType = z.infer<typeof SeveralEpisodes>;
+type PagesofEpisodesType = z.infer<typeof PagesofEpisodes>;
 
 export {
-  Show,
   Episode,
   EpisodeType,
   SeveralEpisodes,
   SeveralEpisodesType,
   EpisodePages,
   EpisodesType,
+  PagesofEpisodes,
+  PagesofEpisodesType,
 };

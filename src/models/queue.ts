@@ -9,7 +9,7 @@ import {
   Restrictions,
   Resume_Point,
 } from "./shared";
-import { Show } from "./episodes";
+import { SimplifiedShow } from "./shows-simplified";
 
 const QueueItem = z.object({
   album: SimplifiedAlbum.optional(),
@@ -42,7 +42,7 @@ const QueueItem = z.object({
   release_date: z.string().optional(),
   release_date_precision: z.string().optional(),
   resume_point: Resume_Point.optional(),
-  show: Show.optional(),
+  show: SimplifiedShow.optional(),
 });
 
 const Queue = z.object({

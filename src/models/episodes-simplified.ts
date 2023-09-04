@@ -34,4 +34,4 @@ const SeveralSimplifiedEpisode = z.object({
   items: z.array(SimplifiedEpisode),
 });
 
-export { SeveralSimplifiedEpisode };
+export { SimplifiedEpisode, SeveralSimplifiedEpisode };

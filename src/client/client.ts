@@ -16,6 +16,7 @@ import {
 } from "../utils/authentication";
 import { writeFileSync } from "fs";
 import { Playlists } from "../endpoints/playlists";
+import { Shows } from "../endpoints/shows";
 
 const Credentials = z.object({
   client_id: z.string(),
@@ -56,6 +57,7 @@ class Client {
     refresh_user_token_function: this.refresh_user_token.bind(this),
   };
 
+  public shows: Shows;
   public albums: Albums;
   public genres: Genres;
   public search: Search;
@@ -73,6 +75,7 @@ class Client {
     this.ClientInfo = clientInfo;
     this.info.client_access_token = clientInfo.access_token!;
 
+    this.shows = new Shows(this.info);
     this.albums = new Albums(this.info);
     this.genres = new Genres(this.info);
     this.search = new Search(this.info);

@@ -1,7 +1,9 @@
 import { z } from "zod";
 import { Copyrights, ExternalUrls, Images } from "./shared";
+import { SeveralSimplifiedEpisode } from "./episodes-simplified";
+import { SimplifiedShow } from "./shows-simplified";
 
-const SimplifiedShow = z.object({
+const Show = z.object({
   available_markets: z.array(z.string()),
   copyrights: z.array(Copyrights),
   description: z.string(),
@@ -19,27 +21,25 @@ const SimplifiedShow = z.object({
   type: z.literal("show"),
   uri: z.string(),
   total_episodes: z.number(),
+  episodes: SeveralSimplifiedEpisode,
 });
 
-const SeveralSimplifiedShows = z.object({
+const SavedShowObject = z.object({
+  added_at: z.string(),
+  show: SimplifiedShow,
+});
+
+const PagesofShows = z.object({
   href: z.string(),
   limit: z.number(),
   next: z.string().nullable(),
   offset: z.number(),
   previous: z.string().nullable(),
   total: z.number(),
-  items: z.array(SimplifiedShow).nullable().optional(),
+  items: z.array(SavedShowObject).nullable().optional(),
 });
 
-const SetofSimplifiedShows = z.object({
-  shows: z.array(SimplifiedShow.nullable()),
-});
+type ShowType = z.infer<typeof Show>;
+type PagesofShowsType = z.infer<typeof PagesofShows>;
 
-type SetofSimplifiedShowsType = z.infer<typeof SetofSimplifiedShows>;
-
-export {
-  SimplifiedShow,
-  SeveralSimplifiedShows,
-  SetofSimplifiedShows,
-  SetofSimplifiedShowsType,
-};
+export { Show, ShowType, PagesofShows, PagesofShowsType };
