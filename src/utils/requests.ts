@@ -35,6 +35,10 @@ async function error_handler<T extends z.ZodType<any, any, any>>(
         await info.refresh_token_function();
         fetchData.token = info.client_access_token;
         recovered = true;
+      } else if (error_message === "Missing token") {
+        await info.refresh_user_token_function();
+        fetchData.token = info.user_access_token;
+        recovered = true;
       }
     } else if (status_code === 403) {
       if (error_message === "This request requires user authentication.") {

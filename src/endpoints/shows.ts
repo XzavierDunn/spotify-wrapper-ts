@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { InfoType } from "../client/client";
 import { PagesofEpisodes, PagesofEpisodesType } from "../models/episodes";
 import { PagesofShows, PagesofShowsType, Show } from "../models/shows";
@@ -6,7 +7,7 @@ import {
   SetofSimplifiedShows,
   SetofSimplifiedShowsType,
 } from "../models/shows-simplified";
-import { get_req } from "../utils/requests";
+import { delete_req, get_req, put_req } from "../utils/requests";
 
 class Shows {
   private info: InfoType;
@@ -155,6 +156,85 @@ class Shows {
       url,
       this.info.user_access_token,
       PagesofShows,
+      this.info
+    );
+  }
+
+  /**
+   * Save Shows for Current User - https://developer.spotify.com/documentation/web-api/reference/save-shows-user
+   * Save one or more shows to current Spotify user's library.
+   * @param ids
+   * A comma-separated list of the Spotify IDs for the shows. Maximum: 50 IDs.
+   * Example value: "5CfCWKI5pZ28U0uOzXkDHe,5as3aKmN2k11yfDDDSrvaZ"
+   * @scopes Authorization scopes
+   * - user-library-modify
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: Error;
+   * }>
+   */
+  public async save_shows_for_current_user(
+    ids: string[]
+  ): Promise<{ result?: string; error?: Error }> {
+    let url = `${this.info.api_url}/me/shows?ids=${ids.join(",")}`;
+
+    return await put_req(url, this.info.user_access_token, null, this.info);
+  }
+
+  /**
+   * Remove User's Saved Shows - https://developer.spotify.com/documentation/web-api/reference/remove-shows-user
+   * Delete one or more shows from current Spotify user's library.
+   * @param ids
+   * A comma-separated list of the Spotify IDs for the shows. Maximum: 50 IDs.
+   * Example value: "5CfCWKI5pZ28U0uOzXkDHe,5as3aKmN2k11yfDDDSrvaZ"
+   * @param market
+   * An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.
+   * If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.
+   * Note: If neither market or user country are provided, the content is considered unavailable for the client.
+   * Users can view the country that is associated with their account in the account settings.
+   * Example value: "ES"
+   * @scopes Authorization scopes
+   * - user-library-modify
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: Error;
+   * }>
+   */
+  public async remove_users_saved_shows(
+    ids: string[],
+    market?: string
+  ): Promise<{ result?: string; error?: Error }> {
+    let url = `${this.info.api_url}/me/shows?ids=${ids.join(",")}`;
+    if (market) url += `&market=${market}`;
+
+    return await delete_req(url, this.info.user_access_token, this.info);
+  }
+
+  /**
+   * Check User's Saved Shows - https://developer.spotify.com/documentation/web-api/reference/check-users-saved-shows
+   * Check if one or more shows is already saved in the current Spotify user's library.
+   * @param ids
+   * A comma-separated list of the Spotify IDs for the shows. Maximum: 50 IDs.
+   * Example value: "5CfCWKI5pZ28U0uOzXkDHe,5as3aKmN2k11yfDDDSrvaZ"
+   * @scopes Authorization scopes
+   * - user-library-read
+   * @returns
+   * Promise<{
+   * result?: boo;
+   * error?: Error;
+   * }>
+   */
+  public async check_users_saved_shows(
+    ids: string[]
+  ): Promise<{ result?: boolean[]; error?: Error }> {
+    let url = `${this.info.api_url}/me/shows/contains?ids=${ids.join(",")}`;
+
+    return await get_req(
+      url,
+      this.info.user_access_token,
+      z.array(z.boolean()),
       this.info
     );
   }
