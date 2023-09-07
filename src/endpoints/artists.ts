@@ -9,7 +9,7 @@ import {
   SeveralArtists,
   SeveralArtistsType,
 } from "../models/artists";
-import { Tracks, TracksType } from "../models/tracks";
+import { MultipleTracks, MultipleTracksType } from "../models/tracks";
 import { get_req } from "../utils/requests";
 
 class Artists {
@@ -157,13 +157,18 @@ class Artists {
     id: string;
     market: string;
   }): Promise<{
-    result?: TracksType;
+    result?: MultipleTracksType;
     error?: Error;
   }> {
     let url: string = `${this.api_url}${id}/top-tracks`;
     if (market) url += `?market=${market}`;
 
-    return await get_req(url, this.info.client_access_token, Tracks, this.info);
+    return await get_req(
+      url,
+      this.info.client_access_token,
+      MultipleTracks,
+      this.info
+    );
   }
 
   /**
