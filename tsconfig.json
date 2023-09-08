@@ -1,11 +1,22 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "types": ["node", "jest"],
-    "skipLibCheck": true,
+    "types": ["bun-types"],
+
+    "lib": ["esnext"],
+    "module": "esnext",
+    "target": "esnext",
+
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "moduleDetection": "force",
+
+    "allowJs": true,
     "esModuleInterop": true,
+
     "strict": true,
-    "module": "commonjs",
-    "resolveJsonModule": true
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
   }
 }
+
