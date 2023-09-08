@@ -16,7 +16,11 @@ import {
   SetofAudioFeaturesType,
 } from "../models/audio-features";
 import { AudioAnalysis, AudioAnalysisType } from "../models/audio-analysis";
-import { RecommendationsInputType } from "../models/recommendations";
+import {
+  RecommendationsInputType,
+  SetofRecommendations,
+  SetofRecommendationsType,
+} from "../models/recommendations";
 
 class Tracks {
   private info: InfoType;
@@ -474,13 +478,19 @@ class Tracks {
    */
   public async get_recommendations(
     input: RecommendationsInputType
-  ): Promise<{ result?: AudioAnalysisType; error?: Error }> {
-    let url = `${this.info.api_url}/recommendations`;
+  ): Promise<{ result?: SetofRecommendationsType; error?: Error }> {
+    let url = `${this.info.api_url}/recommendations?`;
+
+    for (const [key, value] of Object.entries(input)) {
+      if (value) {
+        url += `&${key}=${value}`;
+      }
+    }
 
     return await get_req(
       url,
       this.info.client_access_token,
-      AudioAnalysis,
+      SetofRecommendations,
       this.info
     );
   }

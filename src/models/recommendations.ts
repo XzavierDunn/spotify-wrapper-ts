@@ -1,7 +1,22 @@
 import { z } from "zod";
+import { Track } from "./tracks";
+
+const Seeds = z.object({
+  afterFilteringSize: z.number(),
+  afterRelinkingSize: z.number(),
+  href: z.string(),
+  id: z.string(),
+  initialPoolSize: z.number(),
+  type: z.string(),
+});
+
+const SetofRecommendations = z.object({
+  seeds: z.array(Seeds),
+  tracks: z.array(Track),
+});
 
 const RecommendationsInput = z.object({
-  limit: z.number().min(1).max(100).default(20),
+  limit: z.number().min(1).max(100).default(20).optional(),
   market: z.string().min(2).max(2).optional(),
   seed_artists: z.string().optional(),
   seed_genres: z.string().optional(),
@@ -50,6 +65,12 @@ const RecommendationsInput = z.object({
   target_valence: z.number().min(0).max(1).optional(),
 });
 
+type SetofRecommendationsType = z.infer<typeof SetofRecommendations>;
 type RecommendationsInputType = z.infer<typeof RecommendationsInput>;
 
-export { RecommendationsInput, RecommendationsInputType };
+export {
+  SetofRecommendations,
+  SetofRecommendationsType,
+  RecommendationsInput,
+  RecommendationsInputType,
+};
