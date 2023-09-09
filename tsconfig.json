@@ -17,6 +17,10 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
+  },
+  "typedocOptions": {
+    "entryPoints": ["src/**"],
+    "out": "docs"
   }
 }
 
