@@ -29,12 +29,7 @@ const FullArtists = z.object({
 });
 
 const PagedArtists = z.object({
-  href: z.string(),
-  limit: z.number(),
-  next: z.string(),
-  cursors: cursors,
-  total: z.number().optional(),
-  items: z.array(Artist),
+  artists: FullArtists,
 });
 
 type ArtistType = z.infer<typeof Artist>;

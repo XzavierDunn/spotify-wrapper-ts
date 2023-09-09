@@ -136,7 +136,8 @@ async function put_req<T extends z.ZodType<any, any, any>>(
   if (
     result.status_code != 200 &&
     result.status_code != 201 &&
-    result.status_code != 202
+    result.status_code != 202 &&
+    result.status_code != 204
   )
     return await error_handler(fetchData, result, info);
 
@@ -171,7 +172,11 @@ async function delete_req<T extends z.ZodType<any, any, any>>(
   let fetchData: FetchData = { url, method: "DELETE", body: body, token };
   let result = await fetch_wrapper(fetchData);
 
-  if (result.status_code != 200 && result.status_code != 201)
+  if (
+    result.status_code != 200 &&
+    result.status_code != 201 &&
+    result.status_code != 204
+  )
     return await error_handler(fetchData, result, info);
 
   if (object) return { result: object.parse(result.response) };

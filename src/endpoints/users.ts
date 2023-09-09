@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { InfoType } from "../client/client";
 import { PagedArtists, PagedArtistsType } from "../models/artists";
 import {
@@ -212,6 +213,159 @@ class Users {
       url,
       this.info.user_access_token,
       PagedArtists,
+      this.info
+    );
+  }
+
+  /**
+   * Follow Artists or Users - https://developer.spotify.com/documentation/web-api/reference/follow-artists-users
+   * Add the current user as a follower of one or more artists or other Spotify users.
+   * @param ids
+   * A comma-separated list of the artist or the user Spotify IDs. A maximum of 50 IDs can be sent in one request.
+   * Example value: "2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6"
+   * @param type
+   * The ID type.
+   * Example value: "artist"
+   * Allowed values: "artist", "user"
+   * @Scopes Authorization scopes
+   * - user-follow-modify
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: Error;
+   * }>
+   */
+  public async follow_artists_or_users({
+    ids,
+    type = "artist" || "user",
+  }: {
+    ids: string[];
+    type: string;
+  }): Promise<{
+    result?: string;
+    error?: Error;
+  }> {
+    let url = `${this.api_url}following?ids=${ids.join(",")}&type=${type}`;
+
+    return await put_req(
+      url,
+      this.info.user_access_token,
+      JSON.stringify(ids),
+      this.info
+    );
+  }
+
+  /**
+   * Unfollow Artists or Users - https://developer.spotify.com/documentation/web-api/reference/unfollow-artists-users
+   * Remove the current user as a follower of one or more artists or other Spotify users.
+   * @param ids
+   * A comma-separated list of the artist or the user Spotify IDs. A maximum of 50 IDs can be sent in one request.
+   * Example value: "2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6"
+   * @param type
+   * The ID type.
+   * Example value: "artist"
+   * Allowed values: "artist", "user"
+   * @Scopes Authorization scopes
+   * - user-follow-modify
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: Error;
+   * }>
+   */
+  public async unfollow_artists_or_users({
+    ids,
+    type = "artist" || "user",
+  }: {
+    ids: string[];
+    type: string;
+  }): Promise<{
+    result?: string;
+    error?: Error;
+  }> {
+    let url = `${this.api_url}following?ids=${ids.join(",")}&type=${type}`;
+
+    return await delete_req(
+      url,
+      this.info.user_access_token,
+      this.info,
+      JSON.stringify(ids)
+    );
+  }
+
+  /**
+   * Check If User Follows Artists or Users - https://developer.spotify.com/documentation/web-api/reference/check-current-user-follows
+   * Check to see if the current user is following one or more artists or other Spotify users.
+   * @param ids
+   * A comma-separated list of the artist or the user Spotify IDs. A maximum of 50 IDs can be sent in one request.
+   * Example value: "2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6"
+   * @param type
+   * The ID type.
+   * Example value: "artist"
+   * Allowed values: "artist", "user"
+   * @Scopes Authorization scopes
+   * - user-follow-read
+   * @returns
+   * Promise<{
+   * result?: boolean[];
+   * error?: Error;
+   * }>
+   */
+  public async check_if_user_follows_artists_or_users({
+    ids,
+    type = "artist" || "user",
+  }: {
+    ids: string[];
+    type: string;
+  }): Promise<{
+    result?: boolean[];
+    error?: Error;
+  }> {
+    let url = `${this.api_url}following/contains?ids=${ids.join(
+      ","
+    )}&type=${type}`;
+
+    return await get_req(
+      url,
+      this.info.user_access_token,
+      z.array(z.boolean()),
+      this.info
+    );
+  }
+
+  /**
+   * Check if Users Follow Playlist - https://developer.spotify.com/documentation/web-api/reference/check-if-user-follows-playlist
+   * Check to see if one or more Spotify users are following a specified playlist.
+   * @param ids
+   * A comma-separated list of Spotify User IDs ; the ids of the users that you want to check to see if they follow the playlist. Maximum: 5 ids.
+   * Example value: "jmperezperez,thelinmichael,wizzler"
+   * @param playlist_id
+   * The Spotify ID of the playlist.
+   * Example value: "3cEYpjA9oz9GiPac4AsH4n"
+   * @returns
+   * Promise<{
+   * result?: boolean[];
+   * error?: Error;
+   * }>
+   */
+  public async check_if_users_follow_playlist({
+    playlist_id,
+    ids,
+  }: {
+    playlist_id: string;
+    ids: string[];
+  }): Promise<{
+    result?: boolean[];
+    error?: Error;
+  }> {
+    let url = `${
+      this.info.api_url
+    }/playlists/${playlist_id}/followers/contains?ids=${ids.join(",")}`;
+
+    return await get_req(
+      url,
+      this.info.user_access_token,
+      z.array(z.boolean()),
       this.info
     );
   }
