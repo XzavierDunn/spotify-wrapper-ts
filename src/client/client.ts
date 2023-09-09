@@ -18,6 +18,7 @@ import { writeFileSync } from "fs";
 import { Playlists } from "../endpoints/playlists";
 import { Shows } from "../endpoints/shows";
 import { Tracks } from "../endpoints/tracks";
+import { Users } from "../endpoints/users";
 
 const Credentials = z.object({
   client_id: z.string(),
@@ -58,6 +59,7 @@ class Client {
     refresh_user_token_function: this.refresh_user_token.bind(this),
   };
 
+  public users: Users;
   public shows: Shows;
   public tracks: Tracks;
   public albums: Albums;
@@ -77,6 +79,7 @@ class Client {
     this.ClientInfo = clientInfo;
     this.info.client_access_token = clientInfo.access_token!;
 
+    this.users = new Users(this.info);
     this.shows = new Shows(this.info);
     this.tracks = new Tracks(this.info);
     this.albums = new Albums(this.info);

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ExternalUrls } from "./shared";
+import { ExternalUrls, cursors } from "./shared";
 import { SimplifiedTrack } from "./tracks-simplified";
 
 const Context = z.object({
@@ -19,10 +19,7 @@ const PagedTracks = z.object({
   href: z.string(),
   limit: z.number(),
   next: z.string(),
-  cursors: z.object({
-    after: z.string(),
-    before: z.string(),
-  }),
+  cursors: cursors,
   total: z.number().optional(),
   items: z.array(PagedTrackItem),
 });

@@ -11,7 +11,7 @@ import {
 } from "./shared";
 import { SimplifiedShow } from "./shows-simplified";
 
-const QueueItem = z.object({
+const TrackOrEpisodeObject = z.object({
   album: SimplifiedAlbum.optional(),
   artists: z.array(Artist).optional(),
   available_markets: z.array(z.string()).optional(),
@@ -46,10 +46,10 @@ const QueueItem = z.object({
 });
 
 const Queue = z.object({
-  currently_playing: QueueItem,
-  queue: z.array(QueueItem),
+  currently_playing: TrackOrEpisodeObject,
+  queue: z.array(TrackOrEpisodeObject),
 });
 
 type QueueType = z.infer<typeof Queue>;
 
-export { Queue, QueueType, QueueItem };
+export { Queue, QueueType, TrackOrEpisodeObject };

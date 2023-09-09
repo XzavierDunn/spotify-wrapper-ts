@@ -50,6 +50,11 @@ const Resume_Point = z.object({
   resume_position_ms: z.number(),
 });
 
+const cursors = z.object({
+  after: z.string(),
+  before: z.string(),
+});
+
 export {
   ExternalUrls,
   ExternalIds,
@@ -62,5 +67,6 @@ export {
   narrators,
   Resume_Point,
   SetOfImages,
+  cursors,
   SetOfImagesType,
 };

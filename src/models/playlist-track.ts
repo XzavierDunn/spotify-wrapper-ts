@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ExternalUrls, Followers } from "./shared";
-import { QueueItem } from "./queue";
+import { TrackOrEpisodeObject } from "./queue";
 
 const added_by = z.object({
   external_urls: ExternalUrls,
@@ -15,7 +15,7 @@ const PlaylistTrackObject = z.object({
   added_at: z.string().optional(),
   added_by: added_by.optional(),
   is_local: z.boolean().optional(),
-  track: QueueItem,
+  track: TrackOrEpisodeObject,
 });
 
 const PlaylistTracks = z.object({

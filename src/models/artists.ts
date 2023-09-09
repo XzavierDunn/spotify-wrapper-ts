@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { ExternalUrls, Followers, Images } from "./shared";
+import { ExternalUrls, Followers, Images, cursors } from "./shared";
 
 const Artist = z.object({
   external_urls: ExternalUrls.optional(),
@@ -28,7 +28,25 @@ const FullArtists = z.object({
   items: z.array(Artist).optional(),
 });
 
+const PagedArtists = z.object({
+  href: z.string(),
+  limit: z.number(),
+  next: z.string(),
+  cursors: cursors,
+  total: z.number().optional(),
+  items: z.array(Artist),
+});
+
 type ArtistType = z.infer<typeof Artist>;
+type PagedArtistsType = z.infer<typeof PagedArtists>;
 type SeveralArtistsType = z.infer<typeof SeveralArtists>;
 
-export { Artist, SeveralArtists, FullArtists, ArtistType, SeveralArtistsType };
+export {
+  Artist,
+  SeveralArtists,
+  FullArtists,
+  PagedArtists,
+  ArtistType,
+  SeveralArtistsType,
+  PagedArtistsType,
+};
