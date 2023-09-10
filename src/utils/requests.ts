@@ -6,6 +6,7 @@ const FetchData = z.object({
   token: z.string(),
   body: z.string().optional(),
   object: z.any().optional(), // TODO: restrict to zod objects
+  user: z.boolean().optional(),
 });
 
 type FetchDataType = z.infer<typeof FetchData>;
