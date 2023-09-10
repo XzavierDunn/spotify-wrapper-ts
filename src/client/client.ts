@@ -1,4 +1,3 @@
-import { z } from "zod";
 import { Artists } from "../endpoints/artists";
 import { Albums } from "../endpoints/albums";
 import { Audiobooks } from "../endpoints/audiobooks";
@@ -19,37 +18,12 @@ import { Shows } from "../endpoints/shows";
 import { Tracks } from "../endpoints/tracks";
 import { Users } from "../endpoints/users";
 import { FetchDataType, handle_request } from "../utils/requests";
-
-const Credentials = z.object({
-  client_id: z.string(),
-  client_secret: z.string(),
-  redirect_uri: z.string(),
-});
-
-let ClientInfo = z.object({
-  access_token: z.string().optional(),
-  token_type: z.string().optional(),
-  expires_in: z.number().optional(),
-  refresh_token: z.string().optional(),
-  scope: z.string().optional(),
-});
-
-type InfoType = {
-  api_url: string;
-  client_access_token: string;
-  user_access_token: string;
-  error_handler: <T>(
-    status_code: number,
-    input: string,
-    fetchData: FetchDataType
-  ) => Promise<{ result?: T; error?: string }>;
-  submit_request: <T>(
-    input: FetchDataType
-  ) => Promise<{ result?: T; error?: string }>;
-};
-
-type CredentialsType = z.infer<typeof Credentials>;
-type ClientInfoType = z.infer<typeof ClientInfo>;
+import {
+  ClientInfoType,
+  CredentialsType,
+  CustomError,
+  InfoType,
+} from "../models/client";
 
 class Client {
   private credentials: CredentialsType;
@@ -105,15 +79,15 @@ class Client {
 
   async submit_request<T>(
     input: FetchDataType
-  ): Promise<{ result?: T; error?: string }> {
+  ): Promise<{ result?: T; error?: CustomError }> {
     let { status_code, result } = await handle_request<T>(input);
 
     if (status_code.toString()[0] != "2") {
-      return this.error_handler(status_code, result as string, input);
+      return this.error_handler(status_code, result as { error: any }, input);
     }
 
     if (typeof result === "string") {
-      return { error: result };
+      return { error: { status_code, message: result } };
     } else {
       return { result };
     }
@@ -121,33 +95,51 @@ class Client {
 
   async error_handler<T>(
     status_code: number,
-    input: string,
+    input: { error: any }, // TODO: confirm if all returned errors match {error: {status: number, message: string}}
     fetchData: FetchDataType
-  ): Promise<{ result?: T; error?: string }> {
+  ): Promise<{ result?: T; error?: CustomError }> {
     console.log("HIT ERROR_HANDLER");
     console.log(input);
 
-    // handle refreshing client token
-    if (status_code === 400) {
-      await this.refresh_token();
-      console.log(fetchData.token);
-      fetchData.token = this.info.client_access_token;
-      console.log(fetchData.token);
-      return this.submit_request(fetchData);
+    let refresh = false;
+    let scope_issue = false;
+
+    switch (status_code) {
+      case 400:
+        if (input.error.message === "invalid id") return input;
+      case 401:
+        refresh = true;
+        break;
+      case 403:
+        scope_issue = true;
+        break;
     }
-    // handle refreshing user token
-    // return "SCOPE ISSUE if scope issue"
+
+    if (refresh) {
+      if (fetchData.user) {
+        fetchData.token = await this.refresh_user_token();
+        return this.submit_request(fetchData);
+      } else {
+        fetchData.token = await this.refresh_token();
+        return this.submit_request(fetchData);
+      }
+    }
+
+    if (scope_issue) {
+      return { error: { status_code, message: input.error.message } };
+    }
 
     throw new Error("NEW ERROR");
   }
 
-  async refresh_token() {
+  async refresh_token(): Promise<string> {
     console.log("Attempting to refresh token");
     let data = await get_access_token(this.credentials, true);
     this.info.client_access_token = data.access_token!;
+    return data.access_token!;
   }
 
-  async refresh_user_token() {
+  async refresh_user_token(): Promise<string> {
     console.log("Attempting to refresh the user token");
     if (!this.UserInfo.refresh_token)
       throw new Error("Missing user refresh token");
@@ -162,6 +154,8 @@ class Client {
     this.info.user_access_token = data.access_token!;
 
     writeFileSync("./user-credentials.json", JSON.stringify(data));
+
+    return data.access_token!;
   }
 
   add_user_info(userInfo: ClientInfoType) {
@@ -170,4 +164,4 @@ class Client {
   }
 }
 
-export { Client, ClientInfo, ClientInfoType, InfoType, CredentialsType };
+export { Client };

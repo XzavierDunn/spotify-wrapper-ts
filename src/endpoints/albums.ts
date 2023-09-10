@@ -9,9 +9,10 @@ import {
   SimplifiedTracks,
   SimplifiedTracksType,
 } from "../models/tracks-simplified";
-import { InfoType } from "../client/client";
+import { InfoType, CustomError } from "../models/client";
 import { UsersAlbums, UsersAlbumsType } from "../models/users-albums";
 import { NewReleases, NewReleasesType } from "../models/albums-simplified";
+import { OptionalType, handle_optional } from "../utils/optional";
 
 class Albums {
   private info: InfoType;
@@ -42,7 +43,7 @@ class Albums {
   public async get_album(
     id: string,
     market?: string
-  ): Promise<{ result?: AlbumType; error?: string }> {
+  ): Promise<{ result?: AlbumType; error?: CustomError }> {
     let url = `${this.api_url}${id}`;
     if (market) url += `?market=${market}`;
 
@@ -74,7 +75,7 @@ class Albums {
   public async get_several_albums(
     ids: string[],
     market?: string
-  ): Promise<{ result?: SeveralAlbumsType; error?: string }> {
+  ): Promise<{ result?: SeveralAlbumsType; error?: CustomError }> {
     let url = `${this.api_url}?ids=${ids.toString()}`;
     if (market) url += `&market=${market}`;
 
@@ -112,17 +113,12 @@ class Albums {
    * error?: Error;
    * }>
    */
-  public async get_album_tracks({
-    id,
-    market,
-    limit = 20,
-    offset = 0,
-  }: {
-    id: string;
-    market?: string;
-    limit?: number;
-    offset?: number;
-  }): Promise<{ result?: SimplifiedTracksType; error?: string }> {
+  public async get_album_tracks(
+    id: string,
+    optional?: OptionalType
+  ): Promise<{ result?: SimplifiedTracksType; error?: CustomError }> {
+    const { limit, offset, market } = handle_optional(optional);
+
     let url = `${this.api_url}${id}/tracks?limit=${limit}&offset=${offset}`;
     if (market) url += `&market=${market}`;
 
@@ -159,27 +155,34 @@ class Albums {
    * error?: Error;
    * }>
    */
-  public async get_users_saved_albums({
-    market,
-    limit = 20,
-    offset = 0,
-  }: {
-    market?: string;
-    limit?: number;
-    offset?: number;
-  }): Promise<{ result?: UsersAlbumsType; error?: string }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
-      throw new Error("This endpoint requires a user access token");
+  public async get_users_saved_albums(optional?: OptionalType): Promise<{
+    result?: UsersAlbumsType;
+    error?: { message: string; scopes?: string[] };
+  }> {
+    if (!this.info.user_access_token || this.info.user_access_token === "") {
+      return {
+        error: { message: "This endpoint requires a user access token" },
+      };
+    }
+
+    const { limit, offset, market } = handle_optional(optional);
 
     let url = `${this.info.api_url}/me/albums?limit=${limit}&offset=${offset}`;
     if (market) url += `&market=${market}`;
 
-    return await this.info.submit_request<UsersAlbumsType>({
+    let result = await this.info.submit_request<UsersAlbumsType>({
       method: "GET",
       url,
       token: this.info.user_access_token,
       object: UsersAlbums,
+      user: true,
     });
+
+    if (result.error && result.error.status_code === 403) {
+      result.error.scopes = ["user-library-read"];
+    }
+
+    return result;
   }
 
   /**
@@ -196,22 +199,29 @@ class Albums {
    * error?: Error;
    * }>
    */
-  public async save_albums_for_current_user({
-    ids,
-  }: {
-    ids: string[];
-  }): Promise<{ result?: string; error?: string }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
-      throw new Error("This endpoint requires a user access token");
+  public async save_albums_for_current_user(
+    ids: string[]
+  ): Promise<{ result?: string; error?: CustomError }> {
+    if (!this.info.user_access_token || this.info.user_access_token === "") {
+      return {
+        error: { message: "This endpoint requires a user access token" },
+      };
+    }
 
     let url = `${this.info.api_url}/me/albums?ids=${ids.toString()}`;
 
-    return await this.info.submit_request<string>({
+    let result = await this.info.submit_request<string>({
       method: "PUT",
       url,
       token: this.info.user_access_token,
       body: JSON.stringify({ ids }),
     });
+
+    if (result.error && result.error.status_code === 403) {
+      result.error.scopes = ["user-library-modify"];
+    }
+
+    return result;
   }
 
   /**
@@ -228,21 +238,27 @@ class Albums {
    * error?: Error;
    * }>
    */
-  public async remove_users_saved_albums({
-    ids,
-  }: {
-    ids: string[];
-  }): Promise<{ result?: string; error?: string }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
-      throw new Error("This endpoint requires a user access token");
+  public async remove_users_saved_albums(
+    ids: string[]
+  ): Promise<{ result?: string; error?: CustomError }> {
+    if (!this.info.user_access_token || this.info.user_access_token === "") {
+      return {
+        error: { message: "This endpoint requires a user access token" },
+      };
+    }
 
     let url = `${this.info.api_url}/me/albums?ids=${ids.toString()}`;
-
-    return await this.info.submit_request<string>({
+    let result = await this.info.submit_request<string>({
       method: "DELETE",
       url,
       token: this.info.user_access_token,
     });
+
+    if (result.error && result.error.status_code === 403) {
+      result.error.scopes = ["user-library-modify"];
+    }
+
+    return result;
   }
 
   /**
@@ -259,22 +275,28 @@ class Albums {
    * error?: Error;
    * }>
    */
-  public async check_users_saved_albums({
-    ids,
-  }: {
-    ids: string[];
-  }): Promise<{ result?: boolean[]; error?: string }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
-      throw new Error("This endpoint requires a user access token");
+  public async check_users_saved_albums(
+    ids: string[]
+  ): Promise<{ result?: boolean[]; error?: CustomError }> {
+    if (!this.info.user_access_token || this.info.user_access_token === "") {
+      return {
+        error: { message: "This endpoint requires a user access token" },
+      };
+    }
 
     let url = `${this.info.api_url}/me/albums/contains?ids=${ids.toString()}`;
-
-    return await this.info.submit_request<boolean[]>({
+    let result = await this.info.submit_request<boolean[]>({
       method: "GET",
       url,
       token: this.info.user_access_token,
       object: z.array(z.boolean()),
     });
+
+    if (result.error && result.error.status_code === 403) {
+      result.error.scopes = ["user-library-read"];
+    }
+
+    return result;
   }
 
   /**
@@ -298,15 +320,12 @@ class Albums {
    * error?: Error;
    * }>
    */
-  public async get_new_releases({
-    country,
-    limit = 20,
-    offset = 0,
-  }: {
-    country?: string;
-    limit?: number;
-    offset?: number;
-  }): Promise<{ result?: NewReleasesType; error?: string }> {
+  public async get_new_releases(
+    optional?: OptionalType
+  ): Promise<{ result?: NewReleasesType; error?: CustomError }> {
+    const { limit, offset, market } = handle_optional(optional);
+    const country = market;
+
     let url = `${this.info.api_url}/browse/new-releases?limit=${limit}&offset=${offset}`;
     if (country) url += `&country=${country}`;
 
