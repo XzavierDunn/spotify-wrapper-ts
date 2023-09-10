@@ -1,3 +1,5 @@
+[![npm version](https://badge.fury.io/js/spotify-wrapper-ts.svg)](https://badge.fury.io/js/spotify-wrapper-ts)
+
 # [Spotify Web API](https://developer.spotify.com/documentation/web-api) Wrapper
 
 ## Usage/Examples
