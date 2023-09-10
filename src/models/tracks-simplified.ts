@@ -23,13 +23,13 @@ const SimplifiedTrack = z.object({
 });
 
 const SimplifiedTracks = z.object({
-  href: z.string().optional(),
-  limit: z.number().optional(),
-  next: z.string().optional().nullable(),
-  offset: z.number().optional(),
-  previous: z.string().optional().nullable(),
-  total: z.number().optional(),
-  items: z.array(SimplifiedTrack).optional(),
+  href: z.string(),
+  limit: z.number(),
+  next: z.string().nullable(),
+  offset: z.number(),
+  previous: z.string().nullable(),
+  total: z.number(),
+  items: z.array(SimplifiedTrack),
 });
 
 type SimplifiedTracksType = z.infer<typeof SimplifiedTracks>;
