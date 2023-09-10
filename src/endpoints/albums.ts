@@ -10,7 +10,6 @@ import {
   SimplifiedTracksType,
 } from "../models/tracks-simplified";
 import { InfoType } from "../client/client";
-import { get_req, put_req, delete_req } from "../utils/requests";
 import { UsersAlbums, UsersAlbumsType } from "../models/users-albums";
 import { NewReleases, NewReleasesType } from "../models/albums-simplified";
 
@@ -24,7 +23,7 @@ class Albums {
   }
 
   /**
-   * Get Album - https://developer.spotify.com/documentation/web-api/reference/get-an-album
+   * Get Album - https:developer.spotify.com/documentation/web-api/reference/get-an-album
    * @param id
    * The Spotify ID of the album
    * Example value: "4aawyAB9vmqN3uQ7FjRGTy"
@@ -40,24 +39,23 @@ class Albums {
    * error?: Error;
    * }>
    */
-  public async get_album({
-    id,
-    market,
-  }: {
-    id: string;
-    market?: string;
-  }): Promise<{
-    result?: AlbumType;
-    error?: Error;
-  }> {
+  public async get_album(
+    id: string,
+    market?: string
+  ): Promise<{ result?: AlbumType; error?: string }> {
     let url = `${this.api_url}${id}`;
     if (market) url += `?market=${market}`;
 
-    return await get_req(url, this.info.client_access_token, Album, this.info);
+    return await this.info.submit_request<AlbumType>({
+      method: "GET",
+      url,
+      token: this.info.client_access_token,
+      object: Album,
+    });
   }
 
   /**
-   * Get Several Albums - https://developer.spotify.com/documentation/web-api/reference/get-multiple-albums
+   * Get Several Albums - https:developer.spotify.com/documentation/web-api/reference/get-multiple-albums
    * @param ids
    * A comma-separated list of the Spotify IDs for the albums. Maximum: 20 IDs.
    * Example value: "382ObEPsp2rxGrnsizN5TX,1A2GTWGtFfWp7KSQTwWOyo,2noRn2Aes5aoNVsU6iWThc"
@@ -73,29 +71,23 @@ class Albums {
    * error?: Error;
    * }>
    */
-  public async get_several_albums({
-    ids,
-    market,
-  }: {
-    ids: string[];
-    market?: string;
-  }): Promise<{
-    result?: SeveralAlbumsType;
-    error?: Error;
-  }> {
+  public async get_several_albums(
+    ids: string[],
+    market?: string
+  ): Promise<{ result?: SeveralAlbumsType; error?: string }> {
     let url = `${this.api_url}?ids=${ids.toString()}`;
     if (market) url += `&market=${market}`;
 
-    return await get_req(
+    return await this.info.submit_request<SeveralAlbumsType>({
+      method: "GET",
       url,
-      this.info.client_access_token,
-      SeveralAlbums,
-      this.info
-    );
+      token: this.info.client_access_token,
+      object: SeveralAlbums,
+    });
   }
 
   /**
-   * Get Album Tracks - https://developer.spotify.com/documentation/web-api/reference/get-an-albums-tracks
+   * Get Album Tracks - https:developer.spotify.com/documentation/web-api/reference/get-an-albums-tracks
    * @param id
    * The Spotify ID of the album
    * Example value: "4aawyAB9vmqN3uQ7FjRGTy"
@@ -130,23 +122,20 @@ class Albums {
     market?: string;
     limit?: number;
     offset?: number;
-  }): Promise<{
-    result?: SimplifiedTracksType;
-    error?: Error;
-  }> {
+  }): Promise<{ result?: SimplifiedTracksType; error?: string }> {
     let url = `${this.api_url}${id}/tracks?limit=${limit}&offset=${offset}`;
     if (market) url += `&market=${market}`;
 
-    return await get_req(
+    return await this.info.submit_request<SimplifiedTracksType>({
+      method: "GET",
       url,
-      this.info.client_access_token,
-      SimplifiedTracks,
-      this.info
-    );
+      token: this.info.client_access_token,
+      object: SimplifiedTracks,
+    });
   }
 
   /**
-   * Get User's Saved Albums - https://developer.spotify.com/documentation/web-api/reference/get-users-saved-albums
+   * Get User's Saved Albums - https:developer.spotify.com/documentation/web-api/reference/get-users-saved-albums
    * @param market
    * An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.
    * If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.
@@ -178,26 +167,23 @@ class Albums {
     market?: string;
     limit?: number;
     offset?: number;
-  }): Promise<{
-    result?: UsersAlbumsType;
-    error?: Error;
-  }> {
+  }): Promise<{ result?: UsersAlbumsType; error?: string }> {
     if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/albums?limit=${limit}&offset=${offset}`;
     if (market) url += `&market=${market}`;
 
-    return await get_req(
+    return await this.info.submit_request<UsersAlbumsType>({
+      method: "GET",
       url,
-      this.info.user_access_token,
-      UsersAlbums,
-      this.info
-    );
+      token: this.info.user_access_token,
+      object: UsersAlbums,
+    });
   }
 
   /**
-   * Save Albums for Current User - https://developer.spotify.com/documentation/web-api/reference/save-albums-user
+   * Save Albums for Current User - https:developer.spotify.com/documentation/web-api/reference/save-albums-user
    * Save one or more albums to the current user's 'Your Music' library.
    * @param ids
    * A comma-separated list of the Spotify IDs for the albums. Maximum: 20 IDs.
@@ -214,24 +200,22 @@ class Albums {
     ids,
   }: {
     ids: string[];
-  }): Promise<{
-    result?: string;
-    error?: Error;
-  }> {
+  }): Promise<{ result?: string; error?: string }> {
     if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/albums?ids=${ids.toString()}`;
-    return await put_req(
+
+    return await this.info.submit_request<string>({
+      method: "PUT",
       url,
-      this.info.user_access_token,
-      JSON.stringify({ ids }),
-      this.info
-    );
+      token: this.info.user_access_token,
+      body: JSON.stringify({ ids }),
+    });
   }
 
   /**
-   * Remove Users' Saved Albums - https://developer.spotify.com/documentation/web-api/reference/remove-albums-user
+   * Remove Users' Saved Albums - https:developer.spotify.com/documentation/web-api/reference/remove-albums-user
    * Remove one or more albums from the current user's 'Your Music' library.
    * @param ids
    * A comma-separated list of the Spotify IDs for the albums. Maximum: 20 IDs.
@@ -244,19 +228,25 @@ class Albums {
    * error?: Error;
    * }>
    */
-  public async remove_users_saved_albums({ ids }: { ids: string[] }): Promise<{
-    result?: string;
-    error?: Error;
-  }> {
+  public async remove_users_saved_albums({
+    ids,
+  }: {
+    ids: string[];
+  }): Promise<{ result?: string; error?: string }> {
     if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/albums?ids=${ids.toString()}`;
-    return await delete_req(url, this.info.user_access_token, this.info);
+
+    return await this.info.submit_request<string>({
+      method: "DELETE",
+      url,
+      token: this.info.user_access_token,
+    });
   }
 
   /**
-   * Check User's Saved Albums - https://developer.spotify.com/documentation/web-api/reference/check-users-saved-albums
+   * Check User's Saved Albums - https:developer.spotify.com/documentation/web-api/reference/check-users-saved-albums
    * Check if one or more albums is already saved in the current Spotify user's 'Your Music' library.
    * @param ids
    * A comma-separated list of the Spotify IDs for the albums. Maximum: 20 IDs.
@@ -269,24 +259,26 @@ class Albums {
    * error?: Error;
    * }>
    */
-  public async check_users_saved_albums({ ids }: { ids: string[] }): Promise<{
-    result?: boolean[];
-    error?: Error;
-  }> {
+  public async check_users_saved_albums({
+    ids,
+  }: {
+    ids: string[];
+  }): Promise<{ result?: boolean[]; error?: string }> {
     if (!this.info.user_access_token || this.info.user_access_token === "")
       throw new Error("This endpoint requires a user access token");
 
     let url = `${this.info.api_url}/me/albums/contains?ids=${ids.toString()}`;
-    return await get_req(
+
+    return await this.info.submit_request<boolean[]>({
+      method: "GET",
       url,
-      this.info.user_access_token,
-      z.array(z.boolean()),
-      this.info
-    );
+      token: this.info.user_access_token,
+      object: z.array(z.boolean()),
+    });
   }
 
   /**
-   * Get New Releases - https://developer.spotify.com/documentation/web-api/reference/get-new-releases
+   * Get New Releases - https:developer.spotify.com/documentation/web-api/reference/get-new-releases
    * Get a list of new album releases featured in Spotify (shown, for example, on a Spotify player’s “Browse” tab).
    * @param country
    * A country: an ISO 3166-1 alpha-2 country code. Provide this parameter if you want the list of returned items to be relevant to a particular country. If omitted, the returned items will be relevant to all countries.
@@ -314,19 +306,16 @@ class Albums {
     country?: string;
     limit?: number;
     offset?: number;
-  }): Promise<{
-    result?: NewReleasesType;
-    error?: Error;
-  }> {
+  }): Promise<{ result?: NewReleasesType; error?: string }> {
     let url = `${this.info.api_url}/browse/new-releases?limit=${limit}&offset=${offset}`;
     if (country) url += `&country=${country}`;
 
-    return await get_req(
+    return await this.info.submit_request<NewReleasesType>({
+      method: "GET",
       url,
-      this.info.client_access_token,
-      NewReleases,
-      this.info
-    );
+      token: this.info.client_access_token,
+      object: NewReleases,
+    });
   }
 }
 

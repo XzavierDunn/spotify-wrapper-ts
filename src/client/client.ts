@@ -1,5 +1,4 @@
 import { z } from "zod";
-import config from "../../config.json";
 import { Artists } from "../endpoints/artists";
 import { Albums } from "../endpoints/albums";
 import { Audiobooks } from "../endpoints/audiobooks";
@@ -19,6 +18,7 @@ import { Playlists } from "../endpoints/playlists";
 import { Shows } from "../endpoints/shows";
 import { Tracks } from "../endpoints/tracks";
 import { Users } from "../endpoints/users";
+import { FetchDataType, handle_request } from "../utils/requests";
 
 const Credentials = z.object({
   client_id: z.string(),
@@ -34,29 +34,33 @@ let ClientInfo = z.object({
   scope: z.string().optional(),
 });
 
-let Info = z.object({
-  api_url: z.string(),
-  client_access_token: z.string(),
-  user_access_token: z.string(),
-  refresh_token_function: z.function(),
-  refresh_user_token_function: z.function(),
-});
+type InfoType = {
+  api_url: string;
+  client_access_token: string;
+  user_access_token: string;
+  error_handler: <T>(
+    status_code: number,
+    input: string,
+    fetchData: FetchDataType
+  ) => Promise<{ result?: T; error?: string }>;
+  submit_request: <T>(
+    input: FetchDataType
+  ) => Promise<{ result?: T; error?: string }>;
+};
 
 type CredentialsType = z.infer<typeof Credentials>;
 type ClientInfoType = z.infer<typeof ClientInfo>;
-type InfoType = z.infer<typeof Info>;
 
 class Client {
   private credentials: CredentialsType;
-  private ClientInfo: ClientInfoType;
   private UserInfo: ClientInfoType = {};
 
   private info: InfoType = {
     api_url: "https://api.spotify.com/v1",
     client_access_token: "",
     user_access_token: "",
-    refresh_token_function: this.refresh_token.bind(this),
-    refresh_user_token_function: this.refresh_user_token.bind(this),
+    error_handler: this.error_handler.bind(this),
+    submit_request: this.submit_request.bind(this),
   };
 
   public users: Users;
@@ -76,7 +80,6 @@ class Client {
 
   constructor(clientInfo: ClientInfoType, credentials: CredentialsType) {
     this.credentials = credentials;
-    this.ClientInfo = clientInfo;
     this.info.client_access_token = clientInfo.access_token!;
 
     this.users = new Users(this.info);
@@ -100,10 +103,47 @@ class Client {
     return new Client(clientInfo, credentials);
   }
 
+  async submit_request<T>(
+    input: FetchDataType
+  ): Promise<{ result?: T; error?: string }> {
+    let { status_code, result } = await handle_request<T>(input);
+
+    if (status_code.toString()[0] != "2") {
+      return this.error_handler(status_code, result as string, input);
+    }
+
+    if (typeof result === "string") {
+      return { error: result };
+    } else {
+      return { result };
+    }
+  }
+
+  async error_handler<T>(
+    status_code: number,
+    input: string,
+    fetchData: FetchDataType
+  ): Promise<{ result?: T; error?: string }> {
+    console.log("HIT ERROR_HANDLER");
+    console.log(input);
+
+    // handle refreshing client token
+    if (status_code === 400) {
+      await this.refresh_token();
+      console.log(fetchData.token);
+      fetchData.token = this.info.client_access_token;
+      console.log(fetchData.token);
+      return this.submit_request(fetchData);
+    }
+    // handle refreshing user token
+    // return "SCOPE ISSUE if scope issue"
+
+    throw new Error("NEW ERROR");
+  }
+
   async refresh_token() {
     console.log("Attempting to refresh token");
     let data = await get_access_token(this.credentials, true);
-    this.ClientInfo = data;
     this.info.client_access_token = data.access_token!;
   }
 

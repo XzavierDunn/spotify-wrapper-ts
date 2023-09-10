@@ -1,6 +1,5 @@
 import { InfoType } from "../client/client";
 import { SearchObject, SearchObjectType } from "../models/search";
-import { get_req } from "../utils/requests";
 
 class Search {
   private info: InfoType;
@@ -51,27 +50,27 @@ class Search {
    * error?: Error;
    * }>
    */
-  public async search_for_item(
-    q: string,
-    type: string[],
-    market?: string,
-    include_external?: string,
-    limit: number = 20,
-    offset: number = 0
-  ): Promise<{ result?: SearchObjectType; error?: Error }> {
-    let url = `${this.api_url}?q=${q}&type=${type.join(
-      ","
-    )}&limit=${limit}&offset=${offset}`;
-    if (market) url += `&market=${market}`;
-    if (include_external) url += `&include_external=${include_external}`;
+  // public async search_for_item(
+  //   q: string,
+  //   type: string[],
+  //   market?: string,
+  //   include_external?: string,
+  //   limit: number = 20,
+  //   offset: number = 0
+  // ): Promise<{ result?: SearchObjectType; error?: Error }> {
+  //   let url = `${this.api_url}?q=${q}&type=${type.join(
+  //     ","
+  //   )}&limit=${limit}&offset=${offset}`;
+  //   if (market) url += `&market=${market}`;
+  //   if (include_external) url += `&include_external=${include_external}`;
 
-    return await get_req(
-      url,
-      this.info.client_access_token,
-      SearchObject,
-      this.info
-    );
-  }
+  //   return await get_req(
+  //     url,
+  //     this.info.client_access_token,
+  //     SearchObject,
+  //     this.info
+  //   );
+  // }
 }
 
 export { Search };

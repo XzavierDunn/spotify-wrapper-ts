@@ -11,7 +11,7 @@ let client: Client = await Client.create_client({
   redirect_uri: "...",
 });
 
-let album = await client.albums.get_album({ id: "" });
+let album = await client.albums.get_album("");
 if (album.result) {
   let details = {
     name: album.result.name,

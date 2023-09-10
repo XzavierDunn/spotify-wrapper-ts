@@ -1,6 +1,5 @@
 import { InfoType } from "../client/client";
 import { MarketsObject, MarketsType } from "../models/markets";
-import { get_req } from "../utils/requests";
 
 class Markets {
   private info: InfoType;
@@ -20,17 +19,17 @@ class Markets {
    * error?: Error;
    * }>
    */
-  public async get_available_markets(): Promise<{
-    result?: MarketsType;
-    error?: Error;
-  }> {
-    return await get_req(
-      this.api_url,
-      this.info.client_access_token,
-      MarketsObject,
-      this.info
-    );
-  }
+  // public async get_available_markets(): Promise<{
+  //   result?: MarketsType;
+  //   error?: Error;
+  // }> {
+  //   return await get_req(
+  //     this.api_url,
+  //     this.info.client_access_token,
+  //     MarketsObject,
+  //     this.info
+  //   );
+  // }
 }
 
 export { Markets };
