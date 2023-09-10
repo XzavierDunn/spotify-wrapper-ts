@@ -12,7 +12,12 @@ import {
 import { InfoType, CustomError } from "../models/client";
 import { UsersAlbums, UsersAlbumsType } from "../models/users-albums";
 import { NewReleases, NewReleasesType } from "../models/albums-simplified";
-import { OptionalType, handle_optional } from "../utils/optional";
+import {
+  OptionalType,
+  check_user_token,
+  handle_optional,
+  scope_check,
+} from "../utils/helpers";
 
 class Albums {
   private info: InfoType;
@@ -159,11 +164,8 @@ class Albums {
     result?: UsersAlbumsType;
     error?: { message: string; scopes?: string[] };
   }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "") {
-      return {
-        error: { message: "This endpoint requires a user access token" },
-      };
-    }
+    const check_token = check_user_token(this.info.user_access_token);
+    if (check_token.error) return check_token;
 
     const { limit, offset, market } = handle_optional(optional);
 
@@ -178,8 +180,8 @@ class Albums {
       user: true,
     });
 
-    if (result.error && result.error.status_code === 403) {
-      result.error.scopes = ["user-library-read"];
+    if (scope_check(result.error)) {
+      result.error!.scopes = ["user-library-read"];
     }
 
     return result;
@@ -202,11 +204,8 @@ class Albums {
   public async save_albums_for_current_user(
     ids: string[]
   ): Promise<{ result?: string; error?: CustomError }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "") {
-      return {
-        error: { message: "This endpoint requires a user access token" },
-      };
-    }
+    const check_token = check_user_token(this.info.user_access_token);
+    if (check_token.error) return check_token;
 
     let url = `${this.info.api_url}/me/albums?ids=${ids.toString()}`;
 
@@ -217,8 +216,8 @@ class Albums {
       body: JSON.stringify({ ids }),
     });
 
-    if (result.error && result.error.status_code === 403) {
-      result.error.scopes = ["user-library-modify"];
+    if (scope_check(result.error)) {
+      result.error!.scopes = ["user-library-modify"];
     }
 
     return result;
@@ -241,11 +240,8 @@ class Albums {
   public async remove_users_saved_albums(
     ids: string[]
   ): Promise<{ result?: string; error?: CustomError }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "") {
-      return {
-        error: { message: "This endpoint requires a user access token" },
-      };
-    }
+    const check_token = check_user_token(this.info.user_access_token);
+    if (check_token.error) return check_token;
 
     let url = `${this.info.api_url}/me/albums?ids=${ids.toString()}`;
     let result = await this.info.submit_request<string>({
@@ -254,8 +250,8 @@ class Albums {
       token: this.info.user_access_token,
     });
 
-    if (result.error && result.error.status_code === 403) {
-      result.error.scopes = ["user-library-modify"];
+    if (scope_check(result.error)) {
+      result.error!.scopes = ["user-library-modify"];
     }
 
     return result;
@@ -278,11 +274,8 @@ class Albums {
   public async check_users_saved_albums(
     ids: string[]
   ): Promise<{ result?: boolean[]; error?: CustomError }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "") {
-      return {
-        error: { message: "This endpoint requires a user access token" },
-      };
-    }
+    const check_token = check_user_token(this.info.user_access_token);
+    if (check_token.error) return check_token;
 
     let url = `${this.info.api_url}/me/albums/contains?ids=${ids.toString()}`;
     let result = await this.info.submit_request<boolean[]>({
@@ -292,8 +285,8 @@ class Albums {
       object: z.array(z.boolean()),
     });
 
-    if (result.error && result.error.status_code === 403) {
-      result.error.scopes = ["user-library-read"];
+    if (scope_check(result.error)) {
+      result.error!.scopes = ["user-library-read"];
     }
 
     return result;
