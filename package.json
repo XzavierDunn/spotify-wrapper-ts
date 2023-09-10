@@ -2,7 +2,7 @@
   "name": "spotify-wrapper-ts",
   "author": "XD",
   "license": "MIT",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "devDependencies": {
     "bun-types": "latest",
     "typedoc": "0.25.1",
