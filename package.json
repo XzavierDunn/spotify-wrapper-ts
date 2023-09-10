@@ -1,10 +1,8 @@
 {
-  "name": "spotify_wrapper",
-  "version": "0.0.1",
-  "scripts": {
-    "start": "tsc && node main.js",
-    "test": "jest"
-  },
+  "name": "spotify-wrapper-ts",
+  "author": "XD",
+  "license": "MIT",
+  "version": "0.0.3",
   "devDependencies": {
     "bun-types": "latest",
     "typedoc": "0.25.1",
@@ -15,6 +13,16 @@
     "@types/node": "^20.5.1",
     "zod": "^3.22.1"
   },
-  "module": "index.ts",
-  "type": "module"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XzavierDunn/spotify-wrapper-ts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/XzavierDunn/spotify-wrapper-ts/issues"
+  },
+  "homepage": "https://github.com/XzavierDunn/spotify-wrapper-ts",
+  "keywords": [
+    "typescript",
+    "spotify"
+  ]
 }

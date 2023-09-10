@@ -1,7 +1,5 @@
 # [Spotify Web API](https://developer.spotify.com/documentation/web-api) Wrapper
 
-A brief description of what this project does and who it's for
-
 ## Usage/Examples
 
 ```typescript
