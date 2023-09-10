@@ -28,8 +28,47 @@ if (tracks.result) {
 }
 ```
 
-### TODO: Add info about user tokens
+### User credentials can be supplied with the add_user_info method
+
+_This allows endpoints that require [user permissions](https://developer.spotify.com/documentation/web-api/concepts/scopes) to be hit._
+
+Currently all user authentication must be handled separately, there are no methods to help handle this.
+
+```typescript
+let ClientInfo = z.object({
+  access_token: z.string().optional(),
+  token_type: z.string().optional(),
+  expires_in: z.number().optional(),
+  refresh_token: z.string().optional(),
+  scope: z.string().optional(),
+});
+
+let user_credentials: ClientInfo = {
+  access_token: "...",
+  refresh_token: "...",
+};
+
+client.add_user_info(user_credentials);
+
+let user_profile = await client.users.get_current_users_profile();
+if (user_profile.result) {
+  console.log(user_profile.result.id);
+  console.log(user_profile.result.display_name);
+}
+```
 
 ## Documentation
 
 [Documentation](./docs/modules.md)
+
+## Roadmap
+
+- Implement request_user_authorization util
+
+- Improve error handling and return missing scopes
+
+- Clean up request util functions
+
+- Test util functions
+
+- Test client methods

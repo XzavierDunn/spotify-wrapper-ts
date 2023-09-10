@@ -8,7 +8,6 @@
 
 - [get\_access\_token](utils_authentication.md#get_access_token)
 - [refresh\_user\_access\_token](utils_authentication.md#refresh_user_access_token)
-- [request\_user\_authorization](utils_authentication.md#request_user_authorization)
 
 ## Functions
 
@@ -32,7 +31,7 @@
 
 #### Defined in
 
-[src/utils/authentication.ts:4](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/utils/authentication.ts#L4)
+[src/utils/authentication.ts:4](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/df6ebc6/src/utils/authentication.ts#L4)
 
 ___
 
@@ -54,28 +53,4 @@ ___
 
 #### Defined in
 
-[src/utils/authentication.ts:81](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/utils/authentication.ts#L81)
-
-___
-
-### request\_user\_authorization
-
-▸ **request_user_authorization**(`code`, `credentials`): `Promise`<`void`\>
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `code` | `string` |
-| `credentials` | `Object` |
-| `credentials.client_id` | `string` |
-| `credentials.client_secret` | `string` |
-| `credentials.redirect_uri` | `string` |
-
-#### Returns
-
-`Promise`<`void`\>
-
-#### Defined in
-
-[src/utils/authentication.ts:35](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/utils/authentication.ts#L35)
+[src/utils/authentication.ts:80](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/df6ebc6/src/utils/authentication.ts#L80)
