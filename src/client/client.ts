@@ -24,6 +24,7 @@ import {
   CustomError,
   InfoType,
 } from "../models/client";
+import { check_user_token, scope_check } from "../utils/helpers";
 
 class Client {
   private credentials: CredentialsType;
@@ -33,8 +34,8 @@ class Client {
     api_url: "https://api.spotify.com/v1",
     client_access_token: "",
     user_access_token: "",
-    error_handler: this.error_handler.bind(this),
     submit_request: this.submit_request.bind(this),
+    submit_user_scoped_request: this.submit_user_scoped_request.bind(this),
   };
 
   public users: Users;
@@ -91,6 +92,22 @@ class Client {
     } else {
       return { result };
     }
+  }
+
+  async submit_user_scoped_request<T>(input: FetchDataType) {
+    const check_token = check_user_token(this.info.user_access_token);
+    if (check_token.error) return check_token;
+
+    input.user = true;
+    input.token = this.info.user_access_token;
+
+    let result = await this.info.submit_request<T>(input);
+
+    if (scope_check(result.error)) {
+      result.error!.scopes = input.scopes;
+    }
+
+    return result;
   }
 
   async error_handler<T>(
