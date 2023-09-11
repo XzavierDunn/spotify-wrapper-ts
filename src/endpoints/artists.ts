@@ -1,4 +1,4 @@
-import { InfoType } from "../client/client";
+import { CustomError, InfoType } from "../models/client";
 import {
   SeveralSimplifiedAlbums,
   SeveralSimplifiedAlbumsType,
@@ -20,29 +20,25 @@ class Artists {
     this.api_url = this.info.api_url + "/artists/";
   }
 
-  // /**
-  //  * Get Artist - https://developer.spotify.com/documentation/web-api/reference/get-an-artist
-  //  * Get Spotify catalog information for a single artist identified by their unique Spotify ID.
-  //  * @param id
-  //  * The Spotify ID of the artist
-  //  * Example value: "0TnOYISbd1XYRBk9myaseg"
-  //  * @returns
-  //  * Promise<{
-  //  * result?: ArtistType;
-  //  * error?: Error;
-  //  * }>
-  //  */
-  // public async get_artist(id: string): Promise<{
-  //   result?: ArtistType;
-  //   error?: Error;
-  // }> {
-  //   return await get_req(
-  //     `${this.api_url}${id}`,
-  //     this.info.client_access_token,
-  //     Artist,
-  //     this.info
-  //   );
-  // }
+  /**
+   * Get Artist - https://developer.spotify.com/documentation/web-api/reference/get-an-artist
+   * Get Spotify catalog information for a single artist identified by their unique Spotify ID.
+   * @param id
+   * The Spotify ID of the artist
+   * Example value: "0TnOYISbd1XYRBk9myaseg"
+   * @returns
+   * Promise<{ result?: ArtistType; error?: CustomError }>
+   */
+  public async get_artist(
+    id: string
+  ): Promise<{ result?: ArtistType; error?: CustomError }> {
+    return await this.info.submit_request<ArtistType>({
+      method: "GET",
+      url: `${this.api_url}${id}`,
+      token: this.info.client_access_token,
+      object: Artist,
+    });
+  }
 
   // /**
   //  * Get Several Artists - https://developer.spotify.com/documentation/web-api/reference/get-multiple-artists
