@@ -81,6 +81,7 @@ class Client {
   async submit_request<T>(
     input: FetchDataType
   ): Promise<{ result?: T; error?: CustomError }> {
+    if (!input.user) input.token = this.info.client_access_token;
     let { status_code, result } = await handle_request<T>(input);
 
     if (status_code.toString()[0] != "2") {

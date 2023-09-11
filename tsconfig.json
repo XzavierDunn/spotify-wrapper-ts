@@ -19,8 +19,7 @@
     "skipLibCheck": true
   },
   "typedocOptions": {
-    "entryPoints": ["src/**"],
+    "entryPoints": ["src/**/*"],
     "out": "docs"
   }
 }
-

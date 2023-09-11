@@ -12,12 +12,7 @@ import {
 import { InfoType, CustomError } from "../models/client";
 import { UsersAlbums, UsersAlbumsType } from "../models/users-albums";
 import { NewReleases, NewReleasesType } from "../models/albums-simplified";
-import {
-  OptionalType,
-  check_user_token,
-  handle_optional,
-  scope_check,
-} from "../utils/helpers";
+import { OptionalType, handle_optional } from "../utils/helpers";
 
 class Albums {
   private info: InfoType;
@@ -40,10 +35,7 @@ class Albums {
    * Users can view the country that is associated with their account in the account settings.
    * Example value: "ES"
    * @returns
-   * Promise<{
-   * result?: AlbumType;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: AlbumType; error?: CustomError }>
    */
   public async get_album(
     id: string,
@@ -53,9 +45,8 @@ class Albums {
     if (market) url += `?market=${market}`;
 
     return await this.info.submit_request<AlbumType>({
-      method: "GET",
       url,
-      token: this.info.client_access_token,
+      method: "GET",
       object: Album,
     });
   }
@@ -72,10 +63,7 @@ class Albums {
    * Users can view the country that is associated with their account in the account settings.
    * Example value: "ES"
    * @returns
-   * Promise<{
-   * result?: SeveralAlbumsType;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: SeveralAlbumsType; error?: CustomError }>
    */
   public async get_several_albums(
     ids: string[],
@@ -85,9 +73,8 @@ class Albums {
     if (market) url += `&market=${market}`;
 
     return await this.info.submit_request<SeveralAlbumsType>({
-      method: "GET",
       url,
-      token: this.info.client_access_token,
+      method: "GET",
       object: SeveralAlbums,
     });
   }
@@ -113,10 +100,7 @@ class Albums {
    * Example value: 5
    * Default value: 0
    * @returns
-   * Promise<{
-   * result?: SimplifiedTracksType;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: SimplifiedTracksType; error?: CustomError }>
    */
   public async get_album_tracks(
     id: string,
@@ -128,9 +112,8 @@ class Albums {
     if (market) url += `&market=${market}`;
 
     return await this.info.submit_request<SimplifiedTracksType>({
-      method: "GET",
       url,
-      token: this.info.client_access_token,
+      method: "GET",
       object: SimplifiedTracks,
     });
   }
@@ -157,7 +140,7 @@ class Albums {
    * @returns
    * Promise<{
    * result?: UsersAlbumsType;
-   * error?: Error;
+   * error?: { message: string; scopes?: string[] };
    * }>
    */
   public async get_users_saved_albums(optional?: OptionalType): Promise<{
@@ -186,10 +169,7 @@ class Albums {
    * @scopes Authorization scopes
    * - user-library-modify
    * @returns
-   * Promise<{
-   * result?: string;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: string; error?: CustomError }>
    */
   public async save_albums_for_current_user(
     ids: string[]
@@ -213,10 +193,7 @@ class Albums {
    * @scopes Authorization scopes
    * - user-library-modify
    * @returns
-   * Promise<{
-   * result?: string;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: string; error?: CustomError }>
    */
   public async remove_users_saved_albums(
     ids: string[]
@@ -240,10 +217,7 @@ class Albums {
    * @scopes Authorization scopes
    * - user-library-read
    * @returns
-   * Promise<{
-   * result?: boolean[];
-   * error?: Error;
-   * }>
+   * Promise<{ result?: boolean[]; error?: CustomError }>
    */
   public async check_users_saved_albums(
     ids: string[]
@@ -274,10 +248,7 @@ class Albums {
    * Example value: 5
    * Default value: 0
    * @returns
-   * Promise<{
-   * result?: SeveralSimplifiedAlbumsType;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: NewReleasesType; error?: CustomError }>
    */
   public async get_new_releases(
     optional?: OptionalType
@@ -289,9 +260,8 @@ class Albums {
     if (country) url += `&country=${country}`;
 
     return await this.info.submit_request<NewReleasesType>({
-      method: "GET",
       url,
-      token: this.info.client_access_token,
+      method: "GET",
       object: NewReleases,
     });
   }
