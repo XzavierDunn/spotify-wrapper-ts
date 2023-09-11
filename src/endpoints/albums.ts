@@ -164,27 +164,17 @@ class Albums {
     result?: UsersAlbumsType;
     error?: { message: string; scopes?: string[] };
   }> {
-    const check_token = check_user_token(this.info.user_access_token);
-    if (check_token.error) return check_token;
-
     const { limit, offset, market } = handle_optional(optional);
 
     let url = `${this.info.api_url}/me/albums?limit=${limit}&offset=${offset}`;
     if (market) url += `&market=${market}`;
 
-    let result = await this.info.submit_request<UsersAlbumsType>({
-      method: "GET",
+    return await this.info.submit_user_scoped_request({
       url,
-      token: this.info.user_access_token,
+      method: "GET",
       object: UsersAlbums,
-      user: true,
+      scopes: ["user-library-read"],
     });
-
-    if (scope_check(result.error)) {
-      result.error!.scopes = ["user-library-read"];
-    }
-
-    return result;
   }
 
   /**
@@ -204,23 +194,14 @@ class Albums {
   public async save_albums_for_current_user(
     ids: string[]
   ): Promise<{ result?: string; error?: CustomError }> {
-    const check_token = check_user_token(this.info.user_access_token);
-    if (check_token.error) return check_token;
-
     let url = `${this.info.api_url}/me/albums?ids=${ids.toString()}`;
 
-    let result = await this.info.submit_request<string>({
-      method: "PUT",
+    return await this.info.submit_user_scoped_request({
       url,
-      token: this.info.user_access_token,
+      method: "PUT",
       body: JSON.stringify({ ids }),
+      scopes: ["user-library-modify"],
     });
-
-    if (scope_check(result.error)) {
-      result.error!.scopes = ["user-library-modify"];
-    }
-
-    return result;
   }
 
   /**
@@ -240,21 +221,14 @@ class Albums {
   public async remove_users_saved_albums(
     ids: string[]
   ): Promise<{ result?: string; error?: CustomError }> {
-    const check_token = check_user_token(this.info.user_access_token);
-    if (check_token.error) return check_token;
-
     let url = `${this.info.api_url}/me/albums?ids=${ids.toString()}`;
-    let result = await this.info.submit_request<string>({
-      method: "DELETE",
+
+    return await this.info.submit_user_scoped_request({
       url,
-      token: this.info.user_access_token,
+      method: "DELETE",
+      body: JSON.stringify({ ids }),
+      scopes: ["user-library-modify"],
     });
-
-    if (scope_check(result.error)) {
-      result.error!.scopes = ["user-library-modify"];
-    }
-
-    return result;
   }
 
   /**
@@ -274,22 +248,14 @@ class Albums {
   public async check_users_saved_albums(
     ids: string[]
   ): Promise<{ result?: boolean[]; error?: CustomError }> {
-    const check_token = check_user_token(this.info.user_access_token);
-    if (check_token.error) return check_token;
-
     let url = `${this.info.api_url}/me/albums/contains?ids=${ids.toString()}`;
-    let result = await this.info.submit_request<boolean[]>({
-      method: "GET",
+
+    return await this.info.submit_user_scoped_request({
       url,
-      token: this.info.user_access_token,
+      method: "GET",
       object: z.array(z.boolean()),
+      scopes: ["user-library-read"],
     });
-
-    if (scope_check(result.error)) {
-      result.error!.scopes = ["user-library-read"];
-    }
-
-    return result;
   }
 
   /**

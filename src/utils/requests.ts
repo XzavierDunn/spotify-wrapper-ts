@@ -3,10 +3,11 @@ import { z } from "zod";
 const FetchData = z.object({
   method: z.enum(["GET", "PUT", "POST", "DELETE"]),
   url: z.string(),
-  token: z.string(),
+  token: z.string().optional(),
   body: z.string().optional(),
   object: z.any().optional(), // TODO: restrict to zod objects
   user: z.boolean().optional(),
+  scopes: z.array(z.string()).optional(),
 });
 
 type FetchDataType = z.infer<typeof FetchData>;

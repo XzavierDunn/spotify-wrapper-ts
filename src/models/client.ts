@@ -19,14 +19,13 @@ type InfoType = {
   api_url: string;
   client_access_token: string;
   user_access_token: string;
-  error_handler: <T>(
-    status_code: number,
-    input: { error: any },
-    fetchData: FetchDataType
-  ) => Promise<{ result?: T; error?: CustomError }>;
   submit_request: <T>(
     input: FetchDataType
   ) => Promise<{ result?: T; error?: CustomError }>;
+  submit_user_scoped_request: <T>(input: FetchDataType) => Promise<{
+    result?: T;
+    error?: CustomError;
+  }>;
 };
 
 type CredentialsType = z.infer<typeof Credentials>;
