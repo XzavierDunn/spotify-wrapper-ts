@@ -152,7 +152,7 @@ class Albums {
     let url = `${this.info.api_url}/me/albums?limit=${limit}&offset=${offset}`;
     if (market) url += `&market=${market}`;
 
-    return await this.info.submit_user_scoped_request({
+    return await this.info.submit_user_scoped_request<UsersAlbumsType>({
       url,
       method: "GET",
       object: UsersAlbums,
