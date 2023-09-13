@@ -1,4 +1,4 @@
-import { InfoType } from "../client/client";
+import { CustomError, InfoType } from "../models/client";
 import { PagedTracks, PagedTracksType } from "../models/paged-track";
 
 import {
@@ -19,150 +19,137 @@ class Player {
     this.api_url = this.info.api_url + "/me/player/";
   }
 
-  // /**
-  //  * Get Playback State - https://developer.spotify.com/documentation/web-api/reference/get-information-about-the-users-current-playback
-  //  * Get information about the user’s current playback state, including track or episode, progress, and active device.
-  //  * @param market
-  //  * An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.
-  //  * If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.
-  //  * Note: If neither market or user country are provided, the content is considered unavailable for the client.
-  //  * Users can view the country that is associated with their account in the account settings.
-  //  * Example value: "ES"
-  //  * @param additional_types
-  //  * A comma-separated list of item types that your client supports besides the default track type. Valid types are: track and episode.
-  //  * Note: This parameter was introduced to allow existing clients to maintain their current behaviour and might be deprecated in the future.
-  //  * In addition to providing this parameter, make sure that your client properly handles cases of new types in the future by checking against the type field of each object.
-  //  * @Scopes Authorization scopes
-  //  * -user-read-playback-state
-  //  * @returns
-  //  * Promise<{
-  //  * result?: PlaybackStateType;
-  //  * error?: Error;
-  //  * }>
-  //  */
-  // public async get_playback_state(
-  //   market?: string,
-  //   additional_types?: string
-  // ): Promise<{ result?: PlaybackStateType | string; error?: Error }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
+  /**
+   * Get Playback State - https://developer.spotify.com/documentation/web-api/reference/get-information-about-the-users-current-playback
+   * Get information about the user’s current playback state, including track or episode, progress, and active device.
+   * @param market
+   * An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.
+   * If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.
+   * Note: If neither market or user country are provided, the content is considered unavailable for the client.
+   * Users can view the country that is associated with their account in the account settings.
+   * Example value: "ES"
+   * @param additional_types
+   * A comma-separated list of item types that your client supports besides the default track type. Valid types are: track and episode.
+   * Note: This parameter was introduced to allow existing clients to maintain their current behaviour and might be deprecated in the future.
+   * In addition to providing this parameter, make sure that your client properly handles cases of new types in the future by checking against the type field of each object.
+   * @Scopes Authorization scopes
+   * -user-read-playback-state
+   * @returns
+   * Promise<{
+   * result?: PlaybackStateType;
+   * error?: CustomError;
+   * }>
+   */
+  public async get_playback_state(
+    market?: string,
+    additional_types?: string
+  ): Promise<{ result?: PlaybackStateType; error?: CustomError }> {
+    let url = this.api_url + "?";
+    if (market) url += `&market=${market}`;
+    if (additional_types) url += `&additional_types=${additional_types}`;
 
-  //   let url = this.api_url + "?";
-  //   if (market) url += `&market=${market}`;
-  //   if (additional_types) url += `&additional_types=${additional_types}`;
+    // TODO: handle custom error? or return no content?
+    return await this.info.submit_user_scoped_request<PlaybackStateType>({
+      url,
+      method: "GET",
+      object: PlaybackState,
+      scopes: ["user-read-playback-state"],
+    });
 
-  //   let result = await get_req(
-  //     url,
-  //     this.info.user_access_token,
-  //     PlaybackState,
-  //     this.info
-  //   );
+    // if (result.error && result.error.response === "No Content")
+    //   return { error: new Error("Playback not available or active") };
+    // return result;
+  }
 
-  //   if (result.error && result.error.response === "No Content")
-  //     return { error: new Error("Playback not available or active") };
-  //   return result;
-  // }
+  /**
+   * Transfer Playback - https://developer.spotify.com/documentation/web-api/reference/transfer-a-users-playback
+   * Transfer playback to a new device and determine if it should start playing.
+   * @param device_ids
+   * A JSON array containing the ID of the device on which playback should be started/transferred.
+   * For example:{device_ids:["74ASZWbe4lXaubB36ztrGX"]}
+   * Note: Although an array is accepted, only a single device_id is currently supported. Supplying more than one will return 400 Bad Request
+   * @param play
+   * true: ensure playback happens on the new device.
+   * false or not provided: keep the current playback state.
+   * @Scopes Authorization scopes
+   * - user-modify-playback-state
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: CustomError;
+   * }>
+   */
+  public async transfer_playback(
+    device_ids: string[],
+    play?: boolean
+  ): Promise<{ result?: string; error?: CustomError }> {
+    return await this.info.submit_user_scoped_request({
+      url: this.api_url,
+      method: "PUT",
+      body: JSON.stringify({ device_ids, play }),
+      scopes: ["user-modify-playback-state"],
+    });
+  }
 
-  // /**
-  //  * Transfer Playback - https://developer.spotify.com/documentation/web-api/reference/transfer-a-users-playback
-  //  * Transfer playback to a new device and determine if it should start playing.
-  //  * @param device_ids
-  //  * A JSON array containing the ID of the device on which playback should be started/transferred.
-  //  * For example:{device_ids:["74ASZWbe4lXaubB36ztrGX"]}
-  //  * Note: Although an array is accepted, only a single device_id is currently supported. Supplying more than one will return 400 Bad Request
-  //  * @param play
-  //  * true: ensure playback happens on the new device.
-  //  * false or not provided: keep the current playback state.
-  //  * @Scopes Authorization scopes
-  //  * - user-modify-playback-state
-  //  * @returns
-  //  * Promise<{
-  //  * result?: string;
-  //  * error?: Error;
-  //  * }>
-  //  */
-  // public async transfer_playback(
-  //   device_ids: string[],
-  //   play?: boolean
-  // ): Promise<{ result?: string; error?: Error }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
+  /**
+   * Get Available Devices - https://developer.spotify.com/documentation/web-api/reference/get-a-users-available-devices
+   * Get information about a user’s available devices.
+   * @Scopes Authorization scopes
+   * - user-read-playback-state
+   * @returns
+   * Promise<{
+   * result?: SeveralDevicesType;
+   * error?: CustomError;
+   * }>
+   */
+  public async get_available_devices(): Promise<{
+    result?: SeveralDevicesType;
+    error?: CustomError;
+  }> {
+    return await this.info.submit_user_scoped_request<SeveralDevicesType>({
+      url: this.api_url + "devices",
+      method: "GET",
+      object: SeveralDevices,
+      scopes: ["user-read-playback-state"],
+    });
+  }
 
-  //   let data = await put_req(
-  //     this.api_url,
-  //     this.info.user_access_token,
-  //     JSON.stringify({ device_ids, play }),
-  //     this.info
-  //   );
+  /**
+   * Get Currently Playing Track - https://developer.spotify.com/documentation/web-api/reference/get-the-users-currently-playing-track
+   * Get the object currently being played on the user's Spotify account.
+   * @param market
+   * An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.
+   * If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.
+   * Note: If neither market or user country are provided, the content is considered unavailable for the client.
+   * Users can view the country that is associated with their account in the account settings.
+   * Example value: "ES"
+   * @param additional_types
+   * A comma-separated list of item types that your client supports besides the default track type. Valid types are: track and episode.
+   * Note: This parameter was introduced to allow existing clients to maintain their current behaviour and might be deprecated in the future.
+   * In addition to providing this parameter, make sure that your client properly handles cases of new types in the future by checking against the type field of each object.
+   * @Scopes Authorization scopes
+   * - user-read-currently-playing
+   * @returns
+   * Promise<{
+   * result?: PlaybackStateType;
+   * error?: CustomError;
+   * }>
+   */
+  public async get_currently_playing_track(
+    market?: string,
+    additional_types?: string
+  ): Promise<{ result?: PlaybackStateType; error?: CustomError }> {
+    let url = this.api_url + "currently-playing?";
+    if (market) url += `&market=${market}`;
+    if (additional_types) url += `&additional_types=${additional_types}`;
 
-  //   return data;
-  // }
-
-  // /**
-  //  * Get Available Devices - https://developer.spotify.com/documentation/web-api/reference/get-a-users-available-devices
-  //  * Get information about a user’s available devices.
-  //  * @Scopes Authorization scopes
-  //  * - user-read-playback-state
-  //  * @returns
-  //  * Promise<{
-  //  * result?: SeveralDevicesType;
-  //  * error?: Error;
-  //  * }>
-  //  */
-  // public async get_available_devices(): Promise<{
-  //   result?: SeveralDevicesType;
-  //   error?: Error;
-  // }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
-
-  //   return await get_req(
-  //     this.api_url + "devices",
-  //     this.info.user_access_token,
-  //     SeveralDevices,
-  //     this.info
-  //   );
-  // }
-
-  // /**
-  //  * Get Currently Playing Track - https://developer.spotify.com/documentation/web-api/reference/get-the-users-currently-playing-track
-  //  * Get the object currently being played on the user's Spotify account.
-  //  * @param market
-  //  * An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned.
-  //  * If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter.
-  //  * Note: If neither market or user country are provided, the content is considered unavailable for the client.
-  //  * Users can view the country that is associated with their account in the account settings.
-  //  * Example value: "ES"
-  //  * @param additional_types
-  //  * A comma-separated list of item types that your client supports besides the default track type. Valid types are: track and episode.
-  //  * Note: This parameter was introduced to allow existing clients to maintain their current behaviour and might be deprecated in the future.
-  //  * In addition to providing this parameter, make sure that your client properly handles cases of new types in the future by checking against the type field of each object.
-  //  * @Scopes Authorization scopes
-  //  * - user-read-currently-playing
-  //  * @returns
-  //  * Promise<{
-  //  * result?: PlaybackStateType;
-  //  * error?: Error;
-  //  * }>
-  //  */
-  // public async get_currently_playing_track(
-  //   market?: string,
-  //   additional_types?: string
-  // ): Promise<{ result?: PlaybackStateType; error?: Error }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
-
-  //   let url = this.api_url + "currently-playing?";
-  //   if (market) url += `&market=${market}`;
-  //   if (additional_types) url += `&additional_types=${additional_types}`;
-
-  //   return await get_req(
-  //     url,
-  //     this.info.user_access_token,
-  //     PlaybackState,
-  //     this.info
-  //   );
-  // }
+    return await this.info.submit_user_scoped_request<PlaybackStateType>({
+      url,
+      method: "GET",
+      object: PlaybackState,
+      scopes: ["user-read-currently-playing"],
+    });
+  }
 
   // /**
   //  * Start/Resume Playback - https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback
@@ -186,35 +173,27 @@ class Player {
   //  * @returns
   //  * Promise<{
   //  * result?: string;
-  //  * error?: Error;
+  //  * error?: CustomError;
   //  * }>
   //  */
-  // public async start_or_resume_playback({
-  //   device_id,
-  //   context_uri,
-  //   uris,
-  //   offset,
-  //   position_ms,
-  // }: {
+  // public async start_or_resume_playback(optional?: {
   //   device_id?: string;
   //   context_uri?: string;
   //   uris?: string[];
   //   offset?: offsetType;
   //   position_ms?: number;
-  // }): Promise<{ result?: string; error?: Error }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
+  // }): Promise<{ result?: string; error?: CustomError }> {
+  //   let { device_id, context_uri, uris, offset, position_ms } = optional || {};
 
   //   let url = `${this.api_url}play`;
   //   if (device_id) url += `?device_id=${device_id}`;
 
-  //   let body = JSON.stringify({
-  //     context_uri,
-  //     uris,
-  //     offset,
-  //     position_ms,
+  //   return await this.info.submit_user_scoped_request({
+  //     url,
+  //     method: "PUT",
+  //     body: JSON.stringify({ context_uri, uris, offset, position_ms }),
+  //     scopes: ["user-modify-playback-state"],
   //   });
-  //   return await put_req(url, this.info.user_access_token, body, this.info);
   // }
 
   // /**
@@ -228,19 +207,20 @@ class Player {
   //  * @returns
   //  * Promise<{
   //  * result?: string;
-  //  * error?: Error;
+  //  * error?: CustomError;
   //  * }>
   //  */
   // public async pause_playback(
   //   device_id?: string
-  // ): Promise<{ result?: string; error?: Error }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
-
+  // ): Promise<{ result?: string; error?: CustomError }> {
   //   let url = `${this.api_url}pause`;
   //   if (device_id) url += `?device_id=${device_id}`;
 
-  //   return await put_req(url, this.info.user_access_token, null, this.info);
+  //   return await this.info.submit_user_scoped_request({
+  //     url,
+  //     method: "PUT",
+  //     scopes: ["user-modify-playback-state"],
+  //   });
   // }
 
   // /**
@@ -254,19 +234,20 @@ class Player {
   //  * @returns
   //  * Promise<{
   //  * result?: string;
-  //  * error?: Error;
+  //  * error?: CustomError;
   //  * }>
   //  */
   // public async skip_to_next(
   //   device_id?: string
-  // ): Promise<{ result?: string; error?: Error }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
-
+  // ): Promise<{ result?: string; error?: CustomError }> {
   //   let url = `${this.api_url}next`;
   //   if (device_id) url += `?device_id=${device_id}`;
 
-  //   return await post_req(url, this.info.user_access_token, null, this.info);
+  //   return await this.info.submit_user_scoped_request({
+  //     url,
+  //     method: "POST",
+  //     scopes: ["user-modify-playback-state"],
+  //   });
   // }
 
   // /**
@@ -280,19 +261,20 @@ class Player {
   //  * @returns
   //  * Promise<{
   //  * result?: string;
-  //  * error?: Error;
+  //  * error?: CustomError;
   //  * }>
   //  */
   // public async skip_to_previous(
   //   device_id?: string
-  // ): Promise<{ result?: string; error?: Error }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
-
+  // ): Promise<{ result?: string; error?: CustomError }> {
   //   let url = `${this.api_url}previous`;
   //   if (device_id) url += `?device_id=${device_id}`;
 
-  //   return await post_req(url, this.info.user_access_token, null, this.info);
+  //   return await this.info.submit_user_scoped_request({
+  //     url,
+  //     method: "POST",
+  //     scopes: ["user-modify-playback-state"],
+  //   });
   // }
 
   // /**
@@ -309,20 +291,21 @@ class Player {
   //  * @returns
   //  * Promise<{
   //  * result?: string;
-  //  * error?: Error;
+  //  * error?: CustomError;
   //  * }>
   //  */
   // public async seek_to_position(
   //   position_ms: number,
   //   device_id?: string
-  // ): Promise<{ result?: string; error?: Error }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
-
+  // ): Promise<{ result?: string; error?: CustomError }> {
   //   let url = `${this.api_url}seek?position_ms=${position_ms}`;
   //   if (device_id) url += `&device_id=${device_id}`;
 
-  //   return await put_req(url, this.info.user_access_token, null, this.info);
+  //   return await this.info.submit_user_scoped_request({
+  //     url,
+  //     method: "PUT",
+  //     scopes: ["user-modify-playback-state"],
+  //   });
   // }
 
   // /**
@@ -342,20 +325,21 @@ class Player {
   //  * @returns
   //  * Promise<{
   //  * result?: string;
-  //  * error?: Error;
+  //  * error?: CustomError;
   //  * }>
   //  */
   // public async set_repeat_mode(
   //   state: string,
   //   device_id?: string
-  // ): Promise<{ result?: string; error?: Error }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
-
+  // ): Promise<{ result?: string; error?: CustomError }> {
   //   let url = `${this.api_url}repeat?state=${state}`;
   //   if (device_id) url += `&device_id=${device_id}`;
 
-  //   return await put_req(url, this.info.user_access_token, null, this.info);
+  //   return await this.info.submit_user_scoped_request({
+  //     url,
+  //     method: "PUT",
+  //     scopes: ["user-modify-playback-state"],
+  //   });
   // }
 
   // /**
@@ -372,20 +356,21 @@ class Player {
   //  * @returns
   //  * Promise<{
   //  * result?: string;
-  //  * error?: Error;
+  //  * error?: CustomError;
   //  * }>
   //  */
   // public async set_playback_volume(
   //   volume_percent: number,
   //   device_id?: string
-  // ): Promise<{ result?: string; error?: Error }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
-
+  // ): Promise<{ result?: string; error?: CustomError }> {
   //   let url = `${this.api_url}volume?volume_percent=${volume_percent}`;
   //   if (device_id) url += `&device_id=${device_id}`;
 
-  //   return await put_req(url, this.info.user_access_token, null, this.info);
+  //   return await this.info.submit_user_scoped_request({
+  //     url,
+  //     method: "PUT",
+  //     scopes: ["user-modify-playback-state"],
+  //   });
   // }
 
   // /**
@@ -403,20 +388,21 @@ class Player {
   //  * @returns
   //  * Promise<{
   //  * result?: string;
-  //  * error?: Error;
+  //  * error?: CustomError;
   //  * }>
   //  */
   // public async toggle_playback_shuffle(
   //   state: boolean,
   //   device_id?: string
-  // ): Promise<{ result?: string; error?: Error }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
-
+  // ): Promise<{ result?: string; error?: CustomError }> {
   //   let url = `${this.api_url}shuffle?state=${state}`;
   //   if (device_id) url += `&device_id=${device_id}`;
 
-  //   return await put_req(url, this.info.user_access_token, null, this.info);
+  //   return await this.info.submit_user_scoped_request({
+  //     url,
+  //     method: "PUT",
+  //     scopes: ["user-modify-playback-state"],
+  //   });
   // }
 
   // /**
@@ -437,7 +423,7 @@ class Player {
   //  * @returns
   //  * Promise<{
   //  * result?: PagedTracksType;
-  //  * error?: Error;
+  //  * error?: CustomError;
   //  * }>
   //  */
   // public async get_recently_played_tracks({
@@ -448,9 +434,7 @@ class Player {
   //   after?: number;
   //   before?: number;
   //   limit?: number;
-  // }): Promise<{ result?: PagedTracksType; error?: Error }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
+  // }): Promise<{ result?: PagedTracksType; error?: CustomError }> {
   //   if (after && before)
   //     throw new Error("Before and after can't be used together");
 
@@ -458,12 +442,12 @@ class Player {
   //   if (after) url += `&after=${after}`;
   //   if (before) url += `&before=${before}`;
 
-  //   return await get_req(
+  //   return await this.info.submit_user_scoped_request({
   //     url,
-  //     this.info.user_access_token,
-  //     PagedTracks,
-  //     this.info
-  //   );
+  //     method: "GET",
+  //     object: PagedTracks,
+  //     scopes: ["user-read-recently-played"],
+  //   });
   // }
 
   // /**
@@ -474,19 +458,19 @@ class Player {
   //  * @returns
   //  * Promise<{
   //  * result?: QueueType;
-  //  * error?: Error;
+  //  * error?: CustomError;
   //  * }>
   //  */
   // public async get_users_queue(): Promise<{
   //   result?: QueueType;
-  //   error?: Error;
+  //   error?: CustomError;
   // }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
-
-  //   let url = `${this.api_url}queue`;
-
-  //   return await get_req(url, this.info.user_access_token, Queue, this.info);
+  //   return await this.info.submit_user_scoped_request({
+  //     url: `${this.api_url}queue`,
+  //     method: "GET",
+  //     object: Queue,
+  //     scopes: ["user-read-playback-state"],
+  //   });
   // }
 
   // /**
@@ -503,7 +487,7 @@ class Player {
   //  * @returns
   //  * Promise<{
   //  * result?: string;
-  //  * error?: Error;
+  //  * error?: CustomError;
   //  * }>
   //  */
   // public async add_item_to_playback_queue(
@@ -511,15 +495,16 @@ class Player {
   //   device_id?: string
   // ): Promise<{
   //   result?: string;
-  //   error?: Error;
+  //   error?: CustomError;
   // }> {
-  //   if (!this.info.user_access_token || !this.info.user_access_token.length)
-  //     throw new Error("User access token is required");
-
   //   let url = `${this.api_url}queue?uri=${uri}`;
   //   if (device_id) url += `&device_id=${device_id}`;
 
-  //   return await post_req(url, this.info.user_access_token, null, this.info);
+  //   return await this.info.submit_user_scoped_request({
+  //     url,
+  //     method: "POST",
+  //     scopes: ["user-modify-playback-state"],
+  //   });
   // }
 }
 

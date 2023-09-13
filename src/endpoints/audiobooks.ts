@@ -39,13 +39,10 @@ class Audiobooks {
    * @returns
    * Promise<{ result?: AudiobookType; error?: CustomError }>
    */
-  public async get_an_audiobook({
-    id,
-    market,
-  }: {
-    id: string;
-    market?: string;
-  }): Promise<{ result?: AudiobookType; error?: CustomError }> {
+  public async get_an_audiobook(
+    id: string,
+    market?: string
+  ): Promise<{ result?: AudiobookType; error?: CustomError }> {
     let url = `${this.api_url}${id}`;
     if (market) url += `?market=${market}`;
 
@@ -72,13 +69,10 @@ class Audiobooks {
    * @returns
    * Promise<{ result?: SeveralAudiobookType; error?: CustomError }
    */
-  public async get_several_audiobooks({
-    ids,
-    market,
-  }: {
-    ids: string[];
-    market?: string;
-  }): Promise<{ result?: SeveralAudiobookType; error?: CustomError }> {
+  public async get_several_audiobooks(
+    ids: string[],
+    market?: string
+  ): Promise<{ result?: SeveralAudiobookType; error?: CustomError }> {
     let url = `${this.api_url}?ids=${ids.join(",")}`;
     if (market) url += `&market=${market}`;
 
