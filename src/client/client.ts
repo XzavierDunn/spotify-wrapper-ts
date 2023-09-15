@@ -123,10 +123,14 @@ class Client {
     let scope_issue = false;
 
     switch (status_code) {
-      case 400:
-        if (input.error.message === "invalid id") return input;
+      case 400: // TODO: CHECK FOR SPECIFIC REFRESH ERROR
+        return input;
       case 401:
-        refresh = true;
+        if (input.error.message === "Permissions missing") {
+          scope_issue = true;
+        } else {
+          refresh = true;
+        }
         break;
       case 403:
         scope_issue = true;
@@ -144,7 +148,7 @@ class Client {
     }
 
     if (scope_issue) {
-      return { error: { status_code, message: input.error.message } };
+      return { error: { status_code: 403, message: input.error.message } };
     }
 
     throw new Error("NEW ERROR");
@@ -159,6 +163,7 @@ class Client {
 
   async refresh_user_token(): Promise<string> {
     console.log("Attempting to refresh the user token");
+    console.log(this.UserInfo);
     if (!this.UserInfo.refresh_token)
       throw new Error("Missing user refresh token");
 

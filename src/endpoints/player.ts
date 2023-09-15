@@ -151,361 +151,365 @@ class Player {
     });
   }
 
-  // /**
-  //  * Start/Resume Playback - https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback
-  //  * Start a new context or resume current playback on the user's active device.
-  //  * @param device_id
-  //  * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
-  //  * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
-  //  * @param context_uri
-  //  * Optional. Spotify URI of the context to play. Valid contexts are albums, artists & playlists.
-  //  * {context_uri:"spotify:album:1Je1IMUlBXcx1Fz0WE7oPT"}
-  //  * @param uris
-  //  * Optional. A JSON array of the Spotify track URIs to play.
-  //  * For example:{uris:["spotify:track:4iV5W9uYEdYUVa79Axb7Rh","spotify:track:1301WleyT98MSxVHPZCA6M"]}
-  //  * @param offset
-  //  * Optional. Indicates from where in the context playback should start. Only available when context_uri corresponds to an album or playlist object "position" is zero based and can’t be negative.
-  //  * Example: "offset": {"position": 5} "uri" is a string representing the uri of the item to start at. Example: "offset": {"uri": "spotify:track:1301WleyT98MSxVHPZCA6M"} supports free form additional properties
-  //  * @param position_ms
-  //  * Optional. Indicates from what position to start playback. Must be a positive number. Passing in a position that is greater than the length of the track will cause the player to start playing the next song.
-  //  * @Scopes Authorization scopes
-  //  * - user-modify-playback-state
-  //  * @returns
-  //  * Promise<{
-  //  * result?: string;
-  //  * error?: CustomError;
-  //  * }>
-  //  */
-  // public async start_or_resume_playback(optional?: {
-  //   device_id?: string;
-  //   context_uri?: string;
-  //   uris?: string[];
-  //   offset?: offsetType;
-  //   position_ms?: number;
-  // }): Promise<{ result?: string; error?: CustomError }> {
-  //   let { device_id, context_uri, uris, offset, position_ms } = optional || {};
+  /**
+   * Start/Resume Playback - https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback
+   * Start a new context or resume current playback on the user's active device.
+   * @param device_id
+   * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
+   * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
+   * @param context_uri
+   * Optional. Spotify URI of the context to play. Valid contexts are albums, artists & playlists.
+   * {context_uri:"spotify:album:1Je1IMUlBXcx1Fz0WE7oPT"}
+   * @param uris
+   * Optional. A JSON array of the Spotify track URIs to play.
+   * For example:{uris:["spotify:track:4iV5W9uYEdYUVa79Axb7Rh","spotify:track:1301WleyT98MSxVHPZCA6M"]}
+   * @param offset
+   * Optional. Indicates from where in the context playback should start. Only available when context_uri corresponds to an album or playlist object "position" is zero based and can’t be negative.
+   * Example: "offset": {"position": 5} "uri" is a string representing the uri of the item to start at. Example: "offset": {"uri": "spotify:track:1301WleyT98MSxVHPZCA6M"} supports free form additional properties
+   * @param position_ms
+   * Optional. Indicates from what position to start playback. Must be a positive number. Passing in a position that is greater than the length of the track will cause the player to start playing the next song.
+   * @Scopes Authorization scopes
+   * - user-modify-playback-state
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: CustomError;
+   * }>
+   */
+  public async start_or_resume_playback(optional?: {
+    device_id?: string;
+    context_uri?: string;
+    uris?: string[];
+    offset?: offsetType;
+    position_ms?: number;
+  }): Promise<{ result?: string; error?: CustomError }> {
+    let { device_id, context_uri, uris, offset, position_ms } = optional || {};
+    if (!context_uri && !uris)
+      return {
+        error: { message: "A list of URIs or a context uri must be provided" },
+      };
 
-  //   let url = `${this.api_url}play`;
-  //   if (device_id) url += `?device_id=${device_id}`;
+    let url = `${this.api_url}play`;
+    if (device_id) url += `?device_id=${device_id}`;
 
-  //   return await this.info.submit_user_scoped_request({
-  //     url,
-  //     method: "PUT",
-  //     body: JSON.stringify({ context_uri, uris, offset, position_ms }),
-  //     scopes: ["user-modify-playback-state"],
-  //   });
-  // }
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "PUT",
+      body: JSON.stringify({ context_uri, uris, offset, position_ms }),
+      scopes: ["user-modify-playback-state"],
+    });
+  }
 
-  // /**
-  //  * Pause Playback - https://developer.spotify.com/documentation/web-api/reference/pause-a-users-playback
-  //  * Pause playback on the user's account.
-  //  * @param device_id
-  //  * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
-  //  * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
-  //  * @Scopes Authorization scopes
-  //  * - user-modify-playback-state
-  //  * @returns
-  //  * Promise<{
-  //  * result?: string;
-  //  * error?: CustomError;
-  //  * }>
-  //  */
-  // public async pause_playback(
-  //   device_id?: string
-  // ): Promise<{ result?: string; error?: CustomError }> {
-  //   let url = `${this.api_url}pause`;
-  //   if (device_id) url += `?device_id=${device_id}`;
+  /**
+   * Pause Playback - https://developer.spotify.com/documentation/web-api/reference/pause-a-users-playback
+   * Pause playback on the user's account.
+   * @param device_id
+   * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
+   * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
+   * @Scopes Authorization scopes
+   * - user-modify-playback-state
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: CustomError;
+   * }>
+   */
+  public async pause_playback(
+    device_id?: string
+  ): Promise<{ result?: string; error?: CustomError }> {
+    let url = `${this.api_url}pause`;
+    if (device_id) url += `?device_id=${device_id}`;
 
-  //   return await this.info.submit_user_scoped_request({
-  //     url,
-  //     method: "PUT",
-  //     scopes: ["user-modify-playback-state"],
-  //   });
-  // }
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "PUT",
+      scopes: ["user-modify-playback-state"],
+    });
+  }
 
-  // /**
-  //  * Skip To Next - https://developer.spotify.com/documentation/web-api/reference/skip-users-playback-to-next-track
-  //  * Skips to next track in the user’s queue.
-  //  * @param device_id
-  //  * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
-  //  * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
-  //  * @Scopes Authorization scopes
-  //  * - user-modify-playback-state
-  //  * @returns
-  //  * Promise<{
-  //  * result?: string;
-  //  * error?: CustomError;
-  //  * }>
-  //  */
-  // public async skip_to_next(
-  //   device_id?: string
-  // ): Promise<{ result?: string; error?: CustomError }> {
-  //   let url = `${this.api_url}next`;
-  //   if (device_id) url += `?device_id=${device_id}`;
+  /**
+   * Skip To Next - https://developer.spotify.com/documentation/web-api/reference/skip-users-playback-to-next-track
+   * Skips to next track in the user’s queue.
+   * @param device_id
+   * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
+   * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
+   * @Scopes Authorization scopes
+   * - user-modify-playback-state
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: CustomError;
+   * }>
+   */
+  public async skip_to_next(
+    device_id?: string
+  ): Promise<{ result?: string; error?: CustomError }> {
+    let url = `${this.api_url}next`;
+    if (device_id) url += `?device_id=${device_id}`;
 
-  //   return await this.info.submit_user_scoped_request({
-  //     url,
-  //     method: "POST",
-  //     scopes: ["user-modify-playback-state"],
-  //   });
-  // }
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "POST",
+      scopes: ["user-modify-playback-state"],
+    });
+  }
 
-  // /**
-  //  * Skip To Previous - https://developer.spotify.com/documentation/web-api/reference/skip-users-playback-to-previous-track
-  //  * Skips to previous track in the user’s queue.
-  //  * @param device_id
-  //  * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
-  //  * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
-  //  * @Scopes Authorization scopes
-  //  * - user-modify-playback-state
-  //  * @returns
-  //  * Promise<{
-  //  * result?: string;
-  //  * error?: CustomError;
-  //  * }>
-  //  */
-  // public async skip_to_previous(
-  //   device_id?: string
-  // ): Promise<{ result?: string; error?: CustomError }> {
-  //   let url = `${this.api_url}previous`;
-  //   if (device_id) url += `?device_id=${device_id}`;
+  /**
+   * Skip To Previous - https://developer.spotify.com/documentation/web-api/reference/skip-users-playback-to-previous-track
+   * Skips to previous track in the user’s queue.
+   * @param device_id
+   * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
+   * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
+   * @Scopes Authorization scopes
+   * - user-modify-playback-state
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: CustomError;
+   * }>
+   */
+  public async skip_to_previous(
+    device_id?: string
+  ): Promise<{ result?: string; error?: CustomError }> {
+    let url = `${this.api_url}previous`;
+    if (device_id) url += `?device_id=${device_id}`;
 
-  //   return await this.info.submit_user_scoped_request({
-  //     url,
-  //     method: "POST",
-  //     scopes: ["user-modify-playback-state"],
-  //   });
-  // }
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "POST",
+      scopes: ["user-modify-playback-state"],
+    });
+  }
 
-  // /**
-  //  * Seek To Position - https://developer.spotify.com/documentation/web-api/reference/seek-to-position-in-currently-playing-track
-  //  * Seeks to the given position in the user’s currently playing track.
-  //  * @param device_id
-  //  * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
-  //  * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
-  //  * @param position_ms
-  //  * The position in milliseconds to seek to. Must be a positive number. Passing in a position that is greater than the length of the track will cause the player to start playing the next song.
-  //  * Example value: 25000
-  //  * @Scopes Authorization scopes
-  //  * - user-modify-playback-state
-  //  * @returns
-  //  * Promise<{
-  //  * result?: string;
-  //  * error?: CustomError;
-  //  * }>
-  //  */
-  // public async seek_to_position(
-  //   position_ms: number,
-  //   device_id?: string
-  // ): Promise<{ result?: string; error?: CustomError }> {
-  //   let url = `${this.api_url}seek?position_ms=${position_ms}`;
-  //   if (device_id) url += `&device_id=${device_id}`;
+  /**
+   * Seek To Position - https://developer.spotify.com/documentation/web-api/reference/seek-to-position-in-currently-playing-track
+   * Seeks to the given position in the user’s currently playing track.
+   * @param device_id
+   * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
+   * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
+   * @param position_ms
+   * The position in milliseconds to seek to. Must be a positive number. Passing in a position that is greater than the length of the track will cause the player to start playing the next song.
+   * Example value: 25000
+   * @Scopes Authorization scopes
+   * - user-modify-playback-state
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: CustomError;
+   * }>
+   */
+  public async seek_to_position(
+    position_ms: number,
+    device_id?: string
+  ): Promise<{ result?: string; error?: CustomError }> {
+    let url = `${this.api_url}seek?position_ms=${position_ms}`;
+    if (device_id) url += `&device_id=${device_id}`;
 
-  //   return await this.info.submit_user_scoped_request({
-  //     url,
-  //     method: "PUT",
-  //     scopes: ["user-modify-playback-state"],
-  //   });
-  // }
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "PUT",
+      scopes: ["user-modify-playback-state"],
+    });
+  }
 
-  // /**
-  //  * Set Repeat Mode - https://developer.spotify.com/documentation/web-api/reference/set-repeat-mode-on-users-playback
-  //  * Set the repeat mode for the user's playback. Options are repeat-track, repeat-context, and off.
-  //  * @param device_id
-  //  * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
-  //  * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
-  //  * @param state
-  //  * track, context or off.
-  //  * track will repeat the current track.
-  //  * context will repeat the current context.
-  //  * off will turn repeat off.
-  //  * Example value: "context"
-  //  * @Scopes Authorization scopes
-  //  * - user-modify-playback-state
-  //  * @returns
-  //  * Promise<{
-  //  * result?: string;
-  //  * error?: CustomError;
-  //  * }>
-  //  */
-  // public async set_repeat_mode(
-  //   state: string,
-  //   device_id?: string
-  // ): Promise<{ result?: string; error?: CustomError }> {
-  //   let url = `${this.api_url}repeat?state=${state}`;
-  //   if (device_id) url += `&device_id=${device_id}`;
+  /**
+   * Set Repeat Mode - https://developer.spotify.com/documentation/web-api/reference/set-repeat-mode-on-users-playback
+   * Set the repeat mode for the user's playback. Options are repeat-track, repeat-context, and off.
+   * @param device_id
+   * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
+   * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
+   * @param state
+   * track, context or off.
+   * track will repeat the current track.
+   * context will repeat the current context.
+   * off will turn repeat off.
+   * Example value: "context"
+   * @Scopes Authorization scopes
+   * - user-modify-playback-state
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: CustomError;
+   * }>
+   */
+  public async set_repeat_mode(
+    state: "track" | "context" | "off",
+    device_id?: string
+  ): Promise<{ result?: string; error?: CustomError }> {
+    let url = `${this.api_url}repeat?state=${state}`;
+    if (device_id) url += `&device_id=${device_id}`;
 
-  //   return await this.info.submit_user_scoped_request({
-  //     url,
-  //     method: "PUT",
-  //     scopes: ["user-modify-playback-state"],
-  //   });
-  // }
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "PUT",
+      scopes: ["user-modify-playback-state"],
+    });
+  }
 
-  // /**
-  //  * Set Playback Volume - https://developer.spotify.com/documentation/web-api/reference/set-volume-for-users-playback
-  //  * Set the volume for the user’s current playback device.
-  //  * @param device_id
-  //  * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
-  //  * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
-  //  * @param volume_percent
-  //  * The volume to set. Must be a value from 0 to 100 inclusive.
-  //  * Example value: 50
-  //  * @Scopes Authorization scopes
-  //  * - user-modify-playback-state
-  //  * @returns
-  //  * Promise<{
-  //  * result?: string;
-  //  * error?: CustomError;
-  //  * }>
-  //  */
-  // public async set_playback_volume(
-  //   volume_percent: number,
-  //   device_id?: string
-  // ): Promise<{ result?: string; error?: CustomError }> {
-  //   let url = `${this.api_url}volume?volume_percent=${volume_percent}`;
-  //   if (device_id) url += `&device_id=${device_id}`;
+  /**
+   * Set Playback Volume - https://developer.spotify.com/documentation/web-api/reference/set-volume-for-users-playback
+   * Set the volume for the user’s current playback device.
+   * @param device_id
+   * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
+   * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
+   * @param volume_percent
+   * The volume to set. Must be a value from 0 to 100 inclusive.
+   * Example value: 50
+   * @Scopes Authorization scopes
+   * - user-modify-playback-state
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: CustomError;
+   * }>
+   */
+  public async set_playback_volume(
+    volume_percent: number,
+    device_id?: string
+  ): Promise<{ result?: string; error?: CustomError }> {
+    let url = `${this.api_url}volume?volume_percent=${volume_percent}`;
+    if (device_id) url += `&device_id=${device_id}`;
 
-  //   return await this.info.submit_user_scoped_request({
-  //     url,
-  //     method: "PUT",
-  //     scopes: ["user-modify-playback-state"],
-  //   });
-  // }
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "PUT",
+      scopes: ["user-modify-playback-state"],
+    });
+  }
 
-  // /**
-  //  * Toggle Playback Shuffle - https://developer.spotify.com/documentation/web-api/reference/toggle-shuffle-for-users-playback
-  //  * Toggle shuffle on or off for user’s playback.
-  //  * @param device_id
-  //  * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
-  //  * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
-  //  * @param state
-  //  * true : Shuffle user's playback.
-  //  * false : Do not shuffle user's playback.
-  //  * Example value: true
-  //  * @Scopes Authorization scopes
-  //  * - user-modify-playback-state
-  //  * @returns
-  //  * Promise<{
-  //  * result?: string;
-  //  * error?: CustomError;
-  //  * }>
-  //  */
-  // public async toggle_playback_shuffle(
-  //   state: boolean,
-  //   device_id?: string
-  // ): Promise<{ result?: string; error?: CustomError }> {
-  //   let url = `${this.api_url}shuffle?state=${state}`;
-  //   if (device_id) url += `&device_id=${device_id}`;
+  /**
+   * Toggle Playback Shuffle - https://developer.spotify.com/documentation/web-api/reference/toggle-shuffle-for-users-playback
+   * Toggle shuffle on or off for user’s playback.
+   * @param device_id
+   * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
+   * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
+   * @param state
+   * true : Shuffle user's playback.
+   * false : Do not shuffle user's playback.
+   * Example value: true
+   * @Scopes Authorization scopes
+   * - user-modify-playback-state
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: CustomError;
+   * }>
+   */
+  public async toggle_playback_shuffle(
+    state: boolean,
+    device_id?: string
+  ): Promise<{ result?: string; error?: CustomError }> {
+    let url = `${this.api_url}shuffle?state=${state}`;
+    if (device_id) url += `&device_id=${device_id}`;
 
-  //   return await this.info.submit_user_scoped_request({
-  //     url,
-  //     method: "PUT",
-  //     scopes: ["user-modify-playback-state"],
-  //   });
-  // }
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "PUT",
+      scopes: ["user-modify-playback-state"],
+    });
+  }
 
-  // /**
-  //  * Get Recently Played Tracks - https://developer.spotify.com/documentation/web-api/reference/get-recently-played
-  //  * Get tracks from the current user's recently played tracks. Note: Currently doesn't support podcast episodes.
-  //  * @param limit
-  //  * The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.
-  //  * Example value: 10
-  //  * Default value: 20
-  //  * Range: 0 - 50
-  //  * @param after
-  //  * A Unix timestamp in milliseconds. Returns all items after (but not including) this cursor position. If after is specified, before must not be specified.
-  //  * Example value: 1484811043508
-  //  * @param before
-  //  * A Unix timestamp in milliseconds. Returns all items before (but not including) this cursor position. If before is specified, after must not be specified.
-  //  * @Scopes Authorization scopes
-  //  * - user-read-recently-played
-  //  * @returns
-  //  * Promise<{
-  //  * result?: PagedTracksType;
-  //  * error?: CustomError;
-  //  * }>
-  //  */
-  // public async get_recently_played_tracks({
-  //   after,
-  //   before,
-  //   limit = 20,
-  // }: {
-  //   after?: number;
-  //   before?: number;
-  //   limit?: number;
-  // }): Promise<{ result?: PagedTracksType; error?: CustomError }> {
-  //   if (after && before)
-  //     throw new Error("Before and after can't be used together");
+  /**
+   * Get Recently Played Tracks - https://developer.spotify.com/documentation/web-api/reference/get-recently-played
+   * Get tracks from the current user's recently played tracks. Note: Currently doesn't support podcast episodes.
+   * @param limit
+   * The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50.
+   * Example value: 10
+   * Default value: 20
+   * Range: 0 - 50
+   * @param after
+   * A Unix timestamp in milliseconds. Returns all items after (but not including) this cursor position. If after is specified, before must not be specified.
+   * Example value: 1484811043508
+   * @param before
+   * A Unix timestamp in milliseconds. Returns all items before (but not including) this cursor position. If before is specified, after must not be specified.
+   * @Scopes Authorization scopes
+   * - user-read-recently-played
+   * @returns
+   * Promise<{
+   * result?: PagedTracksType;
+   * error?: CustomError;
+   * }>
+   */
+  public async get_recently_played_tracks({
+    after,
+    before,
+    limit = 20,
+  }: {
+    after?: number;
+    before?: number;
+    limit?: number;
+  }): Promise<{ result?: PagedTracksType; error?: CustomError }> {
+    if (after && before)
+      throw new Error("Before and after can't be used together");
 
-  //   let url = `${this.api_url}recently-played?limit=${limit}`;
-  //   if (after) url += `&after=${after}`;
-  //   if (before) url += `&before=${before}`;
+    let url = `${this.api_url}recently-played?limit=${limit}`;
+    if (after) url += `&after=${after}`;
+    if (before) url += `&before=${before}`;
 
-  //   return await this.info.submit_user_scoped_request({
-  //     url,
-  //     method: "GET",
-  //     object: PagedTracks,
-  //     scopes: ["user-read-recently-played"],
-  //   });
-  // }
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "GET",
+      object: PagedTracks,
+      scopes: ["user-read-recently-played"],
+    });
+  }
 
-  // /**
-  //  * Get the User's Queue - https://developer.spotify.com/documentation/web-api/reference/get-queue
-  //  * Get the list of objects that make up the user's queue.
-  //  * @Scopes Authorization scopes
-  //  * - user-read-playback-state
-  //  * @returns
-  //  * Promise<{
-  //  * result?: QueueType;
-  //  * error?: CustomError;
-  //  * }>
-  //  */
-  // public async get_users_queue(): Promise<{
-  //   result?: QueueType;
-  //   error?: CustomError;
-  // }> {
-  //   return await this.info.submit_user_scoped_request({
-  //     url: `${this.api_url}queue`,
-  //     method: "GET",
-  //     object: Queue,
-  //     scopes: ["user-read-playback-state"],
-  //   });
-  // }
+  /**
+   * Get the User's Queue - https://developer.spotify.com/documentation/web-api/reference/get-queue
+   * Get the list of objects that make up the user's queue.
+   * @Scopes Authorization scopes
+   * - user-read-playback-state
+   * @returns
+   * Promise<{
+   * result?: QueueType;
+   * error?: CustomError;
+   * }>
+   */
+  public async get_users_queue(): Promise<{
+    result?: QueueType;
+    error?: CustomError;
+  }> {
+    return await this.info.submit_user_scoped_request({
+      url: `${this.api_url}queue`,
+      method: "GET",
+      object: Queue,
+      scopes: ["user-read-playback-state"],
+    });
+  }
 
-  // /**
-  //  * Add Item to Playback Queue - https://developer.spotify.com/documentation/web-api/reference/add-to-queue
-  //  * Add an item to the end of the user's current playback queue.
-  //  * @param device_id
-  //  * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
-  //  * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
-  //  * @param uri
-  //  * The uri of the item to add to the queue. Must be a track or an episode uri.
-  //  * Example value: "spotify:track:4iV5W9uYEdYUVa79Axb7Rh"
-  //  * @Scopes Authorization scopes
-  //  * - user-modify-playback-state
-  //  * @returns
-  //  * Promise<{
-  //  * result?: string;
-  //  * error?: CustomError;
-  //  * }>
-  //  */
-  // public async add_item_to_playback_queue(
-  //   uri: string,
-  //   device_id?: string
-  // ): Promise<{
-  //   result?: string;
-  //   error?: CustomError;
-  // }> {
-  //   let url = `${this.api_url}queue?uri=${uri}`;
-  //   if (device_id) url += `&device_id=${device_id}`;
+  /**
+   * Add Item to Playback Queue - https://developer.spotify.com/documentation/web-api/reference/add-to-queue
+   * Add an item to the end of the user's current playback queue.
+   * @param device_id
+   * The id of the device this command is targeting. If not supplied, the user's currently active device is the target.
+   * Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8"
+   * @param uri
+   * The uri of the item to add to the queue. Must be a track or an episode uri.
+   * Example value: "spotify:track:4iV5W9uYEdYUVa79Axb7Rh"
+   * @Scopes Authorization scopes
+   * - user-modify-playback-state
+   * @returns
+   * Promise<{
+   * result?: string;
+   * error?: CustomError;
+   * }>
+   */
+  public async add_item_to_playback_queue(
+    uri: string,
+    device_id?: string
+  ): Promise<{
+    result?: string;
+    error?: CustomError;
+  }> {
+    let url = `${this.api_url}queue?uri=${uri}`;
+    if (device_id) url += `&device_id=${device_id}`;
 
-  //   return await this.info.submit_user_scoped_request({
-  //     url,
-  //     method: "POST",
-  //     scopes: ["user-modify-playback-state"],
-  //   });
-  // }
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "POST",
+      scopes: ["user-modify-playback-state"],
+    });
+  }
 }
 
 export { Player };
