@@ -8,13 +8,13 @@ import { SeveralSimplifiedEpisode } from "./episodes-simplified";
 import { SeveralSimplifiedAudiobooks } from "./audiobooks-simplified";
 
 const SearchObject = z.object({
-  tracks: FullTracks.optional(),
-  artists: FullArtists.optional(),
-  albums: SeveralSimplifiedAlbums.optional(),
-  playlists: SeveralSimplifiedPlaylists.optional(),
-  shows: SeveralSimplifiedShows.optional(), // TODO: API is returning an array of nulls
-  episodes: SeveralSimplifiedEpisode.optional(),
-  audiobooks: SeveralSimplifiedAudiobooks.optional(),
+  tracks: FullTracks,
+  artists: FullArtists,
+  albums: SeveralSimplifiedAlbums,
+  playlists: SeveralSimplifiedPlaylists,
+  shows: SeveralSimplifiedShows, // TODO: API is returning an array of nulls
+  episodes: SeveralSimplifiedEpisode,
+  audiobooks: SeveralSimplifiedAudiobooks,
 });
 
 type SearchObjectType = z.infer<typeof SearchObject>;

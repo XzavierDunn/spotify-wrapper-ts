@@ -1,5 +1,6 @@
-import { InfoType } from "../client/client";
+import { CustomError, InfoType } from "../models/client";
 import { SearchObject, SearchObjectType } from "../models/search";
+import { OptionalType, handle_optional } from "../utils/helpers";
 
 class Search {
   private info: InfoType;
@@ -47,30 +48,31 @@ class Search {
    * @returns
    * Promise<{
    * result?: SearchObjectType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  // public async search_for_item(
-  //   q: string,
-  //   type: string[],
-  //   market?: string,
-  //   include_external?: string,
-  //   limit: number = 20,
-  //   offset: number = 0
-  // ): Promise<{ result?: SearchObjectType; error?: Error }> {
-  //   let url = `${this.api_url}?q=${q}&type=${type.join(
-  //     ","
-  //   )}&limit=${limit}&offset=${offset}`;
-  //   if (market) url += `&market=${market}`;
-  //   if (include_external) url += `&include_external=${include_external}`;
+  public async search_for_item(
+    q: string,
+    type: string[],
+    optional?: OptionalType & {
+      include_external?: string;
+    }
+  ): Promise<{ result?: SearchObjectType; error?: CustomError }> {
+    const include_external = optional?.include_external;
+    const { market, limit, offset } = handle_optional(optional);
 
-  //   return await get_req(
-  //     url,
-  //     this.info.client_access_token,
-  //     SearchObject,
-  //     this.info
-  //   );
-  // }
+    let url = `${this.api_url}?q=${q}&type=${type.join(
+      ","
+    )}&limit=${limit}&offset=${offset}`;
+    if (market) url += `&market=${market}`;
+    if (include_external) url += `&include_external=${include_external}`;
+
+    return await this.info.submit_request<SearchObjectType>({
+      url,
+      method: "GET",
+      object: SearchObject,
+    });
+  }
 }
 
 export { Search };
