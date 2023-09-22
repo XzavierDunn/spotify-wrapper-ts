@@ -2,16 +2,16 @@ import { z } from "zod";
 import { ExternalUrls, Followers, Images, cursors } from "./shared";
 
 const Artist = z.object({
-  external_urls: ExternalUrls.optional(),
-  followers: Followers.optional(),
-  genres: z.array(z.string()).optional(),
-  href: z.string().optional(),
-  id: z.string().optional(),
-  images: z.array(Images).optional(),
-  name: z.string().optional(),
-  popularity: z.number().optional(),
-  type: z.string().optional(),
-  uri: z.string().optional(),
+  external_urls: ExternalUrls,
+  followers: Followers,
+  genres: z.array(z.string()),
+  href: z.string(),
+  id: z.string(),
+  images: z.array(Images),
+  name: z.string(),
+  popularity: z.number(),
+  type: z.string(),
+  uri: z.string(),
 });
 
 const SeveralArtists = z.object({
@@ -19,13 +19,13 @@ const SeveralArtists = z.object({
 });
 
 const FullArtists = z.object({
-  href: z.string().optional(),
-  limit: z.number().optional(),
-  next: z.string().optional().nullable(),
-  offset: z.number().optional(),
-  previous: z.string().optional().nullable(),
-  total: z.number().optional(),
-  items: z.array(Artist).optional(),
+  href: z.string(),
+  limit: z.number(),
+  next: z.string().nullable(),
+  offset: z.number(),
+  previous: z.string().nullable(),
+  total: z.number(),
+  items: z.array(Artist),
 });
 
 const PagedArtists = z.object({

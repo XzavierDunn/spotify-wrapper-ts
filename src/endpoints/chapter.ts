@@ -1,11 +1,11 @@
-import { InfoType } from "../client/client";
+import { InfoType } from "../models/client";
 import {
   Chapter,
   ChapterType,
   SeveralChapters,
   SeveralChaptersType,
 } from "../models/chapters";
-import { get_req } from "../utils/requests";
+import { CustomError } from "../models/client";
 
 class Chapters {
   private info: InfoType;
@@ -32,20 +32,21 @@ class Chapters {
    * @returns
    * Promise<{
    * result?: ChapterType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_a_chapter(
     id: string,
     market: string
-  ): Promise<{ result?: ChapterType; error?: Error }> {
-    let url = `${this.api_url}${id}?market=${market}`;
-    return await get_req(
+  ): Promise<{ result?: ChapterType; error?: CustomError }> {
+    let url = `${this.api_url}${id}`;
+    if (market) url += `?market=${market}`;
+
+    return await this.info.submit_request<ChapterType>({
       url,
-      this.info.client_access_token,
-      Chapter,
-      this.info
-    );
+      method: "GET",
+      object: Chapter,
+    });
   }
 
   /**
@@ -64,21 +65,20 @@ class Chapters {
    * @returns
    * Promise<{
    * result?: SeveralChaptersType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_several_chapters(
     ids: string[],
     market: string
-  ): Promise<{ result?: SeveralChaptersType; error?: Error }> {
+  ): Promise<{ result?: SeveralChaptersType; error?: CustomError }> {
     let url = `${this.api_url}?ids=${ids.join(",")}&market=${market}`;
 
-    return await get_req(
+    return await this.info.submit_request<SeveralChaptersType>({
       url,
-      this.info.client_access_token,
-      SeveralChapters,
-      this.info
-    );
+      method: "GET",
+      object: SeveralChapters,
+    });
   }
 }
 

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { InfoType } from "../client/client";
+import { CustomError, InfoType } from "../models/client";
 import {
   Episode,
   EpisodePages,
@@ -8,7 +8,7 @@ import {
   SeveralEpisodes,
   SeveralEpisodesType,
 } from "../models/episodes";
-import { get_req, put_req, delete_req } from "../utils/requests";
+import { OptionalType, handle_optional } from "../utils/helpers";
 
 class Episodes {
   private info: InfoType;
@@ -36,20 +36,22 @@ class Episodes {
    * @returns
    * Promise<{
    * result?: EpisodeType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_episode(
     id: string,
     market?: string
-  ): Promise<{ result?: EpisodeType; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
-      throw new Error("This endpoint requires a user access token");
-
+  ): Promise<{ result?: EpisodeType; error?: CustomError }> {
     let url = `${this.api_url}${id}`;
     if (market) url += "?market=" + market;
 
-    return await get_req(url, this.info.user_access_token, Episode, this.info);
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "GET",
+      object: Episode,
+      scopes: ["user-read-playback-position"],
+    });
   }
 
   /**
@@ -69,25 +71,22 @@ class Episodes {
    * @returns
    * Promise<{
    * result?: SeveralEpisodesType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_several_episodes(
     ids: string[],
     market?: string
-  ): Promise<{ result?: SeveralEpisodesType; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
-      throw new Error("This endpoint requires a user access token");
-
+  ): Promise<{ result?: SeveralEpisodesType; error?: CustomError }> {
     let url = `${this.api_url}?ids=${ids.join(",")}`;
     if (market) url += "&market=" + market;
 
-    return await get_req(
+    return await this.info.submit_user_scoped_request<SeveralEpisodesType>({
       url,
-      this.info.user_access_token,
-      SeveralEpisodes,
-      this.info
-    );
+      method: "GET",
+      object: SeveralEpisodes,
+      scopes: ["user-read-playback-position"],
+    });
   }
 
   /**
@@ -115,26 +114,23 @@ class Episodes {
    * @returns
    * Promise<{
    * result?: EpisodesType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_users_saved_episodes(
-    markets?: string,
-    limit: number = 20,
-    offset: number = 0
-  ): Promise<{ result?: EpisodesType; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
-      throw new Error("This endpoint requires a user access token");
+    optional?: OptionalType
+  ): Promise<{ result?: EpisodesType; error?: CustomError }> {
+    const { limit, offset, market } = handle_optional(optional);
 
     let url = `${this.info.api_url}/me/episodes?limit=${limit}&offset=${offset}`;
-    if (markets) url += "&market=" + markets;
+    if (market) url += "&market=" + market;
 
-    return await get_req(
+    return await this.info.submit_user_scoped_request<EpisodesType>({
       url,
-      this.info.user_access_token,
-      EpisodePages,
-      this.info
-    );
+      method: "GET",
+      object: EpisodePages,
+      scopes: ["user-library-read", "user-read-playback-position"],
+    });
   }
 
   /**
@@ -149,23 +145,20 @@ class Episodes {
    * @returns
    * Promise<{
    * result?: string;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async save_episodes_for_current_user(
     ids: string[]
-  ): Promise<{ result?: string; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
-      throw new Error("This endpoint requires a user access token");
-
+  ): Promise<{ result?: string; error?: CustomError }> {
     let url = `${this.info.api_url}/me/episodes?ids=${ids.join(",")}`;
 
-    return await put_req(
+    return await this.info.submit_user_scoped_request({
       url,
-      this.info.user_access_token,
-      JSON.stringify({ ids }),
-      this.info
-    );
+      method: "PUT",
+      body: JSON.stringify({ ids }),
+      scopes: ["user-library-modify"],
+    });
   }
 
   /**
@@ -180,24 +173,25 @@ class Episodes {
    * @returns
    * Promise<{
    * result?: string;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async remove_users_saved_episodes(
     ids: string[]
-  ): Promise<{ result?: string; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
-      throw new Error("This endpoint requires a user access token");
-
+  ): Promise<{ result?: string; error?: CustomError }> {
     let url = `${this.info.api_url}/me/episodes?ids=${ids.join(",")}`;
 
-    return await delete_req(url, this.info.user_access_token, this.info);
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "DELETE",
+      scopes: ["user-library-modify"],
+    });
   }
 
   /**
    * Check User's Saved Episodes - https://developer.spotify.com/documentation/web-api/reference/check-users-saved-episodes
    * Check if one or more episodes is already saved in the current Spotify user's 'Your Episodes' library.
-This API endpoint is in beta and could change without warning. Please share any feedback that you have, or issues that you discover, in our developer community forum.
+   * This API endpoint is in beta and could change without warning. Please share any feedback that you have, or issues that you discover, in our developer community forum.
    * @param ids
    * A comma-separated list of the Spotify IDs. Maximum: 50 IDs.
    * Example value: "77o6BIVlYM3msb4MMIL1jH,0Q86acNRm6V9GYx55SXKwf"
@@ -206,23 +200,20 @@ This API endpoint is in beta and could change without warning. Please share any 
    * @returns
    * Promise<{
    * result?: boolean[];
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async check_users_saved_episodes(
     ids: string[]
-  ): Promise<{ result?: boolean[]; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
-      throw new Error("This endpoint requires a user access token");
-
+  ): Promise<{ result?: boolean[]; error?: CustomError }> {
     let url = `${this.info.api_url}/me/episodes/contains?ids=${ids.join(",")}`;
 
-    return await get_req(
+    return await this.info.submit_user_scoped_request({
       url,
-      this.info.user_access_token,
-      z.array(z.boolean()),
-      this.info
-    );
+      method: "GET",
+      object: z.array(z.boolean()),
+      scopes: ["user-library-read"],
+    });
   }
 }
 

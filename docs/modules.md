@@ -1,6 +1,6 @@
-[spotify_wrapper](README.md) / Exports
+[spotify-wrapper-ts](README.md) / Exports
 
-# spotify_wrapper
+# spotify-wrapper-ts
 
 ## Table of contents
 
@@ -31,6 +31,7 @@
 - [models/audiobooks-simplified](modules/models_audiobooks_simplified.md)
 - [models/categories](modules/models_categories.md)
 - [models/chapters](modules/models_chapters.md)
+- [models/client](modules/models_client.md)
 - [models/episodes](modules/models_episodes.md)
 - [models/episodes-simplified](modules/models_episodes_simplified.md)
 - [models/genres](modules/models_genres.md)
@@ -52,4 +53,5 @@
 - [models/users](modules/models_users.md)
 - [models/users-albums](modules/models_users_albums.md)
 - [utils/authentication](modules/utils_authentication.md)
+- [utils/helpers](modules/utils_helpers.md)
 - [utils/requests](modules/utils_requests.md)

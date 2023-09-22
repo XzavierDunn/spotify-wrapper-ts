@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / models/audio-features
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / models/audio-features
 
 # Module: models/audio-features
 
@@ -22,7 +22,7 @@
 
 #### Defined in
 
-[src/models/audio-features.ts:28](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/audio-features.ts#L28)
+[src/models/audio-features.ts:28](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/audio-features.ts#L28)
 
 ___
 
@@ -32,7 +32,7 @@ ___
 
 #### Defined in
 
-[src/models/audio-features.ts:29](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/audio-features.ts#L29)
+[src/models/audio-features.ts:29](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/audio-features.ts#L29)
 
 ## Variables
 
@@ -42,7 +42,7 @@ ___
 
 #### Defined in
 
-[src/models/audio-features.ts:3](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/audio-features.ts#L3)
+[src/models/audio-features.ts:3](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/audio-features.ts#L3)
 
 ___
 
@@ -52,4 +52,4 @@ ___
 
 #### Defined in
 
-[src/models/audio-features.ts:24](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/audio-features.ts#L24)
+[src/models/audio-features.ts:24](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/audio-features.ts#L24)

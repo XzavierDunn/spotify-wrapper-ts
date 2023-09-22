@@ -1,94 +1,21 @@
 import { z } from "zod";
-import { InfoType } from "../client/client";
 
-type FetchData = {
-  url: string;
-  token: string;
-  method: "GET" | "PUT" | "POST" | "DELETE";
-  body: BodyInit | null | undefined;
-};
+const FetchData = z.object({
+  method: z.enum(["GET", "PUT", "POST", "DELETE"]),
+  url: z.string(),
+  token: z.string().optional(),
+  body: z.string().optional(),
+  object: z.any().optional(), // TODO: restrict to zod objects
+  user: z.boolean().optional(),
+  scopes: z.array(z.string()).optional(),
+});
 
-async function error_handler<T extends z.ZodType<any, any, any>>(
-  fetchData: FetchData,
-  requestData: { status_code: number; response: any },
-  info: InfoType,
-  object?: z.infer<T>
-): Promise<{
-  result?: string | z.TypeOf<T> | undefined;
-  error?: any;
+type FetchDataType = z.infer<typeof FetchData>;
+
+async function fetch_wrapper(input: FetchDataType): Promise<{
+  status_code: number;
+  response: string;
 }> {
-  try {
-    let recovered = false;
-    let status_code = requestData.status_code;
-
-    let error_message;
-    if (requestData.response.error) {
-      error_message = requestData.response.error.message;
-    } else {
-      error_message = requestData.response;
-    }
-
-    if (status_code === 204) {
-      return { result: error_message };
-    } else if (status_code === 401) {
-      if (error_message === "The access token expired") {
-        await info.refresh_token_function();
-        fetchData.token = info.client_access_token;
-        recovered = true;
-      } else if (error_message === "Missing token") {
-        await info.refresh_user_token_function();
-        fetchData.token = info.user_access_token;
-        recovered = true;
-      }
-    } else if (status_code === 403) {
-      if (error_message === "This request requires user authentication.") {
-        await info.refresh_user_token_function();
-        fetchData.token = info.user_access_token;
-        recovered = true;
-      }
-    } else if (status_code === 404) {
-      if (
-        error_message === "Invalid username" ||
-        error_message === "non existing id"
-      ) {
-        await info.refresh_user_token_function();
-        fetchData.token = info.user_access_token;
-        recovered = true;
-      } else {
-        return { error: error_message };
-      }
-    }
-
-    if (recovered) {
-      switch (fetchData.method) {
-        case "GET":
-          return await get_req(fetchData.url, fetchData.token, object, info);
-        case "PUT":
-          return await put_req(
-            fetchData.url,
-            fetchData.token,
-            fetchData.body,
-            info
-          );
-        case "POST":
-          return await post_req(
-            fetchData.url,
-            fetchData.token,
-            fetchData.body,
-            info
-          );
-        case "DELETE":
-          return await delete_req(fetchData.url, fetchData.token, info);
-      }
-    } else {
-      throw new Error(`${status_code} -> ${error_message}`);
-    }
-  } catch (e) {
-    throw e as Error;
-  }
-}
-
-async function fetch_wrapper(input: FetchData) {
   let data = await fetch(input.url, {
     headers: {
       "Content-Type": "application/json",
@@ -98,7 +25,7 @@ async function fetch_wrapper(input: FetchData) {
     method: input.method,
   });
 
-  let response;
+  let response: string;
   try {
     response = await data.json();
   } catch {
@@ -107,80 +34,18 @@ async function fetch_wrapper(input: FetchData) {
   return { status_code: data.status, response };
 }
 
-async function get_req<T extends z.ZodType<any, any, any>>(
-  url: string,
-  token: string,
-  object: z.infer<T>,
-  info: InfoType
-): Promise<{ result?: z.TypeOf<T>; error?: any }> {
-  let fetchData: FetchData = { url, method: "GET", body: null, token };
-  let result = await fetch_wrapper(fetchData);
+async function handle_request<T>(input: FetchDataType): Promise<{
+  status_code: number;
+  result: string | T;
+}> {
+  let { status_code, response } = await fetch_wrapper(input);
+  let result: string | T = response;
 
-  if (result.status_code != 200) {
-    return await error_handler(fetchData, result, info, object);
+  if (input.object && input.object.safeParse(response).success) {
+    result = input.object.parse(response) as T;
   }
 
-  return { result: object.parse(result.response) };
+  return { status_code, result };
 }
 
-async function put_req<T extends z.ZodType<any, any, any>>(
-  url: string,
-  token: string,
-  body: BodyInit | null | undefined,
-  info: InfoType,
-  object?: z.infer<T>
-): Promise<{ result?: z.TypeOf<T> | string; error?: any }> {
-  let fetchData: FetchData = { url, method: "PUT", body, token };
-  let result = await fetch_wrapper(fetchData);
-
-  if (
-    result.status_code != 200 &&
-    result.status_code != 201 &&
-    result.status_code != 202 &&
-    result.status_code != 204
-  )
-    return await error_handler(fetchData, result, info);
-
-  if (object) return { result: object.parse(result.response) };
-  return { result: result.response };
-}
-
-async function post_req<T extends z.ZodType<any, any, any>>(
-  url: string,
-  token: string,
-  body: BodyInit | null | undefined,
-  info: InfoType,
-  object?: z.infer<T>
-): Promise<{ result?: z.TypeOf<T> | string; error?: any }> {
-  let fetchData: FetchData = { url, method: "POST", body, token };
-  let result = await fetch_wrapper(fetchData);
-
-  if (result.status_code != 200 && result.status_code != 201)
-    return await error_handler(fetchData, result, info);
-
-  if (object) return { result: object.parse(result.response) };
-  return { result: result.response };
-}
-
-async function delete_req<T extends z.ZodType<any, any, any>>(
-  url: string,
-  token: string,
-  info: InfoType,
-  body?: BodyInit | null | undefined,
-  object?: z.infer<T>
-): Promise<{ result?: z.TypeOf<T> | string; error?: any }> {
-  let fetchData: FetchData = { url, method: "DELETE", body: body, token };
-  let result = await fetch_wrapper(fetchData);
-
-  if (
-    result.status_code != 200 &&
-    result.status_code != 201 &&
-    result.status_code != 204
-  )
-    return await error_handler(fetchData, result, info);
-
-  if (object) return { result: object.parse(result.response) };
-  return { result: result.response };
-}
-
-export { get_req, put_req, post_req, delete_req };
+export { handle_request, FetchData, FetchDataType };

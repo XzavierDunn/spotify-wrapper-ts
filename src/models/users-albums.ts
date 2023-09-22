@@ -7,13 +7,13 @@ const SavedAlbumObject = z.object({
 });
 
 const UsersAlbums = z.object({
-  href: z.string().optional(),
-  limit: z.number().optional(),
+  href: z.string(),
+  limit: z.number(),
   next: z.string().optional().nullable(),
-  offset: z.number().optional(),
+  offset: z.number(),
   previous: z.string().optional().nullable(),
-  total: z.number().optional(),
-  items: z.array(SavedAlbumObject).optional(),
+  total: z.number(),
+  items: z.array(SavedAlbumObject),
 });
 
 type UsersAlbumsType = z.infer<typeof UsersAlbums>;

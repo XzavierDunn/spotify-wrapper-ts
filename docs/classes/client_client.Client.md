@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / [client/client](../modules/client_client.md) / Client
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / [client/client](../modules/client_client.md) / Client
 
 # Class: Client
 
@@ -12,7 +12,6 @@
 
 ### Properties
 
-- [ClientInfo](client_client.Client.md#clientinfo)
 - [UserInfo](client_client.Client.md#userinfo)
 - [albums](client_client.Client.md#albums)
 - [artists](client_client.Client.md#artists)
@@ -34,8 +33,11 @@
 ### Methods
 
 - [add\_user\_info](client_client.Client.md#add_user_info)
+- [error\_handler](client_client.Client.md#error_handler)
 - [refresh\_token](client_client.Client.md#refresh_token)
 - [refresh\_user\_token](client_client.Client.md#refresh_user_token)
+- [submit\_request](client_client.Client.md#submit_request)
+- [submit\_user\_scoped\_request](client_client.Client.md#submit_user_scoped_request)
 - [create\_client](client_client.Client.md#create_client)
 
 ## Constructors
@@ -61,29 +63,9 @@
 
 #### Defined in
 
-[src/client/client.ts:77](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L77)
+[src/client/client.ts:56](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L56)
 
 ## Properties
-
-### ClientInfo
-
-• `Private` **ClientInfo**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `access_token?` | `string` |
-| `expires_in?` | `number` |
-| `refresh_token?` | `string` |
-| `scope?` | `string` |
-| `token_type?` | `string` |
-
-#### Defined in
-
-[src/client/client.ts:51](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L51)
-
-___
 
 ### UserInfo
 
@@ -101,7 +83,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:52](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L52)
+[src/client/client.ts:31](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L31)
 
 ___
 
@@ -111,7 +93,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:65](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L65)
+[src/client/client.ts:44](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L44)
 
 ___
 
@@ -121,7 +103,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:70](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L70)
+[src/client/client.ts:49](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L49)
 
 ___
 
@@ -131,7 +113,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:75](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L75)
+[src/client/client.ts:54](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L54)
 
 ___
 
@@ -141,7 +123,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:74](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L74)
+[src/client/client.ts:53](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L53)
 
 ___
 
@@ -151,7 +133,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:71](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L71)
+[src/client/client.ts:50](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L50)
 
 ___
 
@@ -169,7 +151,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:50](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L50)
+[src/client/client.ts:30](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L30)
 
 ___
 
@@ -179,7 +161,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:72](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L72)
+[src/client/client.ts:51](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L51)
 
 ___
 
@@ -189,27 +171,17 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:66](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L66)
+[src/client/client.ts:45](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L45)
 
 ___
 
 ### info
 
-• `Private` **info**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `api_url` | `string` |
-| `client_access_token` | `string` |
-| `refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `user_access_token` | `string` |
+• `Private` **info**: [`InfoType`](../modules/models_client.md#infotype)
 
 #### Defined in
 
-[src/client/client.ts:54](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L54)
+[src/client/client.ts:33](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L33)
 
 ___
 
@@ -219,7 +191,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:69](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L69)
+[src/client/client.ts:48](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L48)
 
 ___
 
@@ -229,7 +201,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:68](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L68)
+[src/client/client.ts:47](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L47)
 
 ___
 
@@ -239,7 +211,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:73](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L73)
+[src/client/client.ts:52](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L52)
 
 ___
 
@@ -249,7 +221,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:67](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L67)
+[src/client/client.ts:46](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L46)
 
 ___
 
@@ -259,7 +231,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:63](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L63)
+[src/client/client.ts:42](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L42)
 
 ___
 
@@ -269,7 +241,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:64](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L64)
+[src/client/client.ts:43](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L43)
 
 ___
 
@@ -279,7 +251,7 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:62](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L62)
+[src/client/client.ts:41](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L41)
 
 ## Methods
 
@@ -304,35 +276,137 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:127](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L127)
+[src/client/client.ts:185](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L185)
+
+___
+
+### error\_handler
+
+▸ **error_handler**<`T`\>(`status_code`, `input`, `fetchData`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `T`  }\>
+
+#### Type parameters
+
+| Name |
+| :------ |
+| `T` |
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `status_code` | `number` |
+| `input` | `Object` |
+| `input.error` | `any` |
+| `fetchData` | `Object` |
+| `fetchData.body?` | `string` |
+| `fetchData.method` | ``"GET"`` \| ``"PUT"`` \| ``"POST"`` \| ``"DELETE"`` |
+| `fetchData.object?` | `any` |
+| `fetchData.scopes?` | `string`[] |
+| `fetchData.token?` | `string` |
+| `fetchData.url` | `string` |
+| `fetchData.user?` | `boolean` |
+
+#### Returns
+
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `T`  }\>
+
+#### Defined in
+
+[src/client/client.ts:114](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L114)
 
 ___
 
 ### refresh\_token
 
-▸ **refresh_token**(): `Promise`<`void`\>
+▸ **refresh_token**(): `Promise`<`string`\>
 
 #### Returns
 
-`Promise`<`void`\>
+`Promise`<`string`\>
 
 #### Defined in
 
-[src/client/client.ts:103](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L103)
+[src/client/client.ts:162](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L162)
 
 ___
 
 ### refresh\_user\_token
 
-▸ **refresh_user_token**(): `Promise`<`void`\>
+▸ **refresh_user_token**(): `Promise`<`string`\>
 
 #### Returns
 
-`Promise`<`void`\>
+`Promise`<`string`\>
 
 #### Defined in
 
-[src/client/client.ts:110](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L110)
+[src/client/client.ts:169](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L169)
+
+___
+
+### submit\_request
+
+▸ **submit_request**<`T`\>(`input`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `T`  }\>
+
+#### Type parameters
+
+| Name |
+| :------ |
+| `T` |
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `input` | `Object` |
+| `input.body?` | `string` |
+| `input.method` | ``"GET"`` \| ``"PUT"`` \| ``"POST"`` \| ``"DELETE"`` |
+| `input.object?` | `any` |
+| `input.scopes?` | `string`[] |
+| `input.token?` | `string` |
+| `input.url` | `string` |
+| `input.user?` | `boolean` |
+
+#### Returns
+
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `T`  }\>
+
+#### Defined in
+
+[src/client/client.ts:81](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L81)
+
+___
+
+### submit\_user\_scoped\_request
+
+▸ **submit_user_scoped_request**<`T`\>(`input`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror)  }\>
+
+#### Type parameters
+
+| Name |
+| :------ |
+| `T` |
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `input` | `Object` |
+| `input.body?` | `string` |
+| `input.method` | ``"GET"`` \| ``"PUT"`` \| ``"POST"`` \| ``"DELETE"`` |
+| `input.object?` | `any` |
+| `input.scopes?` | `string`[] |
+| `input.token?` | `string` |
+| `input.url` | `string` |
+| `input.user?` | `boolean` |
+
+#### Returns
+
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror)  }\>
+
+#### Defined in
+
+[src/client/client.ts:98](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L98)
 
 ___
 
@@ -355,4 +429,4 @@ ___
 
 #### Defined in
 
-[src/client/client.ts:98](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/client/client.ts#L98)
+[src/client/client.ts:76](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/client/client.ts#L76)

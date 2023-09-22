@@ -32,7 +32,7 @@ const SeveralSimplifiedShows = z.object({
 });
 
 const SetofSimplifiedShows = z.object({
-  shows: z.array(SimplifiedShow.nullable()),
+  shows: z.array(SimplifiedShow),
 });
 
 type SetofSimplifiedShowsType = z.infer<typeof SetofSimplifiedShows>;

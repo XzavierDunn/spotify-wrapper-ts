@@ -1,5 +1,4 @@
-import { InfoType } from "../client/client";
-import { get_req } from "../utils/requests";
+import { CustomError, InfoType } from "../models/client";
 import { GenresObject, GenresType } from "../models/genres";
 
 class Genres {
@@ -17,19 +16,18 @@ class Genres {
    * @returns
    * Promise<{
    * result?: GenresType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_available_genre_seeds(): Promise<{
     result?: GenresType;
-    error?: Error;
+    error?: CustomError;
   }> {
-    return await get_req(
-      this.api_url,
-      this.info.client_access_token,
-      GenresObject,
-      this.info
-    );
+    return await this.info.submit_request<GenresType>({
+      url: this.api_url,
+      method: "GET",
+      object: GenresObject,
+    });
   }
 }
 

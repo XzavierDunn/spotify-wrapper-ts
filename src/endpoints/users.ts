@@ -1,12 +1,13 @@
 import { z } from "zod";
-import { InfoType } from "../client/client";
+import { InfoType } from "../models/client";
 import { PagedArtists, PagedArtistsType } from "../models/artists";
 import {
   PagesofArtistsOrTracks,
   PagesofArtistsOrTracksType,
 } from "../models/pages-of-artists-or-tracks";
 import { User, UserType } from "../models/users";
-import { delete_req, get_req, put_req } from "../utils/requests";
+import { CustomError } from "../models/client";
+import { OptionalType, handle_optional } from "../utils/helpers";
 
 class Users {
   private info: InfoType;
@@ -26,19 +27,19 @@ class Users {
    * @returns
    * Promise<{
    * result?: UserType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_current_users_profile(): Promise<{
     result?: UserType;
-    error?: Error;
+    error?: CustomError;
   }> {
-    return await get_req(
-      this.api_url,
-      this.info.user_access_token,
-      User,
-      this.info
-    );
+    return await this.info.submit_user_scoped_request<UserType>({
+      url: this.api_url,
+      method: "GET",
+      object: User,
+      scopes: ["user-read-private", "user-read-email"],
+    });
   }
 
   /**
@@ -65,30 +66,27 @@ class Users {
    * @returns
    * Promise<{
    * result?: PagesofArtistsOrTracksType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async get_users_top_items({
-    type,
-    time_range = "medium_term",
-    limit = 20,
-    offset = 0,
-  }: {
-    type: string;
-    time_range?: string;
-    limit?: number;
-    offset?: number;
-  }): Promise<{
+  public async get_users_top_items(
+    type: string,
+    time_range: string,
+    optional?: Omit<OptionalType, "market">
+  ): Promise<{
     result?: PagesofArtistsOrTracksType;
-    error?: Error;
+    error?: CustomError;
   }> {
-    let url = `${this.api_url}top/${type}?time_range=${time_range}&limit=${limit}&offset=${offset}`;
+    const { limit, offset } = handle_optional(optional);
+    const url = `${this.api_url}top/${type}?time_range=${time_range}&limit=${limit}&offset=${offset}`;
 
-    return await get_req(
-      url,
-      this.info.user_access_token,
-      PagesofArtistsOrTracks,
-      this.info
+    return await this.info.submit_user_scoped_request<PagesofArtistsOrTracksType>(
+      {
+        url,
+        method: "GET",
+        object: PagesofArtistsOrTracks,
+        scopes: ["user-top-read"],
+      }
     );
   }
 
@@ -101,16 +99,20 @@ class Users {
    * @returns
    * Promise<{
    * result?: UserType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_users_profile(user_id: string): Promise<{
     result?: UserType;
-    error?: Error;
+    error?: CustomError;
   }> {
-    let url = `${this.info.api_url}/users/${user_id}`;
+    const url = `${this.info.api_url}/users/${user_id}`;
 
-    return await get_req(url, this.info.user_access_token, User, this.info);
+    return await this.info.submit_request<UserType>({
+      url,
+      method: "GET",
+      object: User,
+    });
   }
 
   /**
@@ -127,7 +129,7 @@ class Users {
    * @returns
    * Promise<{
    * result?: string;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async follow_playlist(
@@ -135,16 +137,16 @@ class Users {
     public_playlist: boolean = true
   ): Promise<{
     result?: string;
-    error?: Error;
+    error?: CustomError;
   }> {
-    let url = `${this.info.api_url}/playlists/${playlist_id}/followers`;
+    const url = `${this.info.api_url}/playlists/${playlist_id}/followers`;
 
-    return await put_req(
+    return await this.info.submit_user_scoped_request({
       url,
-      this.info.user_access_token,
-      JSON.stringify({ public: public_playlist }),
-      this.info
-    );
+      method: "PUT",
+      body: JSON.stringify({ public: public_playlist }),
+      scopes: ["playlist-modify-public", "playlist-modify-private"],
+    });
   }
 
   /**
@@ -159,16 +161,20 @@ class Users {
    * @returns
    * Promise<{
    * result?: string;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async unfollow_playlist(playlist_id: string): Promise<{
     result?: string;
-    error?: Error;
+    error?: CustomError;
   }> {
-    let url = `${this.info.api_url}/playlists/${playlist_id}/followers`;
+    const url = `${this.info.api_url}/playlists/${playlist_id}/followers`;
 
-    return await delete_req(url, this.info.user_access_token, this.info);
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "DELETE",
+      scopes: ["playlist-modify-public", "playlist-modify-private"],
+    });
   }
 
   /**
@@ -191,30 +197,26 @@ class Users {
    * @returns
    * Promise<{
    * result?: PagedArtistsType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async get_followed_artists({
-    after,
-    type = "artist",
-    limit = 20,
-  }: {
-    after?: string;
-    type?: string;
-    limit?: number;
-  }): Promise<{
+  public async get_followed_artists(
+    after?: string,
+    limit: number = 20,
+    type: string = "artist"
+  ): Promise<{
     result?: PagedArtistsType;
-    error?: Error;
+    error?: CustomError;
   }> {
     let url = `${this.api_url}following?type=${type}&limit=${limit}`;
     if (after) url += `&after=${after}`;
 
-    return await get_req(
+    return await this.info.submit_user_scoped_request<PagedArtistsType>({
       url,
-      this.info.user_access_token,
-      PagedArtists,
-      this.info
-    );
+      method: "GET",
+      object: PagedArtists,
+      scopes: ["user-follow-read"],
+    });
   }
 
   /**
@@ -232,27 +234,24 @@ class Users {
    * @returns
    * Promise<{
    * result?: string;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async follow_artists_or_users({
-    ids,
-    type = "artist" || "user",
-  }: {
-    ids: string[];
-    type: string;
-  }): Promise<{
+  public async follow_artists_or_users(
+    ids: string[],
+    type: "artist" | "user"
+  ): Promise<{
     result?: string;
-    error?: Error;
+    error?: CustomError;
   }> {
-    let url = `${this.api_url}following?ids=${ids.join(",")}&type=${type}`;
+    const url = `${this.api_url}following?ids=${ids.join(",")}&type=${type}`;
 
-    return await put_req(
+    return await this.info.submit_user_scoped_request({
       url,
-      this.info.user_access_token,
-      JSON.stringify(ids),
-      this.info
-    );
+      method: "PUT",
+      body: JSON.stringify(ids),
+      scopes: ["user-follow-modify"],
+    });
   }
 
   /**
@@ -270,27 +269,24 @@ class Users {
    * @returns
    * Promise<{
    * result?: string;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async unfollow_artists_or_users({
-    ids,
-    type = "artist" || "user",
-  }: {
-    ids: string[];
-    type: string;
-  }): Promise<{
+  public async unfollow_artists_or_users(
+    ids: string[],
+    type: string = "artist" || "user"
+  ): Promise<{
     result?: string;
-    error?: Error;
+    error?: CustomError;
   }> {
-    let url = `${this.api_url}following?ids=${ids.join(",")}&type=${type}`;
+    const url = `${this.api_url}following?ids=${ids.join(",")}&type=${type}`;
 
-    return await delete_req(
+    return await this.info.submit_user_scoped_request({
       url,
-      this.info.user_access_token,
-      this.info,
-      JSON.stringify(ids)
-    );
+      method: "DELETE",
+      body: JSON.stringify(ids),
+      scopes: ["user-follow-modify"],
+    });
   }
 
   /**
@@ -308,29 +304,26 @@ class Users {
    * @returns
    * Promise<{
    * result?: boolean[];
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async check_if_user_follows_artists_or_users({
-    ids,
-    type = "artist" || "user",
-  }: {
-    ids: string[];
-    type: string;
-  }): Promise<{
+  public async check_if_user_follows_artists_or_users(
+    ids: string[],
+    type: "artist" | "user"
+  ): Promise<{
     result?: boolean[];
-    error?: Error;
+    error?: CustomError;
   }> {
-    let url = `${this.api_url}following/contains?ids=${ids.join(
+    const url = `${this.api_url}following/contains?ids=${ids.join(
       ","
     )}&type=${type}`;
 
-    return await get_req(
+    return await this.info.submit_user_scoped_request({
       url,
-      this.info.user_access_token,
-      z.array(z.boolean()),
-      this.info
-    );
+      method: "GET",
+      object: z.array(z.boolean()),
+      scopes: ["user-follow-read"],
+    });
   }
 
   /**
@@ -345,29 +338,25 @@ class Users {
    * @returns
    * Promise<{
    * result?: boolean[];
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async check_if_users_follow_playlist({
-    playlist_id,
-    ids,
-  }: {
-    playlist_id: string;
-    ids: string[];
-  }): Promise<{
+  public async check_if_users_follow_playlist(
+    playlist_id: string,
+    user_ids: string[]
+  ): Promise<{
     result?: boolean[];
-    error?: Error;
+    error?: CustomError;
   }> {
-    let url = `${
+    const url = `${
       this.info.api_url
-    }/playlists/${playlist_id}/followers/contains?ids=${ids.join(",")}`;
+    }/playlists/${playlist_id}/followers/contains?ids=${user_ids.join(",")}`;
 
-    return await get_req(
+    return await this.info.submit_request({
       url,
-      this.info.user_access_token,
-      z.array(z.boolean()),
-      this.info
-    );
+      method: "GET",
+      object: z.array(z.boolean()),
+    });
   }
 }
 

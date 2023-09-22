@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { InfoType } from "../client/client";
+import { CustomError, InfoType } from "../models/client";
 import {
   Audiobook,
   AudiobookType,
@@ -12,7 +12,7 @@ import {
   SeveralSimplifiedAudiobooks,
   SeveralSimplifiedAudiobooksType,
 } from "../models/audiobooks-simplified";
-import { get_req, put_req, delete_req } from "../utils/requests";
+import { OptionalType, handle_optional } from "../utils/helpers";
 
 class Audiobooks {
   private info: InfoType;
@@ -37,27 +37,20 @@ class Audiobooks {
    * Users can view the country that is associated with their account in the account settings.
    * Example value: "ES"
    * @returns
-   * Promise<{
-   * result?: AudiobookType;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: AudiobookType; error?: CustomError }>
    */
-  public async get_an_audiobook({
-    id,
-    market,
-  }: {
-    id: string;
-    market?: string;
-  }): Promise<{ result?: AudiobookType; error?: Error }> {
+  public async get_an_audiobook(
+    id: string,
+    market?: string
+  ): Promise<{ result?: AudiobookType; error?: CustomError }> {
     let url = `${this.api_url}${id}`;
     if (market) url += `?market=${market}`;
 
-    return await get_req(
+    return await this.info.submit_request<AudiobookType>({
       url,
-      this.info.client_access_token,
-      Audiobook,
-      this.info
-    );
+      method: "GET",
+      object: Audiobook,
+    });
   }
 
   /**
@@ -74,27 +67,20 @@ class Audiobooks {
    * Users can view the country that is associated with their account in the account settings.
    * Example value: "ES"
    * @returns
-   * Promise<{
-   * result?: SeveralAudiobookType;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: SeveralAudiobookType; error?: CustomError }
    */
-  public async get_several_audiobooks({
-    ids,
-    market,
-  }: {
-    ids: string[];
-    market?: string;
-  }): Promise<{ result?: SeveralAudiobookType; error?: Error }> {
+  public async get_several_audiobooks(
+    ids: string[],
+    market?: string
+  ): Promise<{ result?: SeveralAudiobookType; error?: CustomError }> {
     let url = `${this.api_url}?ids=${ids.join(",")}`;
     if (market) url += `&market=${market}`;
 
-    return await get_req(
+    return await this.info.submit_request<SeveralAudiobookType>({
       url,
-      this.info.client_access_token,
-      SeveralAudiobooks,
-      this.info
-    );
+      method: "GET",
+      object: SeveralAudiobooks,
+    });
   }
 
   /**
@@ -120,31 +106,22 @@ class Audiobooks {
    * Example value: 5
    * Default value: 0
    * @returns
-   * Promise<{
-   * result?: ChaptersType;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: ChaptersType; error?: CustomError }>
    */
-  public async get_audiobook_chapters({
-    id,
-    market,
-    limit = 20,
-    offset = 0,
-  }: {
-    id: string;
-    market?: string;
-    limit?: number;
-    offset?: number;
-  }): Promise<{ result?: ChaptersType; error?: Error }> {
+  public async get_audiobook_chapters(
+    id: string,
+    optional?: OptionalType
+  ): Promise<{ result?: ChaptersType; error?: CustomError }> {
+    const { limit, offset, market } = handle_optional(optional);
+
     let url = `${this.api_url}${id}/chapters?limit=${limit}&offset=${offset}`;
     if (market) url += `&market=${market}`;
 
-    return await get_req(
+    return await this.info.submit_request<ChaptersType>({
       url,
-      this.info.client_access_token,
-      chapters,
-      this.info
-    );
+      method: "GET",
+      object: chapters,
+    });
   }
 
   /**
@@ -164,25 +141,25 @@ class Audiobooks {
    * @returns
    * Promise<{
    * result?: SeveralSimplifiedAudiobooksType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async get_users_saved_audiobooks({
-    limit = 20,
-    offset = 0,
-  }: {
-    limit?: number;
-    offset?: number;
-  }): Promise<{ result?: SeveralSimplifiedAudiobooksType; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
-      throw new Error("This endpoint requires a user access token");
+  public async get_users_saved_audiobooks(
+    optional?: Omit<OptionalType, "market">
+  ): Promise<{
+    result?: SeveralSimplifiedAudiobooksType;
+    error?: CustomError;
+  }> {
+    const { limit, offset } = handle_optional(optional);
+    const url = `${this.info.api_url}/me/audiobooks?limit=${limit}&offset=${offset}`;
 
-    let url = `${this.info.api_url}/me/audiobooks?limit=${limit}&offset=${offset}`;
-    return await get_req(
-      url,
-      this.info.user_access_token,
-      SeveralSimplifiedAudiobooks,
-      this.info
+    return await this.info.submit_user_scoped_request<SeveralSimplifiedAudiobooksType>(
+      {
+        url,
+        method: "GET",
+        object: SeveralSimplifiedAudiobooks,
+        scopes: ["user-library-read"],
+      }
     );
   }
 
@@ -195,19 +172,18 @@ class Audiobooks {
    * @scopes Authorization scopes
    * - user-library-modify
    * @returns
-   * Promise<{
-   * result?: string;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: string; error?: CustomError }>
    */
   public async save_audiobooks_for_current_user(
     ids: string[]
-  ): Promise<{ result?: string; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
-      throw new Error("This endpoint requires a user access token");
+  ): Promise<{ result?: string; error?: CustomError }> {
+    const url = `${this.info.api_url}/me/audiobooks?ids=${ids.join(",")}`;
 
-    let url = `${this.info.api_url}/me/audiobooks?ids=${ids.join(",")}`;
-    return await put_req(url, this.info.user_access_token, null, this.info);
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "PUT",
+      scopes: ["user-library-modify"],
+    });
   }
 
   /**
@@ -221,17 +197,19 @@ class Audiobooks {
    * @returns
    * Promise<{
    * result?: string;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async remove_users_saved_audiobooks(
     ids: string[]
-  ): Promise<{ result?: string; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
-      throw new Error("This endpoint requires a user access token");
+  ): Promise<{ result?: string; error?: CustomError }> {
+    const url = `${this.info.api_url}/me/audiobooks?ids=${ids.join(",")}`;
 
-    let url = `${this.info.api_url}/me/audiobooks?ids=${ids.join(",")}`;
-    return await delete_req(url, this.info.user_access_token, this.info);
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "DELETE",
+      scopes: ["user-library-modify"],
+    });
   }
 
   /**
@@ -245,24 +223,22 @@ class Audiobooks {
    * @returns
    * Promise<{
    * result?: boolean[];
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async check_users_saved_audiobooks(
     ids: string[]
-  ): Promise<{ result?: boolean[]; error?: Error }> {
-    if (!this.info.user_access_token || this.info.user_access_token === "")
-      throw new Error("This endpoint requires a user access token");
-
-    let url = `${this.info.api_url}/me/audiobooks/contains?ids=${ids.join(
+  ): Promise<{ result?: boolean[]; error?: CustomError }> {
+    const url = `${this.info.api_url}/me/audiobooks/contains?ids=${ids.join(
       ","
     )}`;
-    return await get_req(
+
+    return await this.info.submit_user_scoped_request({
       url,
-      this.info.user_access_token,
-      z.array(z.boolean()),
-      this.info
-    );
+      method: "GET",
+      object: z.array(z.boolean()),
+      scopes: ["user-library-read"],
+    });
   }
 }
 

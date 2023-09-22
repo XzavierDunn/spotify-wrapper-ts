@@ -1,5 +1,3 @@
-import { z } from "zod";
-import config from "../../config.json";
 import { Artists } from "../endpoints/artists";
 import { Albums } from "../endpoints/albums";
 import { Audiobooks } from "../endpoints/audiobooks";
@@ -19,44 +17,25 @@ import { Playlists } from "../endpoints/playlists";
 import { Shows } from "../endpoints/shows";
 import { Tracks } from "../endpoints/tracks";
 import { Users } from "../endpoints/users";
-
-const Credentials = z.object({
-  client_id: z.string(),
-  client_secret: z.string(),
-  redirect_uri: z.string(),
-});
-
-let ClientInfo = z.object({
-  access_token: z.string().optional(),
-  token_type: z.string().optional(),
-  expires_in: z.number().optional(),
-  refresh_token: z.string().optional(),
-  scope: z.string().optional(),
-});
-
-let Info = z.object({
-  api_url: z.string(),
-  client_access_token: z.string(),
-  user_access_token: z.string(),
-  refresh_token_function: z.function(),
-  refresh_user_token_function: z.function(),
-});
-
-type CredentialsType = z.infer<typeof Credentials>;
-type ClientInfoType = z.infer<typeof ClientInfo>;
-type InfoType = z.infer<typeof Info>;
+import { FetchDataType, handle_request } from "../utils/requests";
+import {
+  ClientInfoType,
+  CredentialsType,
+  CustomError,
+  InfoType,
+} from "../models/client";
+import { check_user_token, scope_check } from "../utils/helpers";
 
 class Client {
   private credentials: CredentialsType;
-  private ClientInfo: ClientInfoType;
   private UserInfo: ClientInfoType = {};
 
   private info: InfoType = {
     api_url: "https://api.spotify.com/v1",
     client_access_token: "",
     user_access_token: "",
-    refresh_token_function: this.refresh_token.bind(this),
-    refresh_user_token_function: this.refresh_user_token.bind(this),
+    submit_request: this.submit_request.bind(this),
+    submit_user_scoped_request: this.submit_user_scoped_request.bind(this),
   };
 
   public users: Users;
@@ -76,7 +55,6 @@ class Client {
 
   constructor(clientInfo: ClientInfoType, credentials: CredentialsType) {
     this.credentials = credentials;
-    this.ClientInfo = clientInfo;
     this.info.client_access_token = clientInfo.access_token!;
 
     this.users = new Users(this.info);
@@ -100,20 +78,98 @@ class Client {
     return new Client(clientInfo, credentials);
   }
 
-  async refresh_token() {
-    console.log("Attempting to refresh token");
-    let data = await get_access_token(this.credentials, true);
-    this.ClientInfo = data;
-    this.info.client_access_token = data.access_token!;
+  async submit_request<T>(
+    input: FetchDataType
+  ): Promise<{ result?: T; error?: CustomError }> {
+    if (!input.user) input.token = this.info.client_access_token;
+    let { status_code, result } = await handle_request<T>(input);
+
+    if (status_code.toString()[0] != "2") {
+      return this.error_handler(status_code, result as { error: any }, input);
+    }
+
+    if (typeof result === "string") {
+      return { error: { status_code, message: result } };
+    } else {
+      return { result };
+    }
   }
 
-  async refresh_user_token() {
+  async submit_user_scoped_request<T>(input: FetchDataType) {
+    const check_token = check_user_token(this.info.user_access_token);
+    if (check_token.error) return check_token;
+
+    input.user = true;
+    input.token = this.info.user_access_token;
+
+    let result = await this.info.submit_request<T>(input);
+
+    if (scope_check(result.error)) {
+      result.error!.scopes = input.scopes;
+    }
+
+    return result;
+  }
+
+  async error_handler<T>(
+    status_code: number,
+    input: { error: any },
+    fetchData: FetchDataType
+  ): Promise<{ result?: T; error?: CustomError }> {
+    let refresh = false;
+    let scope_issue = false;
+
+    switch (status_code) {
+      case 400:
+        return input;
+      case 401:
+        if (
+          input.error.message === "Permissions missing" ||
+          input.error.message === "Invalid access token"
+        ) {
+          scope_issue = true;
+        } else {
+          refresh = true;
+        }
+        break;
+      case 403:
+        scope_issue = true;
+        break;
+    }
+
+    if (refresh) {
+      if (fetchData.user) {
+        fetchData.token = await this.refresh_user_token();
+        return this.submit_request(fetchData);
+      } else {
+        fetchData.token = await this.refresh_token();
+        return this.submit_request(fetchData);
+      }
+    }
+
+    if (scope_issue) {
+      let message: string = "";
+      try {
+        message = input.error.message;
+      } catch {}
+
+      return { error: { status_code: 403, message } };
+    }
+
+    throw new Error("NEW ERROR");
+  }
+
+  async refresh_token(): Promise<string> {
+    console.log("Attempting to refresh token");
+    let data = await get_access_token(this.credentials, true);
+    this.info.client_access_token = data.access_token!;
+    return data.access_token!;
+  }
+
+  async refresh_user_token(): Promise<string> {
     console.log("Attempting to refresh the user token");
-    if (!this.UserInfo.refresh_token)
-      throw new Error("Missing user refresh token");
 
     let data = await refresh_user_access_token(
-      this.UserInfo.refresh_token,
       this.credentials.client_id,
       this.credentials.client_secret
     );
@@ -122,6 +178,8 @@ class Client {
     this.info.user_access_token = data.access_token!;
 
     writeFileSync("./user-credentials.json", JSON.stringify(data));
+
+    return data.access_token!;
   }
 
   add_user_info(userInfo: ClientInfoType) {
@@ -130,4 +188,4 @@ class Client {
   }
 }
 
-export { Client, ClientInfo, ClientInfoType, InfoType, CredentialsType };
+export { Client };

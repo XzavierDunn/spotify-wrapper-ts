@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / endpoints/search
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / endpoints/search
 
 # Module: endpoints/search
 

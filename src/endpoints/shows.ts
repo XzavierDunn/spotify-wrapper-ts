@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { InfoType } from "../client/client";
+import { InfoType } from "../models/client";
 import { PagesofEpisodes, PagesofEpisodesType } from "../models/episodes";
 import { PagesofShows, PagesofShowsType, Show } from "../models/shows";
 import { ShowType } from "../models/shows";
@@ -7,7 +7,8 @@ import {
   SetofSimplifiedShows,
   SetofSimplifiedShowsType,
 } from "../models/shows-simplified";
-import { delete_req, get_req, put_req } from "../utils/requests";
+import { CustomError } from "../models/client";
+import { OptionalType, handle_optional } from "../utils/helpers";
 
 class Shows {
   private info: InfoType;
@@ -35,17 +36,22 @@ class Shows {
    * @returns
    * Promise<{
    * result?: ShowType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_show(
     id: string,
     market?: string
-  ): Promise<{ result?: ShowType; error?: Error }> {
+  ): Promise<{ result?: ShowType; error?: CustomError }> {
     let url = `${this.api_url}${id}`;
     if (market) url += `?market=${market}`;
 
-    return await get_req(url, this.info.user_access_token, Show, this.info);
+    return await this.info.submit_user_scoped_request<ShowType>({
+      url,
+      method: "GET",
+      object: Show,
+      scopes: ["user-read-playback-position"],
+    });
   }
 
   /**
@@ -60,23 +66,28 @@ class Shows {
    * Note: If neither market or user country are provided, the content is considered unavailable for the client.
    * Users can view the country that is associated with their account in the account settings.
    * Example value: "ES"
+   *
+   * REQUIRES USER TOKEN (UNDOCUMENTED)
+   *
    * @returns
    * Promise<{
    * result?: SetofSimplifiedShowsType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_several_shows(
     ids: string[],
-    market: string
-  ): Promise<{ result?: SetofSimplifiedShowsType; error?: Error }> {
-    let url = `${this.api_url}?ids=${ids.join(",")}&market=${market}`;
+    market?: string
+  ): Promise<{ result?: SetofSimplifiedShowsType; error?: CustomError }> {
+    let url = `${this.api_url}?ids=${ids.join(",")}`;
+    if (market) url += `&market=${market}`;
 
-    return await get_req(
-      url,
-      this.info.client_access_token,
-      SetofSimplifiedShows,
-      this.info
+    return await this.info.submit_user_scoped_request<SetofSimplifiedShowsType>(
+      {
+        url,
+        method: "GET",
+        object: SetofSimplifiedShows,
+      }
     );
   }
 
@@ -106,24 +117,23 @@ class Shows {
    * @returns
    * Promise<{
    * result?: PagesofEpisodesType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_show_episodes(
     id: string,
-    market?: string,
-    limit: number = 20,
-    offset: number = 0
-  ): Promise<{ result?: PagesofEpisodesType; error?: Error }> {
+    optional?: OptionalType
+  ): Promise<{ result?: PagesofEpisodesType; error?: CustomError }> {
+    const { market, limit, offset } = handle_optional(optional);
     let url = `${this.api_url}${id}/episodes?&limit=${limit}&offset=${offset}`;
     if (market) url += `&market=${market}`;
 
-    return await get_req(
+    return await this.info.submit_user_scoped_request<PagesofEpisodesType>({
       url,
-      this.info.user_access_token,
-      PagesofEpisodes,
-      this.info
-    );
+      method: "GET",
+      object: PagesofEpisodes,
+      scopes: ["user-read-playback-position"],
+    });
   }
 
   /**
@@ -143,21 +153,21 @@ class Shows {
    * @returns
    * Promise<{
    * result?: PagesofShowsType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_users_saved_shows(
-    limit: number = 20,
-    offset: number = 0
-  ): Promise<{ result?: PagesofShowsType; error?: Error }> {
-    let url = `${this.info.api_url}/me/shows?&limit=${limit}&offset=${offset}`;
+    optional?: Omit<OptionalType, "market">
+  ): Promise<{ result?: PagesofShowsType; error?: CustomError }> {
+    const { limit, offset } = handle_optional(optional);
+    const url = `${this.info.api_url}/me/shows?&limit=${limit}&offset=${offset}`;
 
-    return await get_req(
+    return await this.info.submit_user_scoped_request<PagesofShowsType>({
       url,
-      this.info.user_access_token,
-      PagesofShows,
-      this.info
-    );
+      method: "GET",
+      object: PagesofShows,
+      scopes: ["user-library-read"],
+    });
   }
 
   /**
@@ -171,15 +181,19 @@ class Shows {
    * @returns
    * Promise<{
    * result?: string;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async save_shows_for_current_user(
     ids: string[]
-  ): Promise<{ result?: string; error?: Error }> {
-    let url = `${this.info.api_url}/me/shows?ids=${ids.join(",")}`;
+  ): Promise<{ result?: string; error?: CustomError }> {
+    const url = `${this.info.api_url}/me/shows?ids=${ids.join(",")}`;
 
-    return await put_req(url, this.info.user_access_token, null, this.info);
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "PUT",
+      scopes: ["user-library-modify"],
+    });
   }
 
   /**
@@ -199,17 +213,21 @@ class Shows {
    * @returns
    * Promise<{
    * result?: string;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async remove_users_saved_shows(
     ids: string[],
     market?: string
-  ): Promise<{ result?: string; error?: Error }> {
+  ): Promise<{ result?: string; error?: CustomError }> {
     let url = `${this.info.api_url}/me/shows?ids=${ids.join(",")}`;
     if (market) url += `&market=${market}`;
 
-    return await delete_req(url, this.info.user_access_token, this.info);
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "DELETE",
+      scopes: ["user-library-modify"],
+    });
   }
 
   /**
@@ -220,23 +238,24 @@ class Shows {
    * Example value: "5CfCWKI5pZ28U0uOzXkDHe,5as3aKmN2k11yfDDDSrvaZ"
    * @scopes Authorization scopes
    * - user-library-read
+   * - user-library-modify // THIS IS UNDOCUMENTED!
    * @returns
    * Promise<{
-   * result?: boo;
-   * error?: Error;
+   * result?: boolean[];
+   * error?: CustomError;
    * }>
    */
   public async check_users_saved_shows(
     ids: string[]
-  ): Promise<{ result?: boolean[]; error?: Error }> {
-    let url = `${this.info.api_url}/me/shows/contains?ids=${ids.join(",")}`;
+  ): Promise<{ result?: boolean[]; error?: CustomError }> {
+    const url = `${this.info.api_url}/me/shows/contains?ids=${ids.join(",")}`;
 
-    return await get_req(
+    return await this.info.submit_user_scoped_request({
       url,
-      this.info.user_access_token,
-      z.array(z.boolean()),
-      this.info
-    );
+      method: "GET",
+      object: z.array(z.boolean()),
+      scopes: ["user-library-read", "user-library-modify"],
+    });
   }
 }
 

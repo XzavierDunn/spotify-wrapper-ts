@@ -1,11 +1,12 @@
-import { InfoType } from "../client/client";
+import { InfoType } from "../models/client";
 import {
   CategoryItem,
   CategoryItemType,
   SeveralCategories,
   SeveralCategoriesType,
 } from "../models/categories";
-import { get_req } from "../utils/requests";
+import { CustomError } from "../models/client";
+import { OptionalType, handle_optional } from "../utils/helpers";
 
 class Categories {
   private info: InfoType;
@@ -19,7 +20,7 @@ class Categories {
   /**
    * Get Several Browse Categories - https://developer.spotify.com/documentation/web-api/reference/get-categories
    * Get a list of categories used to tag items in Spotify (on, for example, the Spotify player’s “Browse” tab).
-   * @param country
+   * @param market
    * A country: an ISO 3166-1 alpha-2 country code. Provide this parameter if you want to narrow the list of returned categories to those relevant to a particular country. If omitted, the returned items will be globally relevant.
    * Example value: "SE"
    * @param locale
@@ -38,30 +39,26 @@ class Categories {
    * @returns
    * Promise<{
    * result?: SeveralCategoriesType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async get_several_browse_categories({
-    country,
-    locale,
-    limit = 20,
-    offset = 0,
-  }: {
-    country?: string;
-    locale?: string;
-    limit?: number;
-    offset?: number;
-  }): Promise<{ result?: SeveralCategoriesType; error?: Error }> {
+  public async get_several_browse_categories(
+    optional?: OptionalType & {
+      locale?: string;
+    }
+  ): Promise<{ result?: SeveralCategoriesType; error?: CustomError }> {
+    const locale = optional?.locale;
+    const { limit, offset, market } = handle_optional(optional);
+
     let url = `${this.api_url}?limit=${limit}&offset=${offset}`;
-    if (country) url += `&country=${country}`;
+    if (market) url += `&country=${market}`;
     if (locale) url += `&locale=${locale}`;
 
-    return await get_req(
+    return await this.info.submit_request<SeveralCategoriesType>({
       url,
-      this.info.client_access_token,
-      SeveralCategories,
-      this.info
-    );
+      method: "GET",
+      object: SeveralCategories,
+    });
   }
 
   /**
@@ -80,28 +77,23 @@ class Categories {
    * @returns
    * Promise<{
    * result?: CategoryItemType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async get_single_browse_category({
-    category_id,
-    country,
-    locale,
-  }: {
-    category_id: string;
-    country?: string;
-    locale?: string;
-  }): Promise<{ result?: CategoryItemType; error?: Error }> {
+  public async get_single_browse_category(
+    category_id: string,
+    country?: string,
+    locale?: string
+  ): Promise<{ result?: CategoryItemType; error?: CustomError }> {
     let url = `${this.api_url}${category_id}?`;
     if (country) url += `&country=${country}`;
     if (locale) url += `&locale=${locale}`;
 
-    return await get_req(
+    return await this.info.submit_request<CategoryItemType>({
       url,
-      this.info.client_access_token,
-      CategoryItem,
-      this.info
-    );
+      method: "GET",
+      object: CategoryItem,
+    });
   }
 }
 

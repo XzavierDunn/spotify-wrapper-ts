@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / endpoints/episodes
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / endpoints/episodes
 
 # Module: endpoints/episodes
 

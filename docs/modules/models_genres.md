@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / models/genres
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / models/genres
 
 # Module: models/genres
 
@@ -20,7 +20,7 @@
 
 #### Defined in
 
-[src/models/genres.ts:7](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/genres.ts#L7)
+[src/models/genres.ts:7](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/genres.ts#L7)
 
 ## Variables
 
@@ -30,4 +30,4 @@
 
 #### Defined in
 
-[src/models/genres.ts:3](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/genres.ts#L3)
+[src/models/genres.ts:3](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/genres.ts#L3)

@@ -1,5 +1,4 @@
-import { z } from "zod";
-import { InfoType } from "../client/client";
+import { CustomError, InfoType } from "../models/client";
 import {
   PagedPlaylists,
   PagedPlaylistsType,
@@ -9,12 +8,12 @@ import {
   SnapshotType,
 } from "../models/playlist";
 import { PlaylistTracks, PlaylistTracksType } from "../models/playlist-track";
-import { delete_req, get_req, post_req, put_req } from "../utils/requests";
 import {
   SeveralSimplifiedPlaylists,
   SeveralSimplifiedPlaylistsType,
 } from "../models/playlists-simplified";
-import { Images, SetOfImages, SetOfImagesType } from "../models/shared";
+import { SetOfImages, SetOfImagesType } from "../models/shared";
+import { OptionalType, handle_optional } from "../utils/helpers";
 
 class Playlists {
   private info: InfoType;
@@ -47,34 +46,31 @@ class Playlists {
    * @returns
    * Promise<{
    * result?: PlaylistTracksType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async get_playlist({
-    playlist_id,
-    market,
-    fields,
-    additional_types,
-  }: {
-    playlist_id: string;
-    market?: string;
-    fields?: string;
-    additional_types?: string;
-  }): Promise<{
+  public async get_playlist(
+    playlist_id: string,
+    optional?: {
+      market?: string;
+      fields?: string;
+      additional_types?: string;
+    }
+  ): Promise<{
     result?: PlaylistType;
-    error?: Error;
+    error?: CustomError;
   }> {
+    const { market, fields, additional_types } = optional || {};
     let url = `${this.api_url}${playlist_id}?`;
     if (market) url += `&market=${market}`;
     if (fields) url += `&fields=${fields}`;
     if (additional_types) url += `&additional_types=${additional_types}`;
 
-    return await get_req(
+    return await this.info.submit_request<PlaylistType>({
       url,
-      this.info.client_access_token,
-      Playlist,
-      this.info
-    );
+      method: "GET",
+      object: Playlist,
+    });
   }
 
   /**
@@ -98,27 +94,23 @@ class Playlists {
    * @returns
    * Promise<{
    * result?: string;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async change_playlist_details({
-    playlist_id,
-    name,
-    public_playlist,
-    collaborative,
-    description,
-  }: {
-    playlist_id: string;
-    name?: string;
-    public_playlist?: boolean;
-    collaborative?: boolean;
-    description?: string;
-  }): Promise<{
+  public async change_playlist_details(
+    playlist_id: string,
+    optional?: {
+      name?: string;
+      public_playlist?: boolean;
+      collaborative?: boolean;
+      description?: string;
+    }
+  ): Promise<{
     result?: string;
-    error?: Error;
+    error?: CustomError;
   }> {
-    if (!this.info.user_access_token || !this.info.user_access_token.length)
-      throw new Error("User access token is required");
+    const { name, public_playlist, collaborative, description } =
+      optional || {};
 
     let url = `${this.api_url}${playlist_id}?`;
     let body = JSON.stringify({
@@ -128,7 +120,12 @@ class Playlists {
       description,
     });
 
-    return await put_req(url, this.info.user_access_token, body, this.info);
+    return await this.info.submit_user_scoped_request({
+      url,
+      body,
+      method: "PUT",
+      scopes: ["playlist-modify-public", "playlist-modify-private"],
+    });
   }
 
   /**
@@ -163,41 +160,34 @@ class Playlists {
    * @returns
    * Promise<{
    * result?: PlaylistTracksType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async get_playlist_items({
-    playlist_id,
-    market,
-    fields,
-    additional_types,
-    limit = 20,
-    offset = 0,
-  }: {
-    playlist_id: string;
-    market?: string;
-    fields?: string;
-    limit?: number;
-    offset?: number;
-    additional_types?: string;
-  }): Promise<{
+  public async get_playlist_items(
+    playlist_id: string,
+    optional?: OptionalType & {
+      fields?: string;
+      additional_types?: string;
+    }
+  ): Promise<{
     result?: PlaylistTracksType;
-    error?: Error;
+    error?: CustomError;
   }> {
-    if (!this.info.user_access_token || !this.info.user_access_token.length)
-      throw new Error("User access token is required");
+    const fields = optional?.fields;
+    const additional_types = optional?.fields;
+    const { limit, offset, market } = handle_optional(optional);
 
     let url = `${this.api_url}${playlist_id}/tracks?limit=${limit}&offset=${offset}`;
     if (market) url += `&market=${market}`;
     if (fields) url += `&fields=${fields}`;
     if (additional_types) url += `&additional_types=${additional_types}`;
 
-    return await get_req(
+    return await this.info.submit_user_scoped_request<PlaylistTracksType>({
       url,
-      this.info.user_access_token,
-      PlaylistTracks,
-      this.info
-    );
+      method: "GET",
+      object: PlaylistTracks,
+      scopes: ["playlist-read-private"],
+    });
   }
 
   /**
@@ -231,29 +221,24 @@ class Playlists {
    * @returns
    * Promise<{
    * result?: SnapshotType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async update_playlist_items({
-    playlist_id,
-    uris,
-    range_start,
-    insert_before,
-    range_length,
-    snapshot_id,
-  }: {
-    playlist_id: string;
-    uris?: string[];
-    range_start?: number;
-    insert_before?: number;
-    range_length?: number;
-    snapshot_id?: string;
-  }): Promise<{
+  public async update_playlist_items(
+    playlist_id: string,
+    optional?: {
+      uris?: string[];
+      range_start?: number;
+      insert_before?: number;
+      range_length?: number;
+      snapshot_id?: string;
+    }
+  ): Promise<{
     result?: SnapshotType;
-    error?: Error;
+    error?: CustomError;
   }> {
-    if (!this.info.user_access_token || !this.info.user_access_token.length)
-      throw new Error("User access token is required");
+    const { uris, range_start, insert_before, range_length, snapshot_id } =
+      optional || {};
 
     let url = `${this.api_url}${playlist_id}/tracks`;
 
@@ -265,13 +250,13 @@ class Playlists {
       snapshot_id,
     });
 
-    return await put_req(
+    return await this.info.submit_user_scoped_request<SnapshotType>({
       url,
-      this.info.user_access_token,
       body,
-      this.info,
-      Snapshot
-    );
+      method: "PUT",
+      object: Snapshot,
+      scopes: ["playlist-modify-public", "playlist-modify-private"],
+    });
   }
 
   /**
@@ -292,24 +277,17 @@ class Playlists {
    * @returns
    * Promise<{
    * result?: SnapshotType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async add_items_to_playlist({
-    playlist_id,
-    uris,
-    position,
-  }: {
-    playlist_id: string;
-    uris: string[];
-    position?: number;
-  }): Promise<{
+  public async add_items_to_playlist(
+    playlist_id: string,
+    uris: string[],
+    position?: number
+  ): Promise<{
     result?: SnapshotType;
-    error?: Error;
+    error?: CustomError;
   }> {
-    if (!this.info.user_access_token || !this.info.user_access_token.length)
-      throw new Error("User access token is required");
-
     let url = `${this.api_url}${playlist_id}/tracks`;
 
     let body = JSON.stringify({
@@ -317,13 +295,13 @@ class Playlists {
       position,
     });
 
-    return await post_req(
+    return await this.info.submit_user_scoped_request<SnapshotType>({
       url,
-      this.info.user_access_token,
       body,
-      this.info,
-      Snapshot
-    );
+      method: "POST",
+      object: Snapshot,
+      scopes: ["playlist-modify-public", "playlist-modify-private"],
+    });
   }
 
   /**
@@ -342,24 +320,17 @@ class Playlists {
    * @returns
    * Promise<{
    * result?: SnapshotType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async remove_playlist_items({
-    playlist_id,
-    tracks,
-    snapshot,
-  }: {
-    playlist_id: string;
-    tracks: { uri: string }[];
-    snapshot?: string;
-  }): Promise<{
+  public async remove_playlist_items(
+    playlist_id: string,
+    tracks: { uri: string }[],
+    snapshot?: string
+  ): Promise<{
     result?: SnapshotType;
-    error?: Error;
+    error?: CustomError;
   }> {
-    if (!this.info.user_access_token || !this.info.user_access_token.length)
-      throw new Error("User access token is required");
-
     let url = `${this.api_url}${playlist_id}/tracks`;
 
     let body = JSON.stringify({
@@ -367,13 +338,13 @@ class Playlists {
       snapshot,
     });
 
-    return await delete_req(
+    return await this.info.submit_user_scoped_request<SnapshotType>({
       url,
-      this.info.user_access_token,
-      this.info,
       body,
-      Snapshot
-    );
+      method: "DELETE",
+      object: Snapshot,
+      scopes: ["playlist-modify-public", "playlist-modify-private"],
+    });
   }
 
   /**
@@ -393,31 +364,28 @@ class Playlists {
    * @returns
    * Promise<{
    * result?: SeveralSimplifiedPlaylistsType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async get_current_users_playlists({
-    limit,
-    offset,
-  }: {
-    limit?: number;
-    offset?: number;
-  }): Promise<{
+  public async get_current_users_playlists(
+    optional?: Omit<OptionalType, "market">
+  ): Promise<{
     result?: SeveralSimplifiedPlaylistsType;
-    error?: Error;
+    error?: CustomError;
   }> {
-    if (!this.info.user_access_token || !this.info.user_access_token.length)
-      throw new Error("User access token is required");
+    const { limit, offset } = handle_optional(optional);
 
     let url = `${this.info.api_url}/me/playlists?`;
     if (limit) url += `&limit=${limit}`;
     if (offset) url += `&offset=${offset}`;
 
-    return await get_req(
-      url,
-      this.info.user_access_token,
-      SeveralSimplifiedPlaylists,
-      this.info
+    return await this.info.submit_user_scoped_request<SeveralSimplifiedPlaylistsType>(
+      {
+        url,
+        method: "GET",
+        object: SeveralSimplifiedPlaylists,
+        scopes: ["playlist-read-private"],
+      }
     );
   }
 
@@ -442,33 +410,29 @@ class Playlists {
    * @returns
    * Promise<{
    * result?: SeveralSimplifiedPlaylistsType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async get_users_playlists({
-    user_id,
-    limit,
-    offset,
-  }: {
-    user_id: string;
-    limit?: number;
-    offset?: number;
-  }): Promise<{
+  public async get_users_playlists(
+    user_id: string,
+    optional?: Omit<OptionalType, "market">
+  ): Promise<{
     result?: SeveralSimplifiedPlaylistsType;
-    error?: Error;
+    error?: CustomError;
   }> {
-    if (!this.info.user_access_token || !this.info.user_access_token.length)
-      throw new Error("User access token is required");
+    const { limit, offset } = handle_optional(optional);
 
     let url = `${this.info.api_url}/users/${user_id}/playlists?`;
     if (limit) url += `&limit=${limit}`;
     if (offset) url += `&offset=${offset}`;
 
-    return await get_req(
-      url,
-      this.info.user_access_token,
-      SeveralSimplifiedPlaylists,
-      this.info
+    return await this.info.submit_user_scoped_request<SeveralSimplifiedPlaylistsType>(
+      {
+        url,
+        method: "GET",
+        object: SeveralSimplifiedPlaylists,
+        scopes: ["playlist-read-private", "playlist-read-collaborative"],
+      }
     );
   }
 
@@ -492,28 +456,22 @@ class Playlists {
    * @returns
    * Promise<{
    * result?: PlaylistType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async create_playlist({
-    user_id,
-    name,
-    public_playlist,
-    collaborative,
-    description,
-  }: {
-    user_id: string;
-    name: string;
-    public_playlist?: boolean;
-    collaborative?: boolean;
-    description?: string;
-  }): Promise<{
+  public async create_playlist(
+    user_id: string,
+    name: string,
+    optional?: {
+      public_playlist?: boolean;
+      collaborative?: boolean;
+      description?: string;
+    }
+  ): Promise<{
     result?: PlaylistType;
-    error?: Error;
+    error?: CustomError;
   }> {
-    if (!this.info.user_access_token || !this.info.user_access_token.length)
-      throw new Error("User access token is required");
-
+    const { public_playlist, collaborative, description } = optional || {};
     let url = `${this.info.api_url}/users/${user_id}/playlists?`;
 
     let body = JSON.stringify({
@@ -523,13 +481,13 @@ class Playlists {
       description,
     });
 
-    return await post_req(
+    return await this.info.submit_user_scoped_request<PlaylistType>({
       url,
-      this.info.user_access_token,
       body,
-      this.info,
-      Playlist
-    );
+      method: "POST",
+      object: Playlist,
+      scopes: ["playlist-modify-public", "playlist-modify-private"],
+    });
   }
 
   /**
@@ -538,7 +496,7 @@ class Playlists {
    * @param country
    * A country: an ISO 3166-1 alpha-2 country code. Provide this parameter if you want the list of returned items to be relevant to a particular country. If omitted, the returned items will be relevant to all countries.
    * Example value: "SE"
-   * @param locale
+   * @param market
    * The desired language, consisting of a lowercase ISO 639-1 language code and an uppercase ISO 3166-1 alpha-2 country code, joined by an underscore. For example: es_MX, meaning "Spanish (Mexico)". Provide this parameter if you want the results returned in a particular language (where available).
    * Note: if locale is not supplied, or if the specified language is not available, all strings will be returned in the Spotify default language (American English). The locale parameter, combined with the country parameter, may give odd results if not carefully matched. For example country=SE&locale=de_DE will return a list of categories relevant to Sweden but as German language strings.
    * Example value: "sv_SE"
@@ -557,36 +515,30 @@ class Playlists {
    * @returns
    * Promise<{
    * result?: PagedPlaylistsType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async get_featured_playlists({
-    country,
-    locale,
-    timestamp,
-    limit = 20,
-    offset = 0,
-  }: {
-    country?: string;
-    locale?: string;
-    timestamp?: string;
-    limit?: number;
-    offset?: number;
-  }): Promise<{
+  public async get_featured_playlists(
+    optional?: OptionalType & {
+      country?: string;
+      timestamp?: string;
+    }
+  ): Promise<{
     result?: PagedPlaylistsType;
-    error?: Error;
+    error?: CustomError;
   }> {
+    const { country, timestamp } = optional || {};
+    const { limit, offset, market } = handle_optional(optional);
     let url = `${this.info.api_url}/browse/featured-playlists?limit=${limit}&offset=${offset}`;
     if (country) url += `&country=${country}`;
-    if (locale) url += `&locale=${locale}`;
+    if (market) url += `&locale=${market}`;
     if (timestamp) url += `&timestamp=${timestamp}`;
 
-    return await get_req(
+    return await this.info.submit_request<PagedPlaylistsType>({
       url,
-      this.info.client_access_token,
-      PagedPlaylists,
-      this.info
-    );
+      method: "GET",
+      object: PagedPlaylists,
+    });
   }
 
   /**
@@ -595,7 +547,7 @@ class Playlists {
    * @param category_id
    * The Spotify category ID for the category.
    * Example value: "dinner"
-   * @param country
+   * @param market
    * A country: an ISO 3166-1 alpha-2 country code. Provide this parameter if you want the list of returned items to be relevant to a particular country. If omitted, the returned items will be relevant to all countries.
    * Example value: "SE"
    * @param limit
@@ -610,32 +562,25 @@ class Playlists {
    * @returns
    * Promise<{
    * result?: PagedPlaylistsType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async get_categorys_playlists({
-    category_id,
-    country,
-    limit = 20,
-    offset = 0,
-  }: {
-    category_id: string;
-    country?: string;
-    limit?: number;
-    offset?: number;
-  }): Promise<{
+  public async get_categorys_playlists(
+    category_id: string,
+    optional?: OptionalType
+  ): Promise<{
     result?: PagedPlaylistsType;
-    error?: Error;
+    error?: CustomError;
   }> {
+    const { limit, offset, market } = handle_optional(optional);
     let url = `${this.info.api_url}/browse/categories/${category_id}/playlists?limit=${limit}&offset=${offset}`;
-    if (country) url += `&country=${country}`;
+    if (market) url += `&country=${market}`;
 
-    return await get_req(
+    return await this.info.submit_request<PagedPlaylistsType>({
       url,
-      this.info.client_access_token,
-      PagedPlaylists,
-      this.info
-    );
+      method: "GET",
+      object: PagedPlaylists,
+    });
   }
 
   /**
@@ -647,25 +592,20 @@ class Playlists {
    * @returns
    * Promise<{
    * result?: SetOfImagesType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async get_playlist_cover_image({
-    playlist_id,
-  }: {
-    playlist_id: string;
-  }): Promise<{
+  public async get_playlist_cover_image(playlist_id: string): Promise<{
     result?: SetOfImagesType;
-    error?: Error;
+    error?: CustomError;
   }> {
     let url = `${this.api_url}${playlist_id}/images`;
 
-    return await get_req(
+    return await this.info.submit_request<SetOfImagesType>({
       url,
-      this.info.client_access_token,
-      SetOfImages,
-      this.info
-    );
+      method: "GET",
+      object: SetOfImages,
+    });
   }
 
   /**
@@ -684,22 +624,24 @@ class Playlists {
    * @returns
    * Promise<{
    * result?: string;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async add_custom_playlist_cover_image({
-    playlist_id,
-    image,
-  }: {
-    playlist_id: string;
-    image: string;
-  }): Promise<{
+  public async add_custom_playlist_cover_image(
+    playlist_id: string,
+    image: string
+  ): Promise<{
     result?: string;
-    error?: Error;
+    error?: CustomError;
   }> {
     let url = `${this.api_url}${playlist_id}/images`;
 
-    return await put_req(url, this.info.user_access_token, image, this.info);
+    return await this.info.submit_user_scoped_request({
+      url,
+      body: image,
+      method: "PUT",
+      scopes: ["playlist-modify-public", "playlist-modify-private"],
+    });
   }
 }
 

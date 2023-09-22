@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { InfoType } from "../client/client";
+import { CustomError, InfoType } from "../models/client";
 import {
   MultipleTracks,
   MultipleTracksType,
@@ -8,7 +8,6 @@ import {
   Track,
   TrackType,
 } from "../models/tracks";
-import { delete_req, get_req, put_req } from "../utils/requests";
 import {
   AudioFeatures,
   AudioFeaturesType,
@@ -21,6 +20,7 @@ import {
   SetofRecommendations,
   SetofRecommendationsType,
 } from "../models/recommendations";
+import { OptionalType, handle_optional } from "../utils/helpers";
 
 class Tracks {
   private info: InfoType;
@@ -46,17 +46,21 @@ class Tracks {
    * @returns
    * Promise<{
    * result?: TrackType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_track(
     id: string,
     market?: string
-  ): Promise<{ result?: TrackType; error?: Error }> {
+  ): Promise<{ result?: TrackType; error?: CustomError }> {
     let url = `${this.api_url}${id}`;
     if (market) url += `?market=${market}`;
 
-    return await get_req(url, this.info.client_access_token, Track, this.info);
+    return await this.info.submit_request<TrackType>({
+      url,
+      method: "GET",
+      object: Track,
+    });
   }
 
   /**
@@ -74,22 +78,21 @@ class Tracks {
    * @returns
    * Promise<{
    * result?: MultipleTracksType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_several_tracks(
     ids: string[],
     market?: string
-  ): Promise<{ result?: MultipleTracksType; error?: Error }> {
+  ): Promise<{ result?: MultipleTracksType; error?: CustomError }> {
     let url = `${this.api_url}?ids=${ids.join(",")}`;
     if (market) url += `&market=${market}`;
 
-    return await get_req(
+    return await this.info.submit_request<MultipleTracksType>({
       url,
-      this.info.client_access_token,
-      MultipleTracks,
-      this.info
-    );
+      method: "GET",
+      object: MultipleTracks,
+    });
   }
 
   /**
@@ -115,27 +118,23 @@ class Tracks {
    * @returns
    * Promise<{
    * result?: PagesofTracksType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
-  public async get_users_saved_tracks({
-    market,
-    limit = 20,
-    offset = 0,
-  }: {
-    market?: string;
-    limit?: number;
-    offset?: number;
-  }): Promise<{ result?: PagesofTracksType; error?: Error }> {
+  public async get_users_saved_tracks(
+    optional?: OptionalType
+  ): Promise<{ result?: PagesofTracksType; error?: CustomError }> {
+    const { market, limit, offset } = handle_optional(optional);
+
     let url = `${this.info.api_url}/me/tracks?limit=${limit}&offset=${offset}`;
     if (market) url += `&market=${market}`;
 
-    return await get_req(
+    return await this.info.submit_user_scoped_request<PagesofTracksType>({
       url,
-      this.info.user_access_token,
-      PagesofTracks,
-      this.info
-    );
+      method: "GET",
+      object: PagesofTracks,
+      scopes: ["user-library-read"],
+    });
   }
 
   /**
@@ -149,15 +148,19 @@ class Tracks {
    * @returns
    * Promise<{
    * result?: string;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async save_tracks_for_current_user(
     ids: string[]
-  ): Promise<{ result?: string; error?: Error }> {
+  ): Promise<{ result?: string; error?: CustomError }> {
     let url = `${this.info.api_url}/me/tracks?ids=${ids.join(",")}`;
 
-    return await put_req(url, this.info.user_access_token, null, this.info);
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "PUT",
+      scopes: ["user-library-modify"],
+    });
   }
 
   /**
@@ -171,15 +174,19 @@ class Tracks {
    * @returns
    * Promise<{
    * result?: string;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async remove_users_saved_tracks(
     ids: string[]
-  ): Promise<{ result?: string; error?: Error }> {
+  ): Promise<{ result?: string; error?: CustomError }> {
     let url = `${this.info.api_url}/me/tracks?ids=${ids.join(",")}`;
 
-    return await delete_req(url, this.info.user_access_token, this.info);
+    return await this.info.submit_user_scoped_request({
+      url,
+      method: "DELETE",
+      scopes: ["user-library-modify"],
+    });
   }
 
   /**
@@ -193,20 +200,20 @@ class Tracks {
    * @returns
    * Promise<{
    * result?: string;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async check_users_saved_tracks(
     ids: string[]
-  ): Promise<{ result?: string; error?: Error }> {
+  ): Promise<{ result?: string; error?: CustomError }> {
     let url = `${this.info.api_url}/me/tracks/contains?ids=${ids.join(",")}`;
 
-    return await get_req(
+    return await this.info.submit_user_scoped_request({
       url,
-      this.info.user_access_token,
-      z.array(z.boolean()),
-      this.info
-    );
+      method: "GET",
+      object: z.array(z.boolean()),
+      scopes: ["user-library-read"],
+    });
   }
 
   /**
@@ -218,20 +225,19 @@ class Tracks {
    * @returns
    * Promise<{
    * result?: SetofAudioFeaturesType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_tracks_audio_features(
     ids: string[]
-  ): Promise<{ result?: SetofAudioFeaturesType; error?: Error }> {
-    let url = `${this.info.api_url}/audio-features?ids=${ids.join(",")}`;
+  ): Promise<{ result?: SetofAudioFeaturesType; error?: CustomError }> {
+    const url = `${this.info.api_url}/audio-features?ids=${ids.join(",")}`;
 
-    return await get_req(
+    return await this.info.submit_request<SetofAudioFeaturesType>({
       url,
-      this.info.client_access_token,
-      SetofAudioFeatures,
-      this.info
-    );
+      method: "GET",
+      object: SetofAudioFeatures,
+    });
   }
 
   /**
@@ -243,20 +249,19 @@ class Tracks {
    * @returns
    * Promise<{
    * result?: AudioFeaturesType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_a_tracks_audio_features(
     id: string
-  ): Promise<{ result?: AudioFeaturesType; error?: Error }> {
-    let url = `${this.info.api_url}/audio-features/${id}`;
+  ): Promise<{ result?: AudioFeaturesType; error?: CustomError }> {
+    const url = `${this.info.api_url}/audio-features/${id}`;
 
-    return await get_req(
+    return await this.info.submit_request<AudioFeaturesType>({
       url,
-      this.info.client_access_token,
-      AudioFeatures,
-      this.info
-    );
+      method: "GET",
+      object: AudioFeatures,
+    });
   }
 
   /**
@@ -268,20 +273,19 @@ class Tracks {
    * @returns
    * Promise<{
    * result?: AudioAnalysisType;
-   * error?: Error;
+   * error?: CustomError;
    * }>
    */
   public async get_a_tracks_audio_analysis(
     id: string
-  ): Promise<{ result?: AudioAnalysisType; error?: Error }> {
-    let url = `${this.info.api_url}/audio-analysis/${id}`;
+  ): Promise<{ result?: AudioAnalysisType; error?: CustomError }> {
+    const url = `${this.info.api_url}/audio-analysis/${id}`;
 
-    return await get_req(
+    return await this.info.submit_request<AudioAnalysisType>({
       url,
-      this.info.user_access_token,
-      AudioAnalysis,
-      this.info
-    );
+      method: "GET",
+      object: AudioAnalysis,
+    });
   }
 
   /**
@@ -472,13 +476,13 @@ class Tracks {
    * Range: 0 - 1
    * @returns
    * Promise<{
-   * result?:;
-   * error?: Error;
+   * result?: SetofRecommendationsType;
+   * error?: CustomError;
    * }>
    */
   public async get_recommendations(
     input: RecommendationsInputType
-  ): Promise<{ result?: SetofRecommendationsType; error?: Error }> {
+  ): Promise<{ result?: SetofRecommendationsType; error?: CustomError }> {
     let url = `${this.info.api_url}/recommendations?`;
 
     for (const [key, value] of Object.entries(input)) {
@@ -487,12 +491,11 @@ class Tracks {
       }
     }
 
-    return await get_req(
+    return await this.info.submit_request<SetofRecommendationsType>({
       url,
-      this.info.client_access_token,
-      SetofRecommendations,
-      this.info
-    );
+      method: "GET",
+      object: SetofRecommendations,
+    });
   }
 }
 

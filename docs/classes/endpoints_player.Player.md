@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / [endpoints/player](../modules/endpoints_player.md) / Player
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / [endpoints/player](../modules/endpoints_player.md) / Player
 
 # Class: Player
 
@@ -43,16 +43,11 @@
 
 | Name | Type |
 | :------ | :------ |
-| `info` | `Object` |
-| `info.api_url` | `string` |
-| `info.client_access_token` | `string` |
-| `info.refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `info.refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `info.user_access_token` | `string` |
+| `info` | [`InfoType`](../modules/models_client.md#infotype) |
 
 #### Defined in
 
-[src/endpoints/player.ts:18](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L18)
+[src/endpoints/player.ts:17](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L17)
 
 ## Properties
 
@@ -62,33 +57,23 @@
 
 #### Defined in
 
-[src/endpoints/player.ts:16](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L16)
+[src/endpoints/player.ts:15](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L15)
 
 ___
 
 ### info
 
-• `Private` **info**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `api_url` | `string` |
-| `client_access_token` | `string` |
-| `refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `user_access_token` | `string` |
+• `Private` **info**: [`InfoType`](../modules/models_client.md#infotype)
 
 #### Defined in
 
-[src/endpoints/player.ts:15](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L15)
+[src/endpoints/player.ts:14](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L14)
 
 ## Methods
 
 ### add\_item\_to\_playback\_queue
 
-▸ **add_item_to_playback_queue**(`uri`, `device_id?`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **add_item_to_playback_queue**(`uri`, `device_id?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Add Item to Playback Queue - https://developer.spotify.com/documentation/web-api/reference/add-to-queue
 Add an item to the end of the user's current playback queue.
@@ -102,11 +87,11 @@ Add an item to the end of the user's current playback queue.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -116,24 +101,24 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:510](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L510)
+[src/endpoints/player.ts:497](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L497)
 
 ___
 
 ### get\_available\_devices
 
-▸ **get_available_devices**(): `Promise`<{ `error?`: `Error` ; `result?`: { `devices`: { type: string; name: string; id: string; is\_active: boolean; is\_private\_session: boolean; is\_restricted: boolean; volume\_percent: number; }[]  }  }\>
+▸ **get_available_devices**(): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `devices`: { type: string; name: string; id: string; is\_active: boolean; is\_private\_session: boolean; is\_restricted: boolean; volume\_percent: number; }[]  }  }\>
 
 Get Available Devices - https://developer.spotify.com/documentation/web-api/reference/get-a-users-available-devices
 Get information about a user’s available devices.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `devices`: { type: string; name: string; id: string; is\_active: boolean; is\_private\_session: boolean; is\_restricted: boolean; volume\_percent: number; }[]  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `devices`: { type: string; name: string; id: string; is\_active: boolean; is\_private\_session: boolean; is\_restricted: boolean; volume\_percent: number; }[]  }  }\>
 
 Promise<{
 result?: SeveralDevicesType;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -143,13 +128,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:113](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L113)
+[src/endpoints/player.ts:105](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L105)
 
 ___
 
 ### get\_currently\_playing\_track
 
-▸ **get_currently_playing_track**(`market?`, `additional_types?`): `Promise`<{ `error?`: `Error` ; `result?`: { `actions`: { disallows: { interrupting\_playback?: boolean \| undefined; pausing?: boolean \| undefined; resuming?: boolean \| undefined; seeking?: boolean \| undefined; skipping\_next?: boolean \| undefined; ... 4 more ...; transferring\_playback?: boolean \| undefined; }; ... 9 more ...; transferring\_playback?: boolean \| undefined; } = Actions; `context`: ``null`` \| { type: string; href: string; external\_urls: { spotify: string; }; uri: string; } ; `currently_playing_type`: `string` ; `device?`: { type: string; name: string; id: string; is\_active: boolean; is\_private\_session: boolean; is\_restricted: boolean; volume\_percent: number; } ; `is_playing`: `boolean` ; `item?`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; } ; `progress_ms`: `number` ; `repeat_state?`: `string` ; `shuffle_state?`: `boolean` ; `timestamp`: `number`  }  }\>
+▸ **get_currently_playing_track**(`market?`, `additional_types?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `actions`: { disallows: { interrupting\_playback?: boolean \| undefined; pausing?: boolean \| undefined; resuming?: boolean \| undefined; seeking?: boolean \| undefined; skipping\_next?: boolean \| undefined; ... 4 more ...; transferring\_playback?: boolean \| undefined; }; ... 9 more ...; transferring\_playback?: boolean \| undefined; } = Actions; `context`: ``null`` \| { type: string; href: string; external\_urls: { spotify: string; }; uri: string; } ; `currently_playing_type`: `string` ; `device?`: { type: string; name: string; id: string; is\_active: boolean; is\_private\_session: boolean; is\_restricted: boolean; volume\_percent: number; } ; `is_playing`: `boolean` ; `item?`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; } ; `progress_ms`: `number` ; `repeat_state?`: `string` ; `shuffle_state?`: `boolean` ; `timestamp`: `number`  }  }\>
 
 Get Currently Playing Track - https://developer.spotify.com/documentation/web-api/reference/get-the-users-currently-playing-track
 Get the object currently being played on the user's Spotify account.
@@ -163,11 +148,11 @@ Get the object currently being played on the user's Spotify account.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `actions`: { disallows: { interrupting\_playback?: boolean \| undefined; pausing?: boolean \| undefined; resuming?: boolean \| undefined; seeking?: boolean \| undefined; skipping\_next?: boolean \| undefined; ... 4 more ...; transferring\_playback?: boolean \| undefined; }; ... 9 more ...; transferring\_playback?: boolean \| undefined; } = Actions; `context`: ``null`` \| { type: string; href: string; external\_urls: { spotify: string; }; uri: string; } ; `currently_playing_type`: `string` ; `device?`: { type: string; name: string; id: string; is\_active: boolean; is\_private\_session: boolean; is\_restricted: boolean; volume\_percent: number; } ; `is_playing`: `boolean` ; `item?`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; } ; `progress_ms`: `number` ; `repeat_state?`: `string` ; `shuffle_state?`: `boolean` ; `timestamp`: `number`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `actions`: { disallows: { interrupting\_playback?: boolean \| undefined; pausing?: boolean \| undefined; resuming?: boolean \| undefined; seeking?: boolean \| undefined; skipping\_next?: boolean \| undefined; ... 4 more ...; transferring\_playback?: boolean \| undefined; }; ... 9 more ...; transferring\_playback?: boolean \| undefined; } = Actions; `context`: ``null`` \| { type: string; href: string; external\_urls: { spotify: string; }; uri: string; } ; `currently_playing_type`: `string` ; `device?`: { type: string; name: string; id: string; is\_active: boolean; is\_private\_session: boolean; is\_restricted: boolean; volume\_percent: number; } ; `is_playing`: `boolean` ; `item?`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; } ; `progress_ms`: `number` ; `repeat_state?`: `string` ; `shuffle_state?`: `boolean` ; `timestamp`: `number`  }  }\>
 
 Promise<{
 result?: PlaybackStateType;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -177,13 +162,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:149](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L149)
+[src/endpoints/player.ts:138](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L138)
 
 ___
 
 ### get\_playback\_state
 
-▸ **get_playback_state**(`market?`, `additional_types?`): `Promise`<{ `error?`: `Error` ; `result?`: `string` \| { `actions`: { disallows: { interrupting\_playback?: boolean \| undefined; pausing?: boolean \| undefined; resuming?: boolean \| undefined; seeking?: boolean \| undefined; skipping\_next?: boolean \| undefined; ... 4 more ...; transferring\_playback?: boolean \| undefined; }; ... 9 more ...; transferring\_playback?: boolean \| undefined; } = Actions; `context`: ``null`` \| { type: string; href: string; external\_urls: { spotify: string; }; uri: string; } ; `currently_playing_type`: `string` ; `device?`: { type: string; name: string; id: string; is\_active: boolean; is\_private\_session: boolean; is\_restricted: boolean; volume\_percent: number; } ; `is_playing`: `boolean` ; `item?`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; } ; `progress_ms`: `number` ; `repeat_state?`: `string` ; `shuffle_state?`: `boolean` ; `timestamp`: `number`  }  }\>
+▸ **get_playback_state**(`market?`, `additional_types?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `actions`: { disallows: { interrupting\_playback?: boolean \| undefined; pausing?: boolean \| undefined; resuming?: boolean \| undefined; seeking?: boolean \| undefined; skipping\_next?: boolean \| undefined; ... 4 more ...; transferring\_playback?: boolean \| undefined; }; ... 9 more ...; transferring\_playback?: boolean \| undefined; } = Actions; `context`: ``null`` \| { type: string; href: string; external\_urls: { spotify: string; }; uri: string; } ; `currently_playing_type`: `string` ; `device?`: { type: string; name: string; id: string; is\_active: boolean; is\_private\_session: boolean; is\_restricted: boolean; volume\_percent: number; } ; `is_playing`: `boolean` ; `item?`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; } ; `progress_ms`: `number` ; `repeat_state?`: `string` ; `shuffle_state?`: `boolean` ; `timestamp`: `number`  }  }\>
 
 Get Playback State - https://developer.spotify.com/documentation/web-api/reference/get-information-about-the-users-current-playback
 Get information about the user’s current playback state, including track or episode, progress, and active device.
@@ -197,11 +182,11 @@ Get information about the user’s current playback state, including track or ep
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string` \| { `actions`: { disallows: { interrupting\_playback?: boolean \| undefined; pausing?: boolean \| undefined; resuming?: boolean \| undefined; seeking?: boolean \| undefined; skipping\_next?: boolean \| undefined; ... 4 more ...; transferring\_playback?: boolean \| undefined; }; ... 9 more ...; transferring\_playback?: boolean \| undefined; } = Actions; `context`: ``null`` \| { type: string; href: string; external\_urls: { spotify: string; }; uri: string; } ; `currently_playing_type`: `string` ; `device?`: { type: string; name: string; id: string; is\_active: boolean; is\_private\_session: boolean; is\_restricted: boolean; volume\_percent: number; } ; `is_playing`: `boolean` ; `item?`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; } ; `progress_ms`: `number` ; `repeat_state?`: `string` ; `shuffle_state?`: `boolean` ; `timestamp`: `number`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `actions`: { disallows: { interrupting\_playback?: boolean \| undefined; pausing?: boolean \| undefined; resuming?: boolean \| undefined; seeking?: boolean \| undefined; skipping\_next?: boolean \| undefined; ... 4 more ...; transferring\_playback?: boolean \| undefined; }; ... 9 more ...; transferring\_playback?: boolean \| undefined; } = Actions; `context`: ``null`` \| { type: string; href: string; external\_urls: { spotify: string; }; uri: string; } ; `currently_playing_type`: `string` ; `device?`: { type: string; name: string; id: string; is\_active: boolean; is\_private\_session: boolean; is\_restricted: boolean; volume\_percent: number; } ; `is_playing`: `boolean` ; `item?`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; } ; `progress_ms`: `number` ; `repeat_state?`: `string` ; `shuffle_state?`: `boolean` ; `timestamp`: `number`  }  }\>
 
 Promise<{
 result?: PlaybackStateType;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -211,13 +196,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:44](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L44)
+[src/endpoints/player.ts:43](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L43)
 
 ___
 
 ### get\_recently\_played\_tracks
 
-▸ **get_recently_played_tracks**(`«destructured»`): `Promise`<{ `error?`: `Error` ; `result?`: { `cursors`: { after: string; before: string; } = cursors; `href`: `string` ; `items`: { track: { preview\_url: string \| null; artists?: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; }[] \| undefined; available\_markets?: string[] \| undefined; ... 13 more ...; is\_local?: boolean \| undefined; }; played\_at: string; context: { ...; } \| null; }[] ; `limit`: `number` ; `next`: `string` ; `total?`: `number`  }  }\>
+▸ **get_recently_played_tracks**(`«destructured»`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `cursors`: { after: string; before: string; } = cursors; `href`: `string` ; `items`: { track: { preview\_url: string \| null; artists?: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; }[] \| undefined; available\_markets?: string[] \| undefined; ... 13 more ...; is\_local?: boolean \| undefined; }; played\_at: string; context: { ...; } \| null; }[] ; `limit`: `number` ; `next`: `string` ; `total?`: `number`  }  }\>
 
 Get Recently Played Tracks - https://developer.spotify.com/documentation/web-api/reference/get-recently-played
 Get tracks from the current user's recently played tracks. Note: Currently doesn't support podcast episodes.
@@ -233,11 +218,11 @@ Get tracks from the current user's recently played tracks. Note: Currently doesn
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `cursors`: { after: string; before: string; } = cursors; `href`: `string` ; `items`: { track: { preview\_url: string \| null; artists?: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; }[] \| undefined; available\_markets?: string[] \| undefined; ... 13 more ...; is\_local?: boolean \| undefined; }; played\_at: string; context: { ...; } \| null; }[] ; `limit`: `number` ; `next`: `string` ; `total?`: `number`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `cursors`: { after: string; before: string; } = cursors; `href`: `string` ; `items`: { track: { preview\_url: string \| null; artists?: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; }[] \| undefined; available\_markets?: string[] \| undefined; ... 13 more ...; is\_local?: boolean \| undefined; }; played\_at: string; context: { ...; } \| null; }[] ; `limit`: `number` ; `next`: `string` ; `total?`: `number`  }  }\>
 
 Promise<{
 result?: PagedTracksType;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -247,24 +232,24 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:444](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L444)
+[src/endpoints/player.ts:433](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L433)
 
 ___
 
 ### get\_users\_queue
 
-▸ **get_users_queue**(): `Promise`<{ `error?`: `Error` ; `result?`: { `currently_playing`: { album?: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; album\_type: string; total\_tracks: number; images: { height: number \| null; width: number \| null; url: string \| null; }[]; ... 10 more ...; album\_group?: string \| undefined; } \| undefined; ... 29 more .... = TrackOrEpisodeObject; `queue`: { album?: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; album\_type: string; total\_tracks: number; images: { height: number \| null; width: number \| null; url: string \| null; }[]; ... 10 more ...; album\_group?: string \| undefined; } \| undefined; ... 29 more ....[]  }  }\>
+▸ **get_users_queue**(): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `currently_playing`: { album?: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; album\_type: string; total\_tracks: number; images: { url: string \| null; height: number \| null; width: number \| null; }[]; ... 10 more ...; album\_group?: string \| undefined; } \| undefined; ... 29 more .... = TrackOrEpisodeObject; `queue`: { album?: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; album\_type: string; total\_tracks: number; images: { url: string \| null; height: number \| null; width: number \| null; }[]; ... 10 more ...; album\_group?: string \| undefined; } \| undefined; ... 29 more ....[]  }  }\>
 
 Get the User's Queue - https://developer.spotify.com/documentation/web-api/reference/get-queue
 Get the list of objects that make up the user's queue.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `currently_playing`: { album?: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; album\_type: string; total\_tracks: number; images: { height: number \| null; width: number \| null; url: string \| null; }[]; ... 10 more ...; album\_group?: string \| undefined; } \| undefined; ... 29 more .... = TrackOrEpisodeObject; `queue`: { album?: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; album\_type: string; total\_tracks: number; images: { height: number \| null; width: number \| null; url: string \| null; }[]; ... 10 more ...; album\_group?: string \| undefined; } \| undefined; ... 29 more ....[]  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `currently_playing`: { album?: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; album\_type: string; total\_tracks: number; images: { url: string \| null; height: number \| null; width: number \| null; }[]; ... 10 more ...; album\_group?: string \| undefined; } \| undefined; ... 29 more .... = TrackOrEpisodeObject; `queue`: { album?: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; album\_type: string; total\_tracks: number; images: { url: string \| null; height: number \| null; width: number \| null; }[]; ... 10 more ...; album\_group?: string \| undefined; } \| undefined; ... 29 more ....[]  }  }\>
 
 Promise<{
 result?: QueueType;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -274,13 +259,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:481](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L481)
+[src/endpoints/player.ts:468](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L468)
 
 ___
 
 ### pause\_playback
 
-▸ **pause_playback**(`device_id?`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **pause_playback**(`device_id?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Pause Playback - https://developer.spotify.com/documentation/web-api/reference/pause-a-users-playback
 Pause playback on the user's account.
@@ -293,11 +278,11 @@ Pause playback on the user's account.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -307,13 +292,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:235](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L235)
+[src/endpoints/player.ts:217](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L217)
 
 ___
 
 ### seek\_to\_position
 
-▸ **seek_to_position**(`position_ms`, `device_id?`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **seek_to_position**(`position_ms`, `device_id?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Seek To Position - https://developer.spotify.com/documentation/web-api/reference/seek-to-position-in-currently-playing-track
 Seeks to the given position in the user’s currently playing track.
@@ -327,11 +312,11 @@ Seeks to the given position in the user’s currently playing track.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -341,13 +326,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:316](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L316)
+[src/endpoints/player.ts:301](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L301)
 
 ___
 
 ### set\_playback\_volume
 
-▸ **set_playback_volume**(`volume_percent`, `device_id?`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **set_playback_volume**(`volume_percent`, `device_id?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Set Playback Volume - https://developer.spotify.com/documentation/web-api/reference/set-volume-for-users-playback
 Set the volume for the user’s current playback device.
@@ -361,11 +346,11 @@ Set the volume for the user’s current playback device.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -375,13 +360,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:379](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L379)
+[src/endpoints/player.ts:366](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L366)
 
 ___
 
 ### set\_repeat\_mode
 
-▸ **set_repeat_mode**(`state`, `device_id?`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **set_repeat_mode**(`state`, `device_id?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Set Repeat Mode - https://developer.spotify.com/documentation/web-api/reference/set-repeat-mode-on-users-playback
 Set the repeat mode for the user's playback. Options are repeat-track, repeat-context, and off.
@@ -390,16 +375,16 @@ Set the repeat mode for the user's playback. Options are repeat-track, repeat-co
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `state` | `string` | track, context or off. track will repeat the current track. context will repeat the current context. off will turn repeat off. Example value: "context" |
+| `state` | ``"track"`` \| ``"context"`` \| ``"off"`` | track, context or off. track will repeat the current track. context will repeat the current context. off will turn repeat off. Example value: "context" |
 | `device_id?` | `string` | The id of the device this command is targeting. If not supplied, the user's currently active device is the target. Example value: "0d1841b0976bae2a3a310dd74c0f3df354899bc8" |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -409,13 +394,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:349](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L349)
+[src/endpoints/player.ts:335](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L335)
 
 ___
 
 ### skip\_to\_next
 
-▸ **skip_to_next**(`device_id?`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **skip_to_next**(`device_id?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Skip To Next - https://developer.spotify.com/documentation/web-api/reference/skip-users-playback-to-next-track
 Skips to next track in the user’s queue.
@@ -428,11 +413,11 @@ Skips to next track in the user’s queue.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -442,13 +427,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:261](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L261)
+[src/endpoints/player.ts:244](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L244)
 
 ___
 
 ### skip\_to\_previous
 
-▸ **skip_to_previous**(`device_id?`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **skip_to_previous**(`device_id?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Skip To Previous - https://developer.spotify.com/documentation/web-api/reference/skip-users-playback-to-previous-track
 Skips to previous track in the user’s queue.
@@ -461,11 +446,11 @@ Skips to previous track in the user’s queue.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -475,13 +460,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:287](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L287)
+[src/endpoints/player.ts:271](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L271)
 
 ___
 
 ### start\_or\_resume\_playback
 
-▸ **start_or_resume_playback**(`«destructured»`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **start_or_resume_playback**(`optional?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Start/Resume Playback - https://developer.spotify.com/documentation/web-api/reference/start-a-users-playback
 Start a new context or resume current playback on the user's active device.
@@ -490,22 +475,22 @@ Start a new context or resume current playback on the user's active device.
 
 | Name | Type |
 | :------ | :------ |
-| `«destructured»` | `Object` |
-| › `context_uri?` | `string` |
-| › `device_id?` | `string` |
-| › `offset?` | `Object` |
-| › `offset.position?` | `number` |
-| › `offset.uri?` | `string` |
-| › `position_ms?` | `number` |
-| › `uris?` | `string`[] |
+| `optional?` | `Object` |
+| `optional.context_uri?` | `string` |
+| `optional.device_id?` | `string` |
+| `optional.offset?` | `Object` |
+| `optional.offset.position?` | `number` |
+| `optional.offset.uri?` | `string` |
+| `optional.position_ms?` | `number` |
+| `optional.uris?` | `string`[] |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -515,13 +500,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:193](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L193)
+[src/endpoints/player.ts:179](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L179)
 
 ___
 
 ### toggle\_playback\_shuffle
 
-▸ **toggle_playback_shuffle**(`state`, `device_id?`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **toggle_playback_shuffle**(`state`, `device_id?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Toggle Playback Shuffle - https://developer.spotify.com/documentation/web-api/reference/toggle-shuffle-for-users-playback
 Toggle shuffle on or off for user’s playback.
@@ -535,11 +520,11 @@ Toggle shuffle on or off for user’s playback.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -549,13 +534,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:410](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L410)
+[src/endpoints/player.ts:398](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L398)
 
 ___
 
 ### transfer\_playback
 
-▸ **transfer_playback**(`device_ids`, `play?`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **transfer_playback**(`device_ids`, `play?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Transfer Playback - https://developer.spotify.com/documentation/web-api/reference/transfer-a-users-playback
 Transfer playback to a new device and determine if it should start playing.
@@ -569,11 +554,11 @@ Transfer playback to a new device and determine if it should start playing.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -583,4 +568,4 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/player.ts:85](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/player.ts#L85)
+[src/endpoints/player.ts:82](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/player.ts#L82)

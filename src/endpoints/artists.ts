@@ -1,4 +1,4 @@
-import { InfoType } from "../client/client";
+import { CustomError, InfoType } from "../models/client";
 import {
   SeveralSimplifiedAlbums,
   SeveralSimplifiedAlbumsType,
@@ -10,7 +10,7 @@ import {
   SeveralArtistsType,
 } from "../models/artists";
 import { MultipleTracks, MultipleTracksType } from "../models/tracks";
-import { get_req } from "../utils/requests";
+import { OptionalType, handle_optional } from "../utils/helpers";
 
 class Artists {
   private info: InfoType;
@@ -28,21 +28,16 @@ class Artists {
    * The Spotify ID of the artist
    * Example value: "0TnOYISbd1XYRBk9myaseg"
    * @returns
-   * Promise<{
-   * result?: ArtistType;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: ArtistType; error?: CustomError }>
    */
-  public async get_artist(id: string): Promise<{
-    result?: ArtistType;
-    error?: Error;
-  }> {
-    return await get_req(
-      `${this.api_url}${id}`,
-      this.info.client_access_token,
-      Artist,
-      this.info
-    );
+  public async get_artist(
+    id: string
+  ): Promise<{ result?: ArtistType; error?: CustomError }> {
+    return await this.info.submit_request<ArtistType>({
+      url: `${this.api_url}${id}`,
+      method: "GET",
+      object: Artist,
+    });
   }
 
   /**
@@ -52,21 +47,16 @@ class Artists {
    * A comma-separated list of the Spotify IDs for the artists. Maximum: 50 IDs.
    * Example value: "2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6"
    * @returns
-   * Promise<{
-   * result?: SeveralArtistsType;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: SeveralArtistsType; error?: CustomError }>
    */
-  public async get_several_artists(ids: string[]): Promise<{
-    result?: SeveralArtistsType;
-    error?: Error;
-  }> {
-    return await get_req(
-      `${this.api_url}?ids=${ids.toString()}`,
-      this.info.client_access_token,
-      SeveralArtists,
-      this.info
-    );
+  public async get_several_artists(
+    ids: string[]
+  ): Promise<{ result?: SeveralArtistsType; error?: CustomError }> {
+    return await this.info.submit_request<SeveralArtistsType>({
+      url: `${this.api_url}?ids=${ids.toString()}`,
+      method: "GET",
+      object: SeveralArtists,
+    });
   }
 
   /**
@@ -99,37 +89,26 @@ class Artists {
    * Example value: 5
    * Default value: 0
    * @returns
-   * Promise<{
-   * result?: AlbumsType;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: SeveralSimplifiedAlbumsType; error?: CustomError }>
    */
-  public async get_artists_albums({
-    id,
-    include_groups,
-    market,
-    limit = 20,
-    offset = 0,
-  }: {
-    id: string;
-    include_groups?: string;
-    market?: string;
-    limit?: number;
-    offset?: number;
-  }): Promise<{
-    result?: SeveralSimplifiedAlbumsType;
-    error?: Error;
-  }> {
+  public async get_artists_albums(
+    id: string,
+    optional?: OptionalType & {
+      include_groups?: string;
+    }
+  ): Promise<{ result?: SeveralSimplifiedAlbumsType; error?: CustomError }> {
+    const include_groups = optional?.include_groups;
+    const { limit, offset, market } = handle_optional(optional);
+
     let url: string = `${this.api_url}${id}/albums?limit=${limit}&offset=${offset}`;
     if (include_groups) url += `&include_groups=${include_groups}`;
     if (market) url += `&market=${market}`;
 
-    return await get_req(
+    return await this.info.submit_request<SeveralSimplifiedAlbumsType>({
       url,
-      this.info.client_access_token,
-      SeveralSimplifiedAlbums,
-      this.info
-    );
+      method: "GET",
+      object: SeveralSimplifiedAlbums,
+    });
   }
 
   /**
@@ -145,30 +124,19 @@ class Artists {
    * Users can view the country that is associated with their account in the account settings.
    * Example value: "ES"
    * @returns
-   * Promise<{
-   * result?:  TracksType;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: MultipleTracksType; error?: CustomError }>
    */
-  public async get_artists_top_tracks({
-    id,
-    market,
-  }: {
-    id: string;
-    market: string;
-  }): Promise<{
-    result?: MultipleTracksType;
-    error?: Error;
-  }> {
-    let url: string = `${this.api_url}${id}/top-tracks`;
-    if (market) url += `?market=${market}`;
+  public async get_artists_top_tracks(
+    id: string,
+    market: string
+  ): Promise<{ result?: MultipleTracksType; error?: CustomError }> {
+    let url: string = `${this.api_url}${id}/top-tracks?market=${market}`;
 
-    return await get_req(
+    return await this.info.submit_request<MultipleTracksType>({
       url,
-      this.info.client_access_token,
-      MultipleTracks,
-      this.info
-    );
+      method: "GET",
+      object: MultipleTracks,
+    });
   }
 
   /**
@@ -178,23 +146,18 @@ class Artists {
    * The Spotify ID of the artist
    * Example value: "0TnOYISbd1XYRBk9myaseg"
    * @returns
-   * Promise<{
-   * result?: SeveralArtistsType;
-   * error?: Error;
-   * }>
+   * Promise<{ result?: SeveralArtistsType; error?: CustomError }>
    */
-  public async get_artists_related_artists(id: string): Promise<{
-    result?: SeveralArtistsType;
-    error?: Error;
-  }> {
+  public async get_artists_related_artists(
+    id: string
+  ): Promise<{ result?: SeveralArtistsType; error?: CustomError }> {
     let url: string = `${this.api_url}${id}/related-artists`;
 
-    return await get_req(
+    return await this.info.submit_request<SeveralArtistsType>({
       url,
-      this.info.client_access_token,
-      SeveralArtists,
-      this.info
-    );
+      method: "GET",
+      object: SeveralArtists,
+    });
   }
 }
 

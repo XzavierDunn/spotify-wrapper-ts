@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / [endpoints/users](../modules/endpoints_users.md) / Users
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / [endpoints/users](../modules/endpoints_users.md) / Users
 
 # Class: Users
 
@@ -38,16 +38,11 @@
 
 | Name | Type |
 | :------ | :------ |
-| `info` | `Object` |
-| `info.api_url` | `string` |
-| `info.client_access_token` | `string` |
-| `info.refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `info.refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `info.user_access_token` | `string` |
+| `info` | [`InfoType`](../modules/models_client.md#infotype) |
 
 #### Defined in
 
-[src/endpoints/users.ts:15](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/users.ts#L15)
+[src/endpoints/users.ts:16](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/users.ts#L16)
 
 ## Properties
 
@@ -57,52 +52,41 @@
 
 #### Defined in
 
-[src/endpoints/users.ts:13](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/users.ts#L13)
+[src/endpoints/users.ts:14](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/users.ts#L14)
 
 ___
 
 ### info
 
-• `Private` **info**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `api_url` | `string` |
-| `client_access_token` | `string` |
-| `refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `user_access_token` | `string` |
+• `Private` **info**: [`InfoType`](../modules/models_client.md#infotype)
 
 #### Defined in
 
-[src/endpoints/users.ts:12](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/users.ts#L12)
+[src/endpoints/users.ts:13](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/users.ts#L13)
 
 ## Methods
 
 ### check\_if\_user\_follows\_artists\_or\_users
 
-▸ **check_if_user_follows_artists_or_users**(`«destructured»`): `Promise`<{ `error?`: `Error` ; `result?`: `boolean`[]  }\>
+▸ **check_if_user_follows_artists_or_users**(`ids`, `type`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `boolean`[]  }\>
 
 Check If User Follows Artists or Users - https://developer.spotify.com/documentation/web-api/reference/check-current-user-follows
 Check to see if the current user is following one or more artists or other Spotify users.
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `«destructured»` | `Object` |
-| › `ids` | `string`[] |
-| › `type` | `string` |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `ids` | `string`[] | A comma-separated list of the artist or the user Spotify IDs. A maximum of 50 IDs can be sent in one request. Example value: "2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6" |
+| `type` | ``"user"`` \| ``"artist"`` | The ID type. Example value: "artist" Allowed values: "artist", "user" |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `boolean`[]  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `boolean`[]  }\>
 
 Promise<{
 result?: boolean[];
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -112,62 +96,60 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/users.ts:314](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/users.ts#L314)
+[src/endpoints/users.ts:310](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/users.ts#L310)
 
 ___
 
 ### check\_if\_users\_follow\_playlist
 
-▸ **check_if_users_follow_playlist**(`«destructured»`): `Promise`<{ `error?`: `Error` ; `result?`: `boolean`[]  }\>
+▸ **check_if_users_follow_playlist**(`playlist_id`, `user_ids`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `boolean`[]  }\>
 
 Check if Users Follow Playlist - https://developer.spotify.com/documentation/web-api/reference/check-if-user-follows-playlist
 Check to see if one or more Spotify users are following a specified playlist.
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `«destructured»` | `Object` |
-| › `ids` | `string`[] |
-| › `playlist_id` | `string` |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `playlist_id` | `string` | The Spotify ID of the playlist. Example value: "3cEYpjA9oz9GiPac4AsH4n" |
+| `user_ids` | `string`[] | - |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `boolean`[]  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `boolean`[]  }\>
 
 Promise<{
 result?: boolean[];
-error?: Error;
+error?: CustomError;
 }>
 
 #### Defined in
 
-[src/endpoints/users.ts:351](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/users.ts#L351)
+[src/endpoints/users.ts:344](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/users.ts#L344)
 
 ___
 
 ### follow\_artists\_or\_users
 
-▸ **follow_artists_or_users**(`«destructured»`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **follow_artists_or_users**(`ids`, `type`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Follow Artists or Users - https://developer.spotify.com/documentation/web-api/reference/follow-artists-users
 Add the current user as a follower of one or more artists or other Spotify users.
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `«destructured»` | `Object` |
-| › `ids` | `string`[] |
-| › `type` | `string` |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `ids` | `string`[] | A comma-separated list of the artist or the user Spotify IDs. A maximum of 50 IDs can be sent in one request. Example value: "2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6" |
+| `type` | ``"user"`` \| ``"artist"`` | The ID type. Example value: "artist" Allowed values: "artist", "user" |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -177,13 +159,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/users.ts:238](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/users.ts#L238)
+[src/endpoints/users.ts:240](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/users.ts#L240)
 
 ___
 
 ### follow\_playlist
 
-▸ **follow_playlist**(`playlist_id`, `public_playlist?`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **follow_playlist**(`playlist_id`, `public_playlist?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Follow Playlist - https://developer.spotify.com/documentation/web-api/reference/follow-playlist
 Add the current user as a follower of a playlist.
@@ -197,11 +179,11 @@ Add the current user as a follower of a playlist.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -212,24 +194,24 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/users.ts:133](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/users.ts#L133)
+[src/endpoints/users.ts:135](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/users.ts#L135)
 
 ___
 
 ### get\_current\_users\_profile
 
-▸ **get_current_users_profile**(): `Promise`<{ `error?`: `Error` ; `result?`: { `country?`: `string` ; `display_name`: `string` ; `email?`: `string` ; `explicit_content?`: { filter\_enabled: boolean; filter\_locked: boolean; } ; `external_urls`: { spotify: string; } = ExternalUrls; `followers`: { href: string \| null; total: number; } = Followers; `href`: `string` ; `id`: `string` ; `images`: { height: number \| null; width: number \| null; url: string \| null; }[] ; `product?`: `string` ; `type`: `string` ; `uri`: `string`  }  }\>
+▸ **get_current_users_profile**(): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `country?`: `string` ; `display_name`: `string` ; `email?`: `string` ; `explicit_content?`: { filter\_enabled: boolean; filter\_locked: boolean; } ; `external_urls`: { spotify: string; } = ExternalUrls; `followers`: { href: string \| null; total: number; } = Followers; `href`: `string` ; `id`: `string` ; `images`: { url: string \| null; height: number \| null; width: number \| null; }[] ; `product?`: `string` ; `type`: `string` ; `uri`: `string`  }  }\>
 
 Get Current User's Profile - https://developer.spotify.com/documentation/web-api/reference/get-current-users-profile
 Get detailed profile information about the current user (including the current user's username).
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `country?`: `string` ; `display_name`: `string` ; `email?`: `string` ; `explicit_content?`: { filter\_enabled: boolean; filter\_locked: boolean; } ; `external_urls`: { spotify: string; } = ExternalUrls; `followers`: { href: string \| null; total: number; } = Followers; `href`: `string` ; `id`: `string` ; `images`: { height: number \| null; width: number \| null; url: string \| null; }[] ; `product?`: `string` ; `type`: `string` ; `uri`: `string`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `country?`: `string` ; `display_name`: `string` ; `email?`: `string` ; `explicit_content?`: { filter\_enabled: boolean; filter\_locked: boolean; } ; `external_urls`: { spotify: string; } = ExternalUrls; `followers`: { href: string \| null; total: number; } = Followers; `href`: `string` ; `id`: `string` ; `images`: { url: string \| null; height: number \| null; width: number \| null; }[] ; `product?`: `string` ; `type`: `string` ; `uri`: `string`  }  }\>
 
 Promise<{
 result?: UserType;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -240,33 +222,32 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/users.ts:32](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/users.ts#L32)
+[src/endpoints/users.ts:33](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/users.ts#L33)
 
 ___
 
 ### get\_followed\_artists
 
-▸ **get_followed_artists**(`«destructured»`): `Promise`<{ `error?`: `Error` ; `result?`: { `artists`: { href?: string \| undefined; limit?: number \| undefined; next?: string \| null \| undefined; offset?: number \| undefined; previous?: string \| null \| undefined; total?: number \| undefined; items?: { ...; }[] \| undefined; } = FullArtists }  }\>
+▸ **get_followed_artists**(`after?`, `limit?`, `type?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `artists`: { href: string; total: number; limit: number; next: string \| null; offset: number; previous: string \| null; items: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; ... 4 more ...; followers: { ...; }; }[]; } = FullArtists }  }\>
 
 Get Followed Artists - https://developer.spotify.com/documentation/web-api/reference/get-followed
 Get the current user's followed artists.
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `«destructured»` | `Object` |
-| › `after?` | `string` |
-| › `limit?` | `number` |
-| › `type?` | `string` |
+| Name | Type | Default value | Description |
+| :------ | :------ | :------ | :------ |
+| `after?` | `string` | `undefined` | The last artist ID retrieved from the previous request. Example value: "0I2XqVXqHScXjHhk6AYYRe" |
+| `limit` | `number` | `20` | The maximum number of items to return. Default: 20. Minimum: 1. Maximum: 50. Example value: 10 Default value: 20 Range: 0 - 50 |
+| `type` | `string` | `"artist"` | The ID type: currently only artist is supported. Example value: "artist" Allowed values: "artist" |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `artists`: { href?: string \| undefined; limit?: number \| undefined; next?: string \| null \| undefined; offset?: number \| undefined; previous?: string \| null \| undefined; total?: number \| undefined; items?: { ...; }[] \| undefined; } = FullArtists }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `artists`: { href: string; total: number; limit: number; next: string \| null; offset: number; previous: string \| null; items: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; ... 4 more ...; followers: { ...; }; }[]; } = FullArtists }  }\>
 
 Promise<{
 result?: PagedArtistsType;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -276,13 +257,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/users.ts:197](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/users.ts#L197)
+[src/endpoints/users.ts:203](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/users.ts#L203)
 
 ___
 
 ### get\_users\_profile
 
-▸ **get_users_profile**(`user_id`): `Promise`<{ `error?`: `Error` ; `result?`: { `country?`: `string` ; `display_name`: `string` ; `email?`: `string` ; `explicit_content?`: { filter\_enabled: boolean; filter\_locked: boolean; } ; `external_urls`: { spotify: string; } = ExternalUrls; `followers`: { href: string \| null; total: number; } = Followers; `href`: `string` ; `id`: `string` ; `images`: { height: number \| null; width: number \| null; url: string \| null; }[] ; `product?`: `string` ; `type`: `string` ; `uri`: `string`  }  }\>
+▸ **get_users_profile**(`user_id`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `country?`: `string` ; `display_name`: `string` ; `email?`: `string` ; `explicit_content?`: { filter\_enabled: boolean; filter\_locked: boolean; } ; `external_urls`: { spotify: string; } = ExternalUrls; `followers`: { href: string \| null; total: number; } = Followers; `href`: `string` ; `id`: `string` ; `images`: { url: string \| null; height: number \| null; width: number \| null; }[] ; `product?`: `string` ; `type`: `string` ; `uri`: `string`  }  }\>
 
 Get User's Profile - https://developer.spotify.com/documentation/web-api/reference/get-users-profile
 Get public profile information about a Spotify user.
@@ -295,43 +276,41 @@ Get public profile information about a Spotify user.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `country?`: `string` ; `display_name`: `string` ; `email?`: `string` ; `explicit_content?`: { filter\_enabled: boolean; filter\_locked: boolean; } ; `external_urls`: { spotify: string; } = ExternalUrls; `followers`: { href: string \| null; total: number; } = Followers; `href`: `string` ; `id`: `string` ; `images`: { height: number \| null; width: number \| null; url: string \| null; }[] ; `product?`: `string` ; `type`: `string` ; `uri`: `string`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `country?`: `string` ; `display_name`: `string` ; `email?`: `string` ; `explicit_content?`: { filter\_enabled: boolean; filter\_locked: boolean; } ; `external_urls`: { spotify: string; } = ExternalUrls; `followers`: { href: string \| null; total: number; } = Followers; `href`: `string` ; `id`: `string` ; `images`: { url: string \| null; height: number \| null; width: number \| null; }[] ; `product?`: `string` ; `type`: `string` ; `uri`: `string`  }  }\>
 
 Promise<{
 result?: UserType;
-error?: Error;
+error?: CustomError;
 }>
 
 #### Defined in
 
-[src/endpoints/users.ts:107](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/users.ts#L107)
+[src/endpoints/users.ts:105](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/users.ts#L105)
 
 ___
 
 ### get\_users\_top\_items
 
-▸ **get_users_top_items**(`«destructured»`): `Promise`<{ `error?`: `Error` ; `result?`: { `href`: `string` ; `items`: ({ external\_urls?: { spotify: string; } \| undefined; followers?: { href: string \| null; total: number; } \| undefined; genres?: string[] \| undefined; href?: string \| undefined; id?: string \| undefined; ... 4 more ...; uri?: string \| undefined; } \| { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; })[] ; `limit`: `number` ; `next`: ``null`` \| `string` ; `offset`: `number` ; `previous`: ``null`` \| `string` ; `total`: `number`  }  }\>
+▸ **get_users_top_items**(`type`, `time_range`, `optional?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `href`: `string` ; `items`: ({ type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; images: { url: string \| null; height: number \| null; width: number \| null; }[]; genres: string[]; popularity: number; followers: { ...; }; } \| { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; })[] ; `limit`: `number` ; `next`: ``null`` \| `string` ; `offset`: `number` ; `previous`: ``null`` \| `string` ; `total`: `number`  }  }\>
 
 Get User's Top Items - https://developer.spotify.com/documentation/web-api/reference/get-users-top-artists-and-tracks
 Get the current user's top artists or tracks based on calculated affinity.
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `«destructured»` | `Object` |
-| › `limit?` | `number` |
-| › `offset?` | `number` |
-| › `time_range?` | `string` |
-| › `type` | `string` |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `type` | `string` | The type of entity to return. Valid values: artists or tracks Allowed values: "artists", "tracks" |
+| `time_range` | `string` | Over what time frame the affinities are computed. Valid values: long_term (calculated from several years of data and including all new data as it becomes available), medium_term (approximately last 6 months), short_term (approximately last 4 weeks). Default: medium_term Example value: "medium_term" Default value: "medium_term" |
+| `optional?` | `Omit`<{ `limit?`: `number` ; `market?`: `string` ; `offset?`: `number`  }, ``"market"``\> | - |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `href`: `string` ; `items`: ({ external\_urls?: { spotify: string; } \| undefined; followers?: { href: string \| null; total: number; } \| undefined; genres?: string[] \| undefined; href?: string \| undefined; id?: string \| undefined; ... 4 more ...; uri?: string \| undefined; } \| { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; })[] ; `limit`: `number` ; `next`: ``null`` \| `string` ; `offset`: `number` ; `previous`: ``null`` \| `string` ; `total`: `number`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `href`: `string` ; `items`: ({ type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; images: { url: string \| null; height: number \| null; width: number \| null; }[]; genres: string[]; popularity: number; followers: { ...; }; } \| { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; })[] ; `limit`: `number` ; `next`: ``null`` \| `string` ; `offset`: `number` ; `previous`: ``null`` \| `string` ; `total`: `number`  }  }\>
 
 Promise<{
 result?: PagesofArtistsOrTracksType;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -341,32 +320,31 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/users.ts:71](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/users.ts#L71)
+[src/endpoints/users.ts:72](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/users.ts#L72)
 
 ___
 
 ### unfollow\_artists\_or\_users
 
-▸ **unfollow_artists_or_users**(`«destructured»`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **unfollow_artists_or_users**(`ids`, `type?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Unfollow Artists or Users - https://developer.spotify.com/documentation/web-api/reference/unfollow-artists-users
 Remove the current user as a follower of one or more artists or other Spotify users.
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `«destructured»` | `Object` |
-| › `ids` | `string`[] |
-| › `type` | `string` |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `ids` | `string`[] | A comma-separated list of the artist or the user Spotify IDs. A maximum of 50 IDs can be sent in one request. Example value: "2CIMQHirSU0MQqyYHq0eOx,57dN52uHvrHOxijzpIgu3E,1vCWHaC5f2uS3yhpwWbIA6" |
+| `type` | `string` | The ID type. Example value: "artist" Allowed values: "artist", "user" |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -376,13 +354,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/users.ts:276](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/users.ts#L276)
+[src/endpoints/users.ts:275](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/users.ts#L275)
 
 ___
 
 ### unfollow\_playlist
 
-▸ **unfollow_playlist**(`playlist_id`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **unfollow_playlist**(`playlist_id`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Unfollow Playlist - https://developer.spotify.com/documentation/web-api/reference/unfollow-playlist
 Remove the current user as a follower of a playlist.
@@ -395,11 +373,11 @@ Remove the current user as a follower of a playlist.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -410,4 +388,4 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/users.ts:165](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/users.ts#L165)
+[src/endpoints/users.ts:167](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/users.ts#L167)
