@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / endpoints/playlists
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / endpoints/playlists
 
 # Module: endpoints/playlists
 

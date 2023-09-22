@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / [endpoints/markets](../modules/endpoints_markets.md) / Markets
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / [endpoints/markets](../modules/endpoints_markets.md) / Markets
 
 # Class: Markets
 
@@ -29,16 +29,11 @@
 
 | Name | Type |
 | :------ | :------ |
-| `info` | `Object` |
-| `info.api_url` | `string` |
-| `info.client_access_token` | `string` |
-| `info.refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `info.refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `info.user_access_token` | `string` |
+| `info` | [`InfoType`](../modules/models_client.md#infotype) |
 
 #### Defined in
 
-[src/endpoints/markets.ts:9](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/markets.ts#L9)
+[src/endpoints/markets.ts:9](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/markets.ts#L9)
 
 ## Properties
 
@@ -48,46 +43,36 @@
 
 #### Defined in
 
-[src/endpoints/markets.ts:7](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/markets.ts#L7)
+[src/endpoints/markets.ts:7](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/markets.ts#L7)
 
 ___
 
 ### info
 
-• `Private` **info**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `api_url` | `string` |
-| `client_access_token` | `string` |
-| `refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `user_access_token` | `string` |
+• `Private` **info**: [`InfoType`](../modules/models_client.md#infotype)
 
 #### Defined in
 
-[src/endpoints/markets.ts:6](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/markets.ts#L6)
+[src/endpoints/markets.ts:6](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/markets.ts#L6)
 
 ## Methods
 
 ### get\_available\_markets
 
-▸ **get_available_markets**(): `Promise`<{ `error?`: `Error` ; `result?`: { `markets`: `string`[]  }  }\>
+▸ **get_available_markets**(): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `markets`: `string`[]  }  }\>
 
 Get Available Markets - https://developer.spotify.com/documentation/web-api/reference/get-available-markets
 Get the list of markets where Spotify is available.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `markets`: `string`[]  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `markets`: `string`[]  }  }\>
 
 Promise<{
 result?: MarketsType;
-error?: Error;
+error?: CustomError;
 }>
 
 #### Defined in
 
-[src/endpoints/markets.ts:23](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/markets.ts#L23)
+[src/endpoints/markets.ts:23](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/markets.ts#L23)

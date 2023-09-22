@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / [endpoints/tracks](../modules/endpoints_tracks.md) / Tracks
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / [endpoints/tracks](../modules/endpoints_tracks.md) / Tracks
 
 # Class: Tracks
 
@@ -38,16 +38,11 @@
 
 | Name | Type |
 | :------ | :------ |
-| `info` | `Object` |
-| `info.api_url` | `string` |
-| `info.client_access_token` | `string` |
-| `info.refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `info.refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `info.user_access_token` | `string` |
+| `info` | [`InfoType`](../modules/models_client.md#infotype) |
 
 #### Defined in
 
-[src/endpoints/tracks.ts:29](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/tracks.ts#L29)
+[src/endpoints/tracks.ts:29](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/tracks.ts#L29)
 
 ## Properties
 
@@ -57,33 +52,23 @@
 
 #### Defined in
 
-[src/endpoints/tracks.ts:27](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/tracks.ts#L27)
+[src/endpoints/tracks.ts:27](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/tracks.ts#L27)
 
 ___
 
 ### info
 
-• `Private` **info**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `api_url` | `string` |
-| `client_access_token` | `string` |
-| `refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `user_access_token` | `string` |
+• `Private` **info**: [`InfoType`](../modules/models_client.md#infotype)
 
 #### Defined in
 
-[src/endpoints/tracks.ts:26](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/tracks.ts#L26)
+[src/endpoints/tracks.ts:26](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/tracks.ts#L26)
 
 ## Methods
 
 ### check\_users\_saved\_tracks
 
-▸ **check_users_saved_tracks**(`ids`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **check_users_saved_tracks**(`ids`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Check User's Saved Tracks - https://developer.spotify.com/documentation/web-api/reference/check-users-saved-tracks
 Check if one or more tracks is already saved in the current Spotify user's 'Your Music' library.
@@ -96,11 +81,11 @@ Check if one or more tracks is already saved in the current Spotify user's 'Your
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -110,13 +95,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/tracks.ts:199](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/tracks.ts#L199)
+[src/endpoints/tracks.ts:206](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/tracks.ts#L206)
 
 ___
 
 ### get\_a\_tracks\_audio\_analysis
 
-▸ **get_a_tracks_audio_analysis**(`id`): `Promise`<{ `error?`: `Error` ; `result?`: { `bars`: { duration: number; start: number; confidence: number; }[] ; `beats`: { duration: number; start: number; confidence: number; }[] ; `meta`: { timestamp: number; analyzer\_version: string; platform: string; detailed\_status: string; status\_code: number; analysis\_time: number; input\_process: string; } = Meta; `sections`: { key: number; loudness: number; mode: number; tempo: number; time\_signature: number; duration: number; tempo\_confidence: number; time\_signature\_confidence: number; key\_confidence: number; mode\_confidence: number; start: number; confidence: number; }[] ; `segments`: { duration: number; start: number; confidence: number; loudness\_start: number; loudness\_max: number; loudness\_max\_time: number; loudness\_end: number; pitches: number[]; timbre: number[]; }[] ; `tatums`: { duration: number; start: number; confidence: number; }[] ; `track`: { key: number; loudness: number; mode: number; tempo: number; time\_signature: number; num\_samples: number; duration: number; sample\_md5: string; offset\_seconds: number; window\_seconds: number; ... 15 more ...; rhythm\_version: number; } = Track }  }\>
+▸ **get_a_tracks_audio_analysis**(`id`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `bars`: { duration: number; start: number; confidence: number; }[] ; `beats`: { duration: number; start: number; confidence: number; }[] ; `meta`: { status\_code: number; timestamp: number; analyzer\_version: string; platform: string; detailed\_status: string; analysis\_time: number; input\_process: string; } = Meta; `sections`: { key: number; loudness: number; mode: number; tempo: number; time\_signature: number; duration: number; tempo\_confidence: number; time\_signature\_confidence: number; key\_confidence: number; mode\_confidence: number; start: number; confidence: number; }[] ; `segments`: { duration: number; start: number; confidence: number; loudness\_start: number; loudness\_max: number; loudness\_max\_time: number; loudness\_end: number; pitches: number[]; timbre: number[]; }[] ; `tatums`: { duration: number; start: number; confidence: number; }[] ; `track`: { key: number; loudness: number; mode: number; tempo: number; time\_signature: number; num\_samples: number; duration: number; sample\_md5: string; offset\_seconds: number; window\_seconds: number; ... 15 more ...; rhythm\_version: number; } = Track }  }\>
 
 Get Track's Audio Analysis - https://developer.spotify.com/documentation/web-api/reference/get-audio-analysis
 Get a low-level audio analysis for a track in the Spotify catalog. The audio analysis describes the track’s structure and musical content, including rhythm, pitch, and timbre.
@@ -129,22 +114,22 @@ Get a low-level audio analysis for a track in the Spotify catalog. The audio ana
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `bars`: { duration: number; start: number; confidence: number; }[] ; `beats`: { duration: number; start: number; confidence: number; }[] ; `meta`: { timestamp: number; analyzer\_version: string; platform: string; detailed\_status: string; status\_code: number; analysis\_time: number; input\_process: string; } = Meta; `sections`: { key: number; loudness: number; mode: number; tempo: number; time\_signature: number; duration: number; tempo\_confidence: number; time\_signature\_confidence: number; key\_confidence: number; mode\_confidence: number; start: number; confidence: number; }[] ; `segments`: { duration: number; start: number; confidence: number; loudness\_start: number; loudness\_max: number; loudness\_max\_time: number; loudness\_end: number; pitches: number[]; timbre: number[]; }[] ; `tatums`: { duration: number; start: number; confidence: number; }[] ; `track`: { key: number; loudness: number; mode: number; tempo: number; time\_signature: number; num\_samples: number; duration: number; sample\_md5: string; offset\_seconds: number; window\_seconds: number; ... 15 more ...; rhythm\_version: number; } = Track }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `bars`: { duration: number; start: number; confidence: number; }[] ; `beats`: { duration: number; start: number; confidence: number; }[] ; `meta`: { status\_code: number; timestamp: number; analyzer\_version: string; platform: string; detailed\_status: string; analysis\_time: number; input\_process: string; } = Meta; `sections`: { key: number; loudness: number; mode: number; tempo: number; time\_signature: number; duration: number; tempo\_confidence: number; time\_signature\_confidence: number; key\_confidence: number; mode\_confidence: number; start: number; confidence: number; }[] ; `segments`: { duration: number; start: number; confidence: number; loudness\_start: number; loudness\_max: number; loudness\_max\_time: number; loudness\_end: number; pitches: number[]; timbre: number[]; }[] ; `tatums`: { duration: number; start: number; confidence: number; }[] ; `track`: { key: number; loudness: number; mode: number; tempo: number; time\_signature: number; num\_samples: number; duration: number; sample\_md5: string; offset\_seconds: number; window\_seconds: number; ... 15 more ...; rhythm\_version: number; } = Track }  }\>
 
 Promise<{
 result?: AudioAnalysisType;
-error?: Error;
+error?: CustomError;
 }>
 
 #### Defined in
 
-[src/endpoints/tracks.ts:274](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/tracks.ts#L274)
+[src/endpoints/tracks.ts:279](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/tracks.ts#L279)
 
 ___
 
 ### get\_a\_tracks\_audio\_features
 
-▸ **get_a_tracks_audio_features**(`id`): `Promise`<{ `error?`: `Error` ; `result?`: { `acousticness`: `number` ; `analysis_url`: `string` ; `danceability`: `number` ; `duration_ms`: `number` ; `energy`: `number` ; `id`: `string` ; `instrumentalness`: `number` ; `key`: `number` ; `liveness`: `number` ; `loudness`: `number` ; `mode`: `number` ; `speechiness`: `number` ; `tempo`: `number` ; `time_signature`: `number` ; `track_href`: `string` ; `type`: ``"audio_features"`` ; `uri`: `string` ; `valence`: `number`  }  }\>
+▸ **get_a_tracks_audio_features**(`id`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `acousticness`: `number` ; `analysis_url`: `string` ; `danceability`: `number` ; `duration_ms`: `number` ; `energy`: `number` ; `id`: `string` ; `instrumentalness`: `number` ; `key`: `number` ; `liveness`: `number` ; `loudness`: `number` ; `mode`: `number` ; `speechiness`: `number` ; `tempo`: `number` ; `time_signature`: `number` ; `track_href`: `string` ; `type`: ``"audio_features"`` ; `uri`: `string` ; `valence`: `number`  }  }\>
 
 Get Track's Audio Features - https://developer.spotify.com/documentation/web-api/reference/get-audio-features
 Get audio feature information for a single track identified by its unique Spotify ID.
@@ -157,22 +142,22 @@ Get audio feature information for a single track identified by its unique Spotif
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `acousticness`: `number` ; `analysis_url`: `string` ; `danceability`: `number` ; `duration_ms`: `number` ; `energy`: `number` ; `id`: `string` ; `instrumentalness`: `number` ; `key`: `number` ; `liveness`: `number` ; `loudness`: `number` ; `mode`: `number` ; `speechiness`: `number` ; `tempo`: `number` ; `time_signature`: `number` ; `track_href`: `string` ; `type`: ``"audio_features"`` ; `uri`: `string` ; `valence`: `number`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `acousticness`: `number` ; `analysis_url`: `string` ; `danceability`: `number` ; `duration_ms`: `number` ; `energy`: `number` ; `id`: `string` ; `instrumentalness`: `number` ; `key`: `number` ; `liveness`: `number` ; `loudness`: `number` ; `mode`: `number` ; `speechiness`: `number` ; `tempo`: `number` ; `time_signature`: `number` ; `track_href`: `string` ; `type`: ``"audio_features"`` ; `uri`: `string` ; `valence`: `number`  }  }\>
 
 Promise<{
 result?: AudioFeaturesType;
-error?: Error;
+error?: CustomError;
 }>
 
 #### Defined in
 
-[src/endpoints/tracks.ts:249](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/tracks.ts#L249)
+[src/endpoints/tracks.ts:255](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/tracks.ts#L255)
 
 ___
 
 ### get\_recommendations
 
-▸ **get_recommendations**(`input`): `Promise`<{ `error?`: `Error` ; `result?`: { `seeds`: { type: string; href: string; id: string; afterFilteringSize: number; afterRelinkingSize: number; initialPoolSize: number; }[] ; `tracks`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; }[]  }  }\>
+▸ **get_recommendations**(`input`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `seeds`: { type: string; href: string; id: string; afterFilteringSize: number; afterRelinkingSize: number; initialPoolSize: number; }[] ; `tracks`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; }[]  }  }\>
 
 Get Recommendations - https://developer.spotify.com/documentation/web-api/reference/get-recommendations
 Recommendations are generated based on the available information for a given seed entity and matched against similar artists and tracks. If there is sufficient information about the provided seeds, a list of tracks will be returned together with pool size details.
@@ -233,22 +218,22 @@ For artists and tracks that are very new or obscure there might not be enough da
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `seeds`: { type: string; href: string; id: string; afterFilteringSize: number; afterRelinkingSize: number; initialPoolSize: number; }[] ; `tracks`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; }[]  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `seeds`: { type: string; href: string; id: string; afterFilteringSize: number; afterRelinkingSize: number; initialPoolSize: number; }[] ; `tracks`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; }[]  }  }\>
 
 Promise<{
-result?:;
-error?: Error;
+result?: SetofRecommendationsType;
+error?: CustomError;
 }>
 
 #### Defined in
 
-[src/endpoints/tracks.ts:479](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/tracks.ts#L479)
+[src/endpoints/tracks.ts:483](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/tracks.ts#L483)
 
 ___
 
 ### get\_several\_tracks
 
-▸ **get_several_tracks**(`ids`, `market?`): `Promise`<{ `error?`: `Error` ; `result?`: { `tracks`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; }[]  }  }\>
+▸ **get_several_tracks**(`ids`, `market?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `tracks`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; }[]  }  }\>
 
 Get Several Tracks - https://developer.spotify.com/documentation/web-api/reference/get-several-tracks
 Get Spotify catalog information for multiple tracks based on their Spotify IDs.
@@ -262,22 +247,22 @@ Get Spotify catalog information for multiple tracks based on their Spotify IDs.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `tracks`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; }[]  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `tracks`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; }[]  }  }\>
 
 Promise<{
 result?: MultipleTracksType;
-error?: Error;
+error?: CustomError;
 }>
 
 #### Defined in
 
-[src/endpoints/tracks.ts:80](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/tracks.ts#L80)
+[src/endpoints/tracks.ts:84](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/tracks.ts#L84)
 
 ___
 
 ### get\_track
 
-▸ **get_track**(`id`, `market?`): `Promise`<{ `error?`: `Error` ; `result?`: { `album`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; album\_type: string; total\_tracks: number; images: { height: number \| null; width: number \| null; url: string \| null; }[]; ... 10 more ...; album\_group?: string \| undefined; } = SimplifiedAlbum; `artists`: { external\_urls?: { spotify: string; } \| undefined; followers?: { href: string \| null; total: number; } \| undefined; genres?: string[] \| undefined; href?: string \| undefined; id?: string \| undefined; ... 4 more ...; uri?: string \| undefined; }[] ; `available_markets?`: `string`[] ; `disc_number`: `number` ; `duration_ms`: `number` ; `explicit`: `boolean` ; `external_ids`: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; } = ExternalIds; `external_urls`: { spotify: string; } = ExternalUrls; `href`: `string` ; `id`: `string` ; `is_local`: `boolean` ; `is_playable?`: `boolean` ; `linked_from?`: { external\_urls: { spotify: string; }; } ; `name`: `string` ; `popularity`: `number` ; `preview_url`: ``null`` \| `string` ; `restrictions?`: { reason: string; } ; `track_number`: `number` ; `type`: `string` ; `uri`: `string`  }  }\>
+▸ **get_track**(`id`, `market?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `album`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; album\_type: string; total\_tracks: number; images: { url: string \| null; height: number \| null; width: number \| null; }[]; ... 10 more ...; album\_group?: string \| undefined; } = SimplifiedAlbum; `artists`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; images: { url: string \| null; height: number \| null; width: number \| null; }[]; genres: string[]; popularity: number; followers: { ...; }; }[] ; `available_markets?`: `string`[] ; `disc_number`: `number` ; `duration_ms`: `number` ; `explicit`: `boolean` ; `external_ids`: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; } = ExternalIds; `external_urls`: { spotify: string; } = ExternalUrls; `href`: `string` ; `id`: `string` ; `is_local`: `boolean` ; `is_playable?`: `boolean` ; `linked_from?`: { external\_urls: { spotify: string; }; } ; `name`: `string` ; `popularity`: `number` ; `preview_url`: ``null`` \| `string` ; `restrictions?`: { reason: string; } ; `track_number`: `number` ; `type`: `string` ; `uri`: `string`  }  }\>
 
 Get Track - https://developer.spotify.com/documentation/web-api/reference/get-track
 Get Spotify catalog information for a single track identified by its unique Spotify ID.
@@ -291,22 +276,22 @@ Get Spotify catalog information for a single track identified by its unique Spot
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `album`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; album\_type: string; total\_tracks: number; images: { height: number \| null; width: number \| null; url: string \| null; }[]; ... 10 more ...; album\_group?: string \| undefined; } = SimplifiedAlbum; `artists`: { external\_urls?: { spotify: string; } \| undefined; followers?: { href: string \| null; total: number; } \| undefined; genres?: string[] \| undefined; href?: string \| undefined; id?: string \| undefined; ... 4 more ...; uri?: string \| undefined; }[] ; `available_markets?`: `string`[] ; `disc_number`: `number` ; `duration_ms`: `number` ; `explicit`: `boolean` ; `external_ids`: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; } = ExternalIds; `external_urls`: { spotify: string; } = ExternalUrls; `href`: `string` ; `id`: `string` ; `is_local`: `boolean` ; `is_playable?`: `boolean` ; `linked_from?`: { external\_urls: { spotify: string; }; } ; `name`: `string` ; `popularity`: `number` ; `preview_url`: ``null`` \| `string` ; `restrictions?`: { reason: string; } ; `track_number`: `number` ; `type`: `string` ; `uri`: `string`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `album`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; album\_type: string; total\_tracks: number; images: { url: string \| null; height: number \| null; width: number \| null; }[]; ... 10 more ...; album\_group?: string \| undefined; } = SimplifiedAlbum; `artists`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; images: { url: string \| null; height: number \| null; width: number \| null; }[]; genres: string[]; popularity: number; followers: { ...; }; }[] ; `available_markets?`: `string`[] ; `disc_number`: `number` ; `duration_ms`: `number` ; `explicit`: `boolean` ; `external_ids`: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; } = ExternalIds; `external_urls`: { spotify: string; } = ExternalUrls; `href`: `string` ; `id`: `string` ; `is_local`: `boolean` ; `is_playable?`: `boolean` ; `linked_from?`: { external\_urls: { spotify: string; }; } ; `name`: `string` ; `popularity`: `number` ; `preview_url`: ``null`` \| `string` ; `restrictions?`: { reason: string; } ; `track_number`: `number` ; `type`: `string` ; `uri`: `string`  }  }\>
 
 Promise<{
 result?: TrackType;
-error?: Error;
+error?: CustomError;
 }>
 
 #### Defined in
 
-[src/endpoints/tracks.ts:52](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/tracks.ts#L52)
+[src/endpoints/tracks.ts:52](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/tracks.ts#L52)
 
 ___
 
 ### get\_tracks\_audio\_features
 
-▸ **get_tracks_audio_features**(`ids`): `Promise`<{ `error?`: `Error` ; `result?`: { `audio_features`: { type: "audio\_features"; id: string; uri: string; duration\_ms: number; acousticness: number; analysis\_url: string; danceability: number; energy: number; instrumentalness: number; key: number; ... 7 more ...; valence: number; }[]  }  }\>
+▸ **get_tracks_audio_features**(`ids`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `audio_features`: { type: "audio\_features"; id: string; uri: string; duration\_ms: number; acousticness: number; analysis\_url: string; danceability: number; energy: number; instrumentalness: number; key: number; ... 7 more ...; valence: number; }[]  }  }\>
 
 Get Tracks' Audio Features - https://developer.spotify.com/documentation/web-api/reference/get-several-audio-features
 Get audio features for multiple tracks based on their Spotify IDs.
@@ -319,22 +304,22 @@ Get audio features for multiple tracks based on their Spotify IDs.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `audio_features`: { type: "audio\_features"; id: string; uri: string; duration\_ms: number; acousticness: number; analysis\_url: string; danceability: number; energy: number; instrumentalness: number; key: number; ... 7 more ...; valence: number; }[]  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `audio_features`: { type: "audio\_features"; id: string; uri: string; duration\_ms: number; acousticness: number; analysis\_url: string; danceability: number; energy: number; instrumentalness: number; key: number; ... 7 more ...; valence: number; }[]  }  }\>
 
 Promise<{
 result?: SetofAudioFeaturesType;
-error?: Error;
+error?: CustomError;
 }>
 
 #### Defined in
 
-[src/endpoints/tracks.ts:224](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/tracks.ts#L224)
+[src/endpoints/tracks.ts:231](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/tracks.ts#L231)
 
 ___
 
 ### get\_users\_saved\_tracks
 
-▸ **get_users_saved_tracks**(`«destructured»`): `Promise`<{ `error?`: `Error` ; `result?`: { `href`: `string` ; `items`: { added\_at: string; track: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; }; }[] ; `limit`: `number` ; `next`: ``null`` \| `string` ; `offset`: `number` ; `previous`: ``null`` \| `string` ; `total`: `number`  }  }\>
+▸ **get_users_saved_tracks**(`optional?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `href`: `string` ; `items`: { added\_at: string; track: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; }; }[] ; `limit`: `number` ; `next`: ``null`` \| `string` ; `offset`: `number` ; `previous`: ``null`` \| `string` ; `total`: `number`  }  }\>
 
 Get User's Saved Tracks - https://developer.spotify.com/documentation/web-api/reference/get-users-saved-tracks
 Get a list of the songs saved in the current Spotify user's 'Your Music' library.
@@ -343,18 +328,18 @@ Get a list of the songs saved in the current Spotify user's 'Your Music' library
 
 | Name | Type |
 | :------ | :------ |
-| `«destructured»` | `Object` |
-| › `limit?` | `number` |
-| › `market?` | `string` |
-| › `offset?` | `number` |
+| `optional?` | `Object` |
+| `optional.limit?` | `number` |
+| `optional.market?` | `string` |
+| `optional.offset?` | `number` |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `href`: `string` ; `items`: { added\_at: string; track: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; }; }[] ; `limit`: `number` ; `next`: ``null`` \| `string` ; `offset`: `number` ; `previous`: ``null`` \| `string` ; `total`: `number`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `href`: `string` ; `items`: { added\_at: string; track: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; external\_ids: { isrc?: string \| undefined; ean?: string \| undefined; upc?: string \| undefined; }; ... 12 more ...; restrictions?: { ...; } \| undefined; }; }[] ; `limit`: `number` ; `next`: ``null`` \| `string` ; `offset`: `number` ; `previous`: ``null`` \| `string` ; `total`: `number`  }  }\>
 
 Promise<{
 result?: PagesofTracksType;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -364,13 +349,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/tracks.ts:121](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/tracks.ts#L121)
+[src/endpoints/tracks.ts:124](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/tracks.ts#L124)
 
 ___
 
 ### remove\_users\_saved\_tracks
 
-▸ **remove_users_saved_tracks**(`ids`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **remove_users_saved_tracks**(`ids`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Remove User's Saved Tracks - https://developer.spotify.com/documentation/web-api/reference/remove-tracks-user
 Remove one or more tracks from the current user's 'Your Music' library.
@@ -383,11 +368,11 @@ Remove one or more tracks from the current user's 'Your Music' library.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -397,13 +382,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/tracks.ts:177](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/tracks.ts#L177)
+[src/endpoints/tracks.ts:180](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/tracks.ts#L180)
 
 ___
 
 ### save\_tracks\_for\_current\_user
 
-▸ **save_tracks_for_current_user**(`ids`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **save_tracks_for_current_user**(`ids`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Save Tracks for Current User - https://developer.spotify.com/documentation/web-api/reference/save-tracks-user
 Save one or more tracks to the current user's 'Your Music' library.
@@ -416,11 +401,11 @@ Save one or more tracks to the current user's 'Your Music' library.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -430,4 +415,4 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/tracks.ts:155](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/tracks.ts#L155)
+[src/endpoints/tracks.ts:154](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/tracks.ts#L154)

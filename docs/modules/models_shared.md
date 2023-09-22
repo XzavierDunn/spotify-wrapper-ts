@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / models/shared
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / models/shared
 
 # Module: models/shared
 
@@ -31,7 +31,7 @@
 
 #### Defined in
 
-[src/models/shared.ts:25](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/shared.ts#L25)
+[src/models/shared.ts:25](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/shared.ts#L25)
 
 ## Variables
 
@@ -41,7 +41,7 @@
 
 #### Defined in
 
-[src/models/shared.ts:31](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/shared.ts#L31)
+[src/models/shared.ts:31](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/shared.ts#L31)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 #### Defined in
 
-[src/models/shared.ts:7](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/shared.ts#L7)
+[src/models/shared.ts:7](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/shared.ts#L7)
 
 ___
 
@@ -61,7 +61,7 @@ ___
 
 #### Defined in
 
-[src/models/shared.ts:3](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/shared.ts#L3)
+[src/models/shared.ts:3](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/shared.ts#L3)
 
 ___
 
@@ -71,7 +71,7 @@ ___
 
 #### Defined in
 
-[src/models/shared.ts:13](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/shared.ts#L13)
+[src/models/shared.ts:13](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/shared.ts#L13)
 
 ___
 
@@ -81,7 +81,7 @@ ___
 
 #### Defined in
 
-[src/models/shared.ts:18](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/shared.ts#L18)
+[src/models/shared.ts:18](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/shared.ts#L18)
 
 ___
 
@@ -91,7 +91,7 @@ ___
 
 #### Defined in
 
-[src/models/shared.ts:36](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/shared.ts#L36)
+[src/models/shared.ts:36](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/shared.ts#L36)
 
 ___
 
@@ -101,7 +101,7 @@ ___
 
 #### Defined in
 
-[src/models/shared.ts:27](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/shared.ts#L27)
+[src/models/shared.ts:27](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/shared.ts#L27)
 
 ___
 
@@ -111,7 +111,7 @@ ___
 
 #### Defined in
 
-[src/models/shared.ts:48](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/shared.ts#L48)
+[src/models/shared.ts:48](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/shared.ts#L48)
 
 ___
 
@@ -121,7 +121,7 @@ ___
 
 #### Defined in
 
-[src/models/shared.ts:24](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/shared.ts#L24)
+[src/models/shared.ts:24](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/shared.ts#L24)
 
 ___
 
@@ -131,7 +131,7 @@ ___
 
 #### Defined in
 
-[src/models/shared.ts:40](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/shared.ts#L40)
+[src/models/shared.ts:40](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/shared.ts#L40)
 
 ___
 
@@ -141,7 +141,7 @@ ___
 
 #### Defined in
 
-[src/models/shared.ts:53](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/shared.ts#L53)
+[src/models/shared.ts:53](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/shared.ts#L53)
 
 ___
 
@@ -151,4 +151,4 @@ ___
 
 #### Defined in
 
-[src/models/shared.ts:46](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/shared.ts#L46)
+[src/models/shared.ts:46](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/shared.ts#L46)

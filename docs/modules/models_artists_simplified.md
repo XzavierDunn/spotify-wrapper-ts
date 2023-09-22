@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / models/artists-simplified
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / models/artists-simplified
 
 # Module: models/artists-simplified
 
@@ -20,7 +20,7 @@
 
 #### Defined in
 
-[src/models/artists-simplified.ts:13](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/artists-simplified.ts#L13)
+[src/models/artists-simplified.ts:13](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/artists-simplified.ts#L13)
 
 ## Variables
 
@@ -30,4 +30,4 @@
 
 #### Defined in
 
-[src/models/artists-simplified.ts:4](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/artists-simplified.ts#L4)
+[src/models/artists-simplified.ts:4](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/artists-simplified.ts#L4)

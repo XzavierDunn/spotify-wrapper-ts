@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / endpoints/genres
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / endpoints/genres
 
 # Module: endpoints/genres
 

@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / [endpoints/shows](../modules/endpoints_shows.md) / Shows
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / [endpoints/shows](../modules/endpoints_shows.md) / Shows
 
 # Class: Shows
 
@@ -35,16 +35,11 @@
 
 | Name | Type |
 | :------ | :------ |
-| `info` | `Object` |
-| `info.api_url` | `string` |
-| `info.client_access_token` | `string` |
-| `info.refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `info.refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `info.user_access_token` | `string` |
+| `info` | [`InfoType`](../modules/models_client.md#infotype) |
 
 #### Defined in
 
-[src/endpoints/shows.ts:16](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/shows.ts#L16)
+[src/endpoints/shows.ts:17](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/shows.ts#L17)
 
 ## Properties
 
@@ -54,33 +49,23 @@
 
 #### Defined in
 
-[src/endpoints/shows.ts:14](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/shows.ts#L14)
+[src/endpoints/shows.ts:15](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/shows.ts#L15)
 
 ___
 
 ### info
 
-• `Private` **info**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `api_url` | `string` |
-| `client_access_token` | `string` |
-| `refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `user_access_token` | `string` |
+• `Private` **info**: [`InfoType`](../modules/models_client.md#infotype)
 
 #### Defined in
 
-[src/endpoints/shows.ts:13](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/shows.ts#L13)
+[src/endpoints/shows.ts:14](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/shows.ts#L14)
 
 ## Methods
 
 ### check\_users\_saved\_shows
 
-▸ **check_users_saved_shows**(`ids`): `Promise`<{ `error?`: `Error` ; `result?`: `boolean`[]  }\>
+▸ **check_users_saved_shows**(`ids`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `boolean`[]  }\>
 
 Check User's Saved Shows - https://developer.spotify.com/documentation/web-api/reference/check-users-saved-shows
 Check if one or more shows is already saved in the current Spotify user's library.
@@ -93,27 +78,28 @@ Check if one or more shows is already saved in the current Spotify user's librar
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `boolean`[]  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `boolean`[]  }\>
 
 Promise<{
-result?: boo;
-error?: Error;
+result?: boolean[];
+error?: CustomError;
 }>
 
 **`Scopes`**
 
 Authorization scopes
 - user-library-read
+- user-library-modify // THIS IS UNDOCUMENTED!
 
 #### Defined in
 
-[src/endpoints/shows.ts:229](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/shows.ts#L229)
+[src/endpoints/shows.ts:248](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/shows.ts#L248)
 
 ___
 
 ### get\_several\_shows
 
-▸ **get_several_shows**(`ids`, `market`): `Promise`<{ `error?`: `Error` ; `result?`: { `shows`: (``null`` \| { type: "show"; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { height: number \| null; width: number \| null; url: string \| null; }[]; ... 8 more ...; total\_episodes: number; })[]  }  }\>
+▸ **get_several_shows**(`ids`, `market?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `shows`: { type: "show"; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { url: string \| null; height: number \| null; width: number \| null; }[]; ... 8 more ...; total\_episodes: number; }[]  }  }\>
 
 Get Several Shows - https://developer.spotify.com/documentation/web-api/reference/get-multiple-shows
 Get Spotify catalog information for several shows based on their Spotify IDs.
@@ -123,26 +109,26 @@ Get Spotify catalog information for several shows based on their Spotify IDs.
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `ids` | `string`[] | A comma-separated list of the Spotify IDs for the shows. Maximum: 50 IDs. Example value: "5CfCWKI5pZ28U0uOzXkDHe,5as3aKmN2k11yfDDDSrvaZ" |
-| `market` | `string` | An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned. If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter. Note: If neither market or user country are provided, the content is considered unavailable for the client. Users can view the country that is associated with their account in the account settings. Example value: "ES" |
+| `market?` | `string` | An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned. If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter. Note: If neither market or user country are provided, the content is considered unavailable for the client. Users can view the country that is associated with their account in the account settings. Example value: "ES" REQUIRES USER TOKEN (UNDOCUMENTED) |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `shows`: (``null`` \| { type: "show"; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { height: number \| null; width: number \| null; url: string \| null; }[]; ... 8 more ...; total\_episodes: number; })[]  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `shows`: { type: "show"; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { url: string \| null; height: number \| null; width: number \| null; }[]; ... 8 more ...; total\_episodes: number; }[]  }  }\>
 
 Promise<{
 result?: SetofSimplifiedShowsType;
-error?: Error;
+error?: CustomError;
 }>
 
 #### Defined in
 
-[src/endpoints/shows.ts:69](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/shows.ts#L69)
+[src/endpoints/shows.ts:78](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/shows.ts#L78)
 
 ___
 
 ### get\_show
 
-▸ **get_show**(`id`, `market?`): `Promise`<{ `error?`: `Error` ; `result?`: { `available_markets`: `string`[] ; `copyrights`: { type: string; text: string; }[] ; `description`: `string` ; `episodes`: { href: string; total: number; limit: number; next: string \| null; offset: number; previous: string \| null; items: { type: "episode"; href: string; external\_urls: { spotify: string; }; name: string; ... 15 more ...; restrictions?: { ...; } \| undefined; }[]; } = SeveralSimplifiedEpisode; `explicit`: `boolean` ; `external_urls`: { spotify: string; } = ExternalUrls; `href`: `string` ; `html_description`: `string` ; `id`: `string` ; `images`: { height: number \| null; width: number \| null; url: string \| null; }[] ; `is_externally_hosted`: `boolean` ; `languages`: `string`[] ; `media_type`: `string` ; `name`: `string` ; `publisher`: `string` ; `total_episodes`: `number` ; `type`: ``"show"`` ; `uri`: `string`  }  }\>
+▸ **get_show**(`id`, `market?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `available_markets`: `string`[] ; `copyrights`: { type: string; text: string; }[] ; `description`: `string` ; `episodes`: { href: string; total: number; limit: number; next: string \| null; offset: number; previous: string \| null; items: { type: "episode"; href: string; external\_urls: { spotify: string; }; name: string; ... 15 more ...; restrictions?: { ...; } \| undefined; }[]; } = SeveralSimplifiedEpisode; `explicit`: `boolean` ; `external_urls`: { spotify: string; } = ExternalUrls; `href`: `string` ; `html_description`: `string` ; `id`: `string` ; `images`: { url: string \| null; height: number \| null; width: number \| null; }[] ; `is_externally_hosted`: `boolean` ; `languages`: `string`[] ; `media_type`: `string` ; `name`: `string` ; `publisher`: `string` ; `total_episodes`: `number` ; `type`: ``"show"`` ; `uri`: `string`  }  }\>
 
 Get Show - https://developer.spotify.com/documentation/web-api/reference/get-a-show
 Get Spotify catalog information for a single show identified by its unique Spotify ID.
@@ -156,11 +142,11 @@ Get Spotify catalog information for a single show identified by its unique Spoti
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `available_markets`: `string`[] ; `copyrights`: { type: string; text: string; }[] ; `description`: `string` ; `episodes`: { href: string; total: number; limit: number; next: string \| null; offset: number; previous: string \| null; items: { type: "episode"; href: string; external\_urls: { spotify: string; }; name: string; ... 15 more ...; restrictions?: { ...; } \| undefined; }[]; } = SeveralSimplifiedEpisode; `explicit`: `boolean` ; `external_urls`: { spotify: string; } = ExternalUrls; `href`: `string` ; `html_description`: `string` ; `id`: `string` ; `images`: { height: number \| null; width: number \| null; url: string \| null; }[] ; `is_externally_hosted`: `boolean` ; `languages`: `string`[] ; `media_type`: `string` ; `name`: `string` ; `publisher`: `string` ; `total_episodes`: `number` ; `type`: ``"show"`` ; `uri`: `string`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `available_markets`: `string`[] ; `copyrights`: { type: string; text: string; }[] ; `description`: `string` ; `episodes`: { href: string; total: number; limit: number; next: string \| null; offset: number; previous: string \| null; items: { type: "episode"; href: string; external\_urls: { spotify: string; }; name: string; ... 15 more ...; restrictions?: { ...; } \| undefined; }[]; } = SeveralSimplifiedEpisode; `explicit`: `boolean` ; `external_urls`: { spotify: string; } = ExternalUrls; `href`: `string` ; `html_description`: `string` ; `id`: `string` ; `images`: { url: string \| null; height: number \| null; width: number \| null; }[] ; `is_externally_hosted`: `boolean` ; `languages`: `string`[] ; `media_type`: `string` ; `name`: `string` ; `publisher`: `string` ; `total_episodes`: `number` ; `type`: ``"show"`` ; `uri`: `string`  }  }\>
 
 Promise<{
 result?: ShowType;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -170,33 +156,34 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/shows.ts:41](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/shows.ts#L41)
+[src/endpoints/shows.ts:42](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/shows.ts#L42)
 
 ___
 
 ### get\_show\_episodes
 
-▸ **get_show_episodes**(`id`, `market?`, `limit?`, `offset?`): `Promise`<{ `error?`: `Error` ; `result?`: { `href`: `string` ; `items`: { type: "episode"; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; images: { height: number \| null; width: number \| null; url: string \| null; }[]; release\_date: string; ... 11 more ...; restrictions?: { ...; } \| undefined; }[] ; `limit`: `number` ; `next?`: ``null`` \| `string` ; `offset`: `number` ; `previous?`: ``null`` \| `string` ; `total`: `number`  }  }\>
+▸ **get_show_episodes**(`id`, `optional?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `href`: `string` ; `items`: { type: "episode"; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; images: { url: string \| null; height: number \| null; width: number \| null; }[]; release\_date: string; ... 11 more ...; restrictions?: { ...; } \| undefined; }[] ; `limit`: `number` ; `next?`: ``null`` \| `string` ; `offset`: `number` ; `previous?`: ``null`` \| `string` ; `total`: `number`  }  }\>
 
 Get Show Episodes - https://developer.spotify.com/documentation/web-api/reference/get-a-shows-episodes
 Get Spotify catalog information about an show’s episodes. Optional parameters can be used to limit the number of episodes returned.
 
 #### Parameters
 
-| Name | Type | Default value | Description |
-| :------ | :------ | :------ | :------ |
-| `id` | `string` | `undefined` | The Spotify ID for the show. Example value: "38bS44xjbVVZ3No3ByF1dJ" |
-| `market?` | `string` | `undefined` | An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned. If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter. Note: If neither market or user country are provided, the content is considered unavailable for the client. Users can view the country that is associated with their account in the account settings. Example value: "ES" |
-| `limit` | `number` | `20` | The maximum number of items to return. Example value: 10 Default value: 20 Range: 0 - 50 |
-| `offset` | `number` | `0` | The index of the first item to return. Default: 0 (the first item). Use with limit to get the next set of items. Example value: 5 Default value: 0 |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `id` | `string` | The Spotify ID for the show. Example value: "38bS44xjbVVZ3No3ByF1dJ" |
+| `optional?` | `Object` | - |
+| `optional.limit?` | `number` | - |
+| `optional.market?` | `string` | - |
+| `optional.offset?` | `number` | - |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `href`: `string` ; `items`: { type: "episode"; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; images: { height: number \| null; width: number \| null; url: string \| null; }[]; release\_date: string; ... 11 more ...; restrictions?: { ...; } \| undefined; }[] ; `limit`: `number` ; `next?`: ``null`` \| `string` ; `offset`: `number` ; `previous?`: ``null`` \| `string` ; `total`: `number`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `href`: `string` ; `items`: { type: "episode"; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; images: { url: string \| null; height: number \| null; width: number \| null; }[]; release\_date: string; ... 11 more ...; restrictions?: { ...; } \| undefined; }[] ; `limit`: `number` ; `next?`: ``null`` \| `string` ; `offset`: `number` ; `previous?`: ``null`` \| `string` ; `total`: `number`  }  }\>
 
 Promise<{
 result?: PagesofEpisodesType;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -206,31 +193,30 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/shows.ts:112](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/shows.ts#L112)
+[src/endpoints/shows.ts:123](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/shows.ts#L123)
 
 ___
 
 ### get\_users\_saved\_shows
 
-▸ **get_users_saved_shows**(`limit?`, `offset?`): `Promise`<{ `error?`: `Error` ; `result?`: { `href`: `string` ; `items?`: ``null`` \| { added\_at: string; show: { type: "show"; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { height: number \| null; width: number \| null; url: string \| null; }[]; ... 8 more ...; total\_episodes: number; }; }[] ; `limit`: `number` ; `next`: ``null`` \| `string` ; `offset`: `number` ; `previous`: ``null`` \| `string` ; `total`: `number`  }  }\>
+▸ **get_users_saved_shows**(`optional?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `href`: `string` ; `items?`: ``null`` \| { added\_at: string; show: { type: "show"; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { url: string \| null; height: number \| null; width: number \| null; }[]; ... 8 more ...; total\_episodes: number; }; }[] ; `limit`: `number` ; `next`: ``null`` \| `string` ; `offset`: `number` ; `previous`: ``null`` \| `string` ; `total`: `number`  }  }\>
 
 Get User's Saved Shows - https://developer.spotify.com/documentation/web-api/reference/get-users-saved-shows
 Get a list of shows saved in the current Spotify user's library. Optional parameters can be used to limit the number of shows returned.
 
 #### Parameters
 
-| Name | Type | Default value | Description |
-| :------ | :------ | :------ | :------ |
-| `limit` | `number` | `20` | The maximum number of items to return. Example value: 10 Default value: 20 Range: 0 - 50 |
-| `offset` | `number` | `0` | The index of the first item to return. Default: 0 (the first item). Use with limit to get the next set of items. Example value: 5 Default value: 0 |
+| Name | Type |
+| :------ | :------ |
+| `optional?` | `Omit`<{ `limit?`: `number` ; `market?`: `string` ; `offset?`: `number`  }, ``"market"``\> |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `href`: `string` ; `items?`: ``null`` \| { added\_at: string; show: { type: "show"; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { height: number \| null; width: number \| null; url: string \| null; }[]; ... 8 more ...; total\_episodes: number; }; }[] ; `limit`: `number` ; `next`: ``null`` \| `string` ; `offset`: `number` ; `previous`: ``null`` \| `string` ; `total`: `number`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `href`: `string` ; `items?`: ``null`` \| { added\_at: string; show: { type: "show"; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { url: string \| null; height: number \| null; width: number \| null; }[]; ... 8 more ...; total\_episodes: number; }; }[] ; `limit`: `number` ; `next`: ``null`` \| `string` ; `offset`: `number` ; `previous`: ``null`` \| `string` ; `total`: `number`  }  }\>
 
 Promise<{
 result?: PagesofShowsType;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -240,13 +226,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/shows.ts:149](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/shows.ts#L149)
+[src/endpoints/shows.ts:159](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/shows.ts#L159)
 
 ___
 
 ### remove\_users\_saved\_shows
 
-▸ **remove_users_saved_shows**(`ids`, `market?`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **remove_users_saved_shows**(`ids`, `market?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Remove User's Saved Shows - https://developer.spotify.com/documentation/web-api/reference/remove-shows-user
 Delete one or more shows from current Spotify user's library.
@@ -260,11 +246,11 @@ Delete one or more shows from current Spotify user's library.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -274,13 +260,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/shows.ts:205](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/shows.ts#L205)
+[src/endpoints/shows.ts:219](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/shows.ts#L219)
 
 ___
 
 ### save\_shows\_for\_current\_user
 
-▸ **save_shows_for_current_user**(`ids`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **save_shows_for_current_user**(`ids`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Save Shows for Current User - https://developer.spotify.com/documentation/web-api/reference/save-shows-user
 Save one or more shows to current Spotify user's library.
@@ -293,11 +279,11 @@ Save one or more shows to current Spotify user's library.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -307,4 +293,4 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/shows.ts:177](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/shows.ts#L177)
+[src/endpoints/shows.ts:187](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/shows.ts#L187)

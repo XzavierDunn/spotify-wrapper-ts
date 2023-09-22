@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / models/paged-track
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / models/paged-track
 
 # Module: models/paged-track
 
@@ -20,7 +20,7 @@
 
 #### Defined in
 
-[src/models/paged-track.ts:27](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/paged-track.ts#L27)
+[src/models/paged-track.ts:27](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/paged-track.ts#L27)
 
 ## Variables
 
@@ -30,4 +30,4 @@
 
 #### Defined in
 
-[src/models/paged-track.ts:18](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/models/paged-track.ts#L18)
+[src/models/paged-track.ts:18](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/models/paged-track.ts#L18)

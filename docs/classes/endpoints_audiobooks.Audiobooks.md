@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / [endpoints/audiobooks](../modules/endpoints_audiobooks.md) / Audiobooks
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / [endpoints/audiobooks](../modules/endpoints_audiobooks.md) / Audiobooks
 
 # Class: Audiobooks
 
@@ -35,16 +35,11 @@
 
 | Name | Type |
 | :------ | :------ |
-| `info` | `Object` |
-| `info.api_url` | `string` |
-| `info.client_access_token` | `string` |
-| `info.refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `info.refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `info.user_access_token` | `string` |
+| `info` | [`InfoType`](../modules/models_client.md#infotype) |
 
 #### Defined in
 
-[src/endpoints/audiobooks.ts:21](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/audiobooks.ts#L21)
+[src/endpoints/audiobooks.ts:21](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/audiobooks.ts#L21)
 
 ## Properties
 
@@ -54,33 +49,23 @@
 
 #### Defined in
 
-[src/endpoints/audiobooks.ts:19](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/audiobooks.ts#L19)
+[src/endpoints/audiobooks.ts:19](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/audiobooks.ts#L19)
 
 ___
 
 ### info
 
-• `Private` **info**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `api_url` | `string` |
-| `client_access_token` | `string` |
-| `refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `user_access_token` | `string` |
+• `Private` **info**: [`InfoType`](../modules/models_client.md#infotype)
 
 #### Defined in
 
-[src/endpoints/audiobooks.ts:18](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/audiobooks.ts#L18)
+[src/endpoints/audiobooks.ts:18](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/audiobooks.ts#L18)
 
 ## Methods
 
 ### check\_users\_saved\_audiobooks
 
-▸ **check_users_saved_audiobooks**(`ids`): `Promise`<{ `error?`: `Error` ; `result?`: `boolean`[]  }\>
+▸ **check_users_saved_audiobooks**(`ids`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `boolean`[]  }\>
 
 Check User's Saved Audiobooks - https://developer.spotify.com/documentation/web-api/reference/check-users-saved-audiobooks
 Check if one or more audiobooks are already saved in the current Spotify user's library.
@@ -93,11 +78,11 @@ Check if one or more audiobooks are already saved in the current Spotify user's 
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `boolean`[]  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `boolean`[]  }\>
 
 Promise<{
 result?: boolean[];
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -107,13 +92,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/audiobooks.ts:251](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/audiobooks.ts#L251)
+[src/endpoints/audiobooks.ts:229](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/audiobooks.ts#L229)
 
 ___
 
 ### get\_an\_audiobook
 
-▸ **get_an_audiobook**(`«destructured»`): `Promise`<{ `error?`: `Error` ; `result?`: { `authors`: { name: string; }[] = authors; `available_markets`: `string`[] ; `chapters`: { href: string; total: number; limit: number; offset: number; items: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { ...; }[]; ... 11 more ...; restrictions?: { ...; } \| undefined; }[]; next?: string \| ... 1 more ... \| u... = chapters; `copyrights`: { type: string; text: string; }[] ; `description`: `string` ; `edition`: `string` ; `explicit`: `boolean` ; `external_urls`: { spotify: string; } = ExternalUrls; `href`: `string` ; `html_description`: `string` ; `id`: `string` ; `images`: { height: number \| null; width: number \| null; url: string \| null; }[] ; `languages`: `string`[] ; `media_type`: `string` ; `name`: `string` ; `narrators`: { name: string; }[] = narrators; `publisher`: `string` ; `total_chapters`: `number` ; `type`: `string` ; `uri`: `string`  }  }\>
+▸ **get_an_audiobook**(`id`, `market?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `authors`: { name: string; }[] = authors; `available_markets`: `string`[] ; `chapters`: { href: string; total: number; limit: number; offset: number; items: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { ...; }[]; ... 11 more ...; restrictions?: { ...; } \| undefined; }[]; next?: string \| ... 1 more ... \| u... = chapters; `copyrights`: { type: string; text: string; }[] ; `description`: `string` ; `edition`: `string` ; `explicit`: `boolean` ; `external_urls`: { spotify: string; } = ExternalUrls; `href`: `string` ; `html_description`: `string` ; `id`: `string` ; `images`: { url: string \| null; height: number \| null; width: number \| null; }[] ; `languages`: `string`[] ; `media_type`: `string` ; `name`: `string` ; `narrators`: { name: string; }[] = narrators; `publisher`: `string` ; `total_chapters`: `number` ; `type`: `string` ; `uri`: `string`  }  }\>
 
 Get an Audiobook - https://developer.spotify.com/documentation/web-api/reference/get-an-audiobook
 Get Spotify catalog information for a single audiobook.
@@ -121,30 +106,26 @@ Note: Audiobooks are only available for the US, UK, Ireland, New Zealand and Aus
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `«destructured»` | `Object` |
-| › `id` | `string` |
-| › `market?` | `string` |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `id` | `string` | The Spotify ID for the audiobook. Example value: "7iHfbu1YPACw6oZPAFJtqe" |
+| `market?` | `string` | An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned. If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter. Note: If neither market or user country are provided, the content is considered unavailable for the client. Users can view the country that is associated with their account in the account settings. Example value: "ES" |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `authors`: { name: string; }[] = authors; `available_markets`: `string`[] ; `chapters`: { href: string; total: number; limit: number; offset: number; items: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { ...; }[]; ... 11 more ...; restrictions?: { ...; } \| undefined; }[]; next?: string \| ... 1 more ... \| u... = chapters; `copyrights`: { type: string; text: string; }[] ; `description`: `string` ; `edition`: `string` ; `explicit`: `boolean` ; `external_urls`: { spotify: string; } = ExternalUrls; `href`: `string` ; `html_description`: `string` ; `id`: `string` ; `images`: { height: number \| null; width: number \| null; url: string \| null; }[] ; `languages`: `string`[] ; `media_type`: `string` ; `name`: `string` ; `narrators`: { name: string; }[] = narrators; `publisher`: `string` ; `total_chapters`: `number` ; `type`: `string` ; `uri`: `string`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `authors`: { name: string; }[] = authors; `available_markets`: `string`[] ; `chapters`: { href: string; total: number; limit: number; offset: number; items: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { ...; }[]; ... 11 more ...; restrictions?: { ...; } \| undefined; }[]; next?: string \| ... 1 more ... \| u... = chapters; `copyrights`: { type: string; text: string; }[] ; `description`: `string` ; `edition`: `string` ; `explicit`: `boolean` ; `external_urls`: { spotify: string; } = ExternalUrls; `href`: `string` ; `html_description`: `string` ; `id`: `string` ; `images`: { url: string \| null; height: number \| null; width: number \| null; }[] ; `languages`: `string`[] ; `media_type`: `string` ; `name`: `string` ; `narrators`: { name: string; }[] = narrators; `publisher`: `string` ; `total_chapters`: `number` ; `type`: `string` ; `uri`: `string`  }  }\>
 
-Promise<{
-result?: AudiobookType;
-error?: Error;
-}>
+Promise<{ result?: AudiobookType; error?: CustomError }>
 
 #### Defined in
 
-[src/endpoints/audiobooks.ts:45](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/audiobooks.ts#L45)
+[src/endpoints/audiobooks.ts:42](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/audiobooks.ts#L42)
 
 ___
 
 ### get\_audiobook\_chapters
 
-▸ **get_audiobook_chapters**(`«destructured»`): `Promise`<{ `error?`: `Error` ; `result?`: { `href`: `string` ; `items`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { height: number \| null; width: number \| null; url: string \| null; }[]; ... 11 more ...; restrictions?: { ...; } \| undefined; }[] = SimplifiedChapterObject; `limit`: `number` ; `next?`: ``null`` \| `string` ; `offset`: `number` ; `previous?`: ``null`` \| `string` ; `total`: `number`  }  }\>
+▸ **get_audiobook_chapters**(`id`, `optional?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `href`: `string` ; `items`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { url: string \| null; height: number \| null; width: number \| null; }[]; ... 11 more ...; restrictions?: { ...; } \| undefined; }[] = SimplifiedChapterObject; `limit`: `number` ; `next?`: ``null`` \| `string` ; `offset`: `number` ; `previous?`: ``null`` \| `string` ; `total`: `number`  }  }\>
 
 Get Audiobook Chapters - https://developer.spotify.com/documentation/web-api/reference/get-audiobook-chapters
 Get Spotify catalog information about an audiobook's chapters.
@@ -154,30 +135,27 @@ Note: Audiobooks are only available for the US, UK, Ireland, New Zealand and Aus
 
 | Name | Type |
 | :------ | :------ |
-| `«destructured»` | `Object` |
-| › `id` | `string` |
-| › `limit?` | `number` |
-| › `market?` | `string` |
-| › `offset?` | `number` |
+| `id` | `string` |
+| `optional?` | `Object` |
+| `optional.limit?` | `number` |
+| `optional.market?` | `string` |
+| `optional.offset?` | `number` |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `href`: `string` ; `items`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { height: number \| null; width: number \| null; url: string \| null; }[]; ... 11 more ...; restrictions?: { ...; } \| undefined; }[] = SimplifiedChapterObject; `limit`: `number` ; `next?`: ``null`` \| `string` ; `offset`: `number` ; `previous?`: ``null`` \| `string` ; `total`: `number`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `href`: `string` ; `items`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { url: string \| null; height: number \| null; width: number \| null; }[]; ... 11 more ...; restrictions?: { ...; } \| undefined; }[] = SimplifiedChapterObject; `limit`: `number` ; `next?`: ``null`` \| `string` ; `offset`: `number` ; `previous?`: ``null`` \| `string` ; `total`: `number`  }  }\>
 
-Promise<{
-result?: ChaptersType;
-error?: Error;
-}>
+Promise<{ result?: ChaptersType; error?: CustomError }>
 
 #### Defined in
 
-[src/endpoints/audiobooks.ts:128](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/audiobooks.ts#L128)
+[src/endpoints/audiobooks.ts:111](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/audiobooks.ts#L111)
 
 ___
 
 ### get\_several\_audiobooks
 
-▸ **get_several_audiobooks**(`«destructured»`): `Promise`<{ `error?`: `Error` ; `result?`: { `audiobooks`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { height: number \| null; width: number \| null; url: string \| null; }[]; ... 11 more ...; chapters: { ...; }; }[]  }  }\>
+▸ **get_several_audiobooks**(`ids`, `market?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `audiobooks`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { url: string \| null; height: number \| null; width: number \| null; }[]; ... 11 more ...; chapters: { ...; }; }[]  }  }\>
 
 Get Several Audiobooks - https://developer.spotify.com/documentation/web-api/reference/get-multiple-audiobooks
 Get Spotify catalog information for several audiobooks identified by their Spotify IDs.
@@ -185,30 +163,26 @@ Note: Audiobooks are only available for the US, UK, Ireland, New Zealand and Aus
 
 #### Parameters
 
-| Name | Type |
-| :------ | :------ |
-| `«destructured»` | `Object` |
-| › `ids` | `string`[] |
-| › `market?` | `string` |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `ids` | `string`[] | A comma-separated list of the Spotify IDs. For example: ids=18yVqkdbdRvS24c0Ilj2ci,1HGw3J3NxZO1TP1BTtVhpZ. Maximum: 50 IDs. Example value: "18yVqkdbdRvS24c0Ilj2ci,1HGw3J3NxZO1TP1BTtVhpZ,7iHfbu1YPACw6oZPAFJtqe" |
+| `market?` | `string` | An ISO 3166-1 alpha-2 country code. If a country code is specified, only content that is available in that market will be returned. If a valid user access token is specified in the request header, the country associated with the user account will take priority over this parameter. Note: If neither market or user country are provided, the content is considered unavailable for the client. Users can view the country that is associated with their account in the account settings. Example value: "ES" |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `audiobooks`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { height: number \| null; width: number \| null; url: string \| null; }[]; ... 11 more ...; chapters: { ...; }; }[]  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `audiobooks`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; available\_markets: string[]; images: { url: string \| null; height: number \| null; width: number \| null; }[]; ... 11 more ...; chapters: { ...; }; }[]  }  }\>
 
-Promise<{
-result?: SeveralAudiobookType;
-error?: Error;
-}>
+Promise<{ result?: SeveralAudiobookType; error?: CustomError }
 
 #### Defined in
 
-[src/endpoints/audiobooks.ts:82](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/audiobooks.ts#L82)
+[src/endpoints/audiobooks.ts:72](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/audiobooks.ts#L72)
 
 ___
 
 ### get\_users\_saved\_audiobooks
 
-▸ **get_users_saved_audiobooks**(`«destructured»`): `Promise`<{ `error?`: `Error` ; `result?`: { `href`: `string` ; `items`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; images: { height: number \| null; width: number \| null; url: string \| null; }[]; copyrights: { ...; }[]; ... 10 more ...; available\_markets?: string[] \| undefined; }[] ; `limit`: `number` ; `next?`: ``null`` \| `string` ; `offset`: `number` ; `previous?`: ``null`` \| `string` ; `total`: `number`  }  }\>
+▸ **get_users_saved_audiobooks**(`optional?`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `href`: `string` ; `items`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; images: { url: string \| null; height: number \| null; width: number \| null; }[]; copyrights: { ...; }[]; ... 10 more ...; available\_markets?: string[] \| undefined; }[] ; `limit`: `number` ; `next?`: ``null`` \| `string` ; `offset`: `number` ; `previous?`: ``null`` \| `string` ; `total`: `number`  }  }\>
 
 Get User's Saved Audiobooks - https://developer.spotify.com/documentation/web-api/reference/get-users-saved-audiobooks
 Get a list of the audiobooks saved in the current Spotify user's 'Your Music' library.
@@ -217,17 +191,15 @@ Get a list of the audiobooks saved in the current Spotify user's 'Your Music' li
 
 | Name | Type |
 | :------ | :------ |
-| `«destructured»` | `Object` |
-| › `limit?` | `number` |
-| › `offset?` | `number` |
+| `optional?` | `Omit`<{ `limit?`: `number` ; `market?`: `string` ; `offset?`: `number`  }, ``"market"``\> |
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `href`: `string` ; `items`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; images: { height: number \| null; width: number \| null; url: string \| null; }[]; copyrights: { ...; }[]; ... 10 more ...; available\_markets?: string[] \| undefined; }[] ; `limit`: `number` ; `next?`: ``null`` \| `string` ; `offset`: `number` ; `previous?`: ``null`` \| `string` ; `total`: `number`  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `href`: `string` ; `items`: { type: string; href: string; external\_urls: { spotify: string; }; name: string; id: string; uri: string; images: { url: string \| null; height: number \| null; width: number \| null; }[]; copyrights: { ...; }[]; ... 10 more ...; available\_markets?: string[] \| undefined; }[] ; `limit`: `number` ; `next?`: ``null`` \| `string` ; `offset`: `number` ; `previous?`: ``null`` \| `string` ; `total`: `number`  }  }\>
 
 Promise<{
 result?: SeveralSimplifiedAudiobooksType;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -237,13 +209,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/audiobooks.ts:170](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/audiobooks.ts#L170)
+[src/endpoints/audiobooks.ts:147](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/audiobooks.ts#L147)
 
 ___
 
 ### remove\_users\_saved\_audiobooks
 
-▸ **remove_users_saved_audiobooks**(`ids`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **remove_users_saved_audiobooks**(`ids`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Remove User's Saved Audiobooks - https://developer.spotify.com/documentation/web-api/reference/remove-audiobooks-user
 Remove one or more audiobooks from the Spotify user's library.
@@ -256,11 +228,11 @@ Remove one or more audiobooks from the Spotify user's library.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Promise<{
 result?: string;
-error?: Error;
+error?: CustomError;
 }>
 
 **`Scopes`**
@@ -270,13 +242,13 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/audiobooks.ts:227](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/audiobooks.ts#L227)
+[src/endpoints/audiobooks.ts:203](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/audiobooks.ts#L203)
 
 ___
 
 ### save\_audiobooks\_for\_current\_user
 
-▸ **save_audiobooks_for_current_user**(`ids`): `Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+▸ **save_audiobooks_for_current_user**(`ids`): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
 Save Audiobooks for Current User - https://developer.spotify.com/documentation/web-api/reference/save-audiobooks-user
 Save one or more audiobooks to the current Spotify user's library.
@@ -289,12 +261,9 @@ Save one or more audiobooks to the current Spotify user's library.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: `string`  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: `string`  }\>
 
-Promise<{
-result?: string;
-error?: Error;
-}>
+Promise<{ result?: string; error?: CustomError }>
 
 **`Scopes`**
 
@@ -303,4 +272,4 @@ Authorization scopes
 
 #### Defined in
 
-[src/endpoints/audiobooks.ts:203](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/audiobooks.ts#L203)
+[src/endpoints/audiobooks.ts:177](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/audiobooks.ts#L177)

@@ -1,4 +1,4 @@
-[spotify_wrapper](../README.md) / [Exports](../modules.md) / [endpoints/genres](../modules/endpoints_genres.md) / Genres
+[spotify-wrapper-ts](../README.md) / [Exports](../modules.md) / [endpoints/genres](../modules/endpoints_genres.md) / Genres
 
 # Class: Genres
 
@@ -29,16 +29,11 @@
 
 | Name | Type |
 | :------ | :------ |
-| `info` | `Object` |
-| `info.api_url` | `string` |
-| `info.client_access_token` | `string` |
-| `info.refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `info.refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `info.user_access_token` | `string` |
+| `info` | [`InfoType`](../modules/models_client.md#infotype) |
 
 #### Defined in
 
-[src/endpoints/genres.ts:9](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/genres.ts#L9)
+[src/endpoints/genres.ts:8](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/genres.ts#L8)
 
 ## Properties
 
@@ -48,46 +43,36 @@
 
 #### Defined in
 
-[src/endpoints/genres.ts:7](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/genres.ts#L7)
+[src/endpoints/genres.ts:6](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/genres.ts#L6)
 
 ___
 
 ### info
 
-• `Private` **info**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `api_url` | `string` |
-| `client_access_token` | `string` |
-| `refresh_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `refresh_user_token_function` | (...`args`: `unknown`[]) => `unknown` |
-| `user_access_token` | `string` |
+• `Private` **info**: [`InfoType`](../modules/models_client.md#infotype)
 
 #### Defined in
 
-[src/endpoints/genres.ts:6](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/genres.ts#L6)
+[src/endpoints/genres.ts:5](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/genres.ts#L5)
 
 ## Methods
 
 ### get\_available\_genre\_seeds
 
-▸ **get_available_genre_seeds**(): `Promise`<{ `error?`: `Error` ; `result?`: { `genres`: `string`[]  }  }\>
+▸ **get_available_genre_seeds**(): `Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `genres`: `string`[]  }  }\>
 
 Get Available Genre Seeds - https://developer.spotify.com/documentation/web-api/reference/get-recommendation-genres
 Retrieve a list of available genres seed parameter values for recommendations.
 
 #### Returns
 
-`Promise`<{ `error?`: `Error` ; `result?`: { `genres`: `string`[]  }  }\>
+`Promise`<{ `error?`: [`CustomError`](../modules/models_client.md#customerror) ; `result?`: { `genres`: `string`[]  }  }\>
 
 Promise<{
 result?: GenresType;
-error?: Error;
+error?: CustomError;
 }>
 
 #### Defined in
 
-[src/endpoints/genres.ts:23](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/259550e/src/endpoints/genres.ts#L23)
+[src/endpoints/genres.ts:22](https://github.com/XzavierDunn/spotify-wrapper-ts/blob/7ece3b9/src/endpoints/genres.ts#L22)
