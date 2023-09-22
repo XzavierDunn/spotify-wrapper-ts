@@ -182,7 +182,7 @@ class Tracks {
   ): Promise<{ result?: string; error?: CustomError }> {
     let url = `${this.info.api_url}/me/tracks?ids=${ids.join(",")}`;
 
-    return await this.info.submit_request({
+    return await this.info.submit_user_scoped_request({
       url,
       method: "DELETE",
       scopes: ["user-library-modify"],

@@ -113,20 +113,20 @@ class Client {
 
   async error_handler<T>(
     status_code: number,
-    input: { error: any }, // TODO: confirm if all returned errors match {error: {status: number, message: string}}
+    input: { error: any },
     fetchData: FetchDataType
   ): Promise<{ result?: T; error?: CustomError }> {
-    console.log("HIT ERROR_HANDLER");
-    console.log(input);
-
     let refresh = false;
     let scope_issue = false;
 
     switch (status_code) {
-      case 400: // TODO: CHECK FOR SPECIFIC REFRESH ERROR
+      case 400:
         return input;
       case 401:
-        if (input.error.message === "Permissions missing") {
+        if (
+          input.error.message === "Permissions missing" ||
+          input.error.message === "Invalid access token"
+        ) {
           scope_issue = true;
         } else {
           refresh = true;
@@ -148,7 +148,12 @@ class Client {
     }
 
     if (scope_issue) {
-      return { error: { status_code: 403, message: input.error.message } };
+      let message: string = "";
+      try {
+        message = input.error.message;
+      } catch {}
+
+      return { error: { status_code: 403, message } };
     }
 
     throw new Error("NEW ERROR");
@@ -163,12 +168,8 @@ class Client {
 
   async refresh_user_token(): Promise<string> {
     console.log("Attempting to refresh the user token");
-    console.log(this.UserInfo);
-    if (!this.UserInfo.refresh_token)
-      throw new Error("Missing user refresh token");
 
     let data = await refresh_user_access_token(
-      this.UserInfo.refresh_token,
       this.credentials.client_id,
       this.credentials.client_secret
     );
